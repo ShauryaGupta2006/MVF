@@ -1,0 +1,1 @@
+1. data fetched for popular movies from api done successfully and have to display on frontend
