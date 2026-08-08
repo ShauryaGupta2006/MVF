@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { NavLink, Link } from "react-router-dom";
+import { NavLink, Link, useNavigate } from "react-router-dom";
 
 function Header() {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -8,6 +8,7 @@ function Header() {
     const [searchQuery, setSearchQuery] = useState("");
     const [scrolled, setScrolled] = useState(false);
     const dropdownRef = useRef(null);
+    const navigate = useNavigate();
 
     // Add scroll listener to make the glass effect dynamic (stronger glass touch when scrolled)
     useEffect(() => {
@@ -36,8 +37,9 @@ function Header() {
     const handleSearchSubmit = (e) => {
         e.preventDefault();
         if (searchQuery.trim()) {
-            console.log("Searching for:", searchQuery);
-            // Optional: Implement redirect or fetch
+            navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+            setSearchQuery("");
+            setIsMobileMenuOpen(false);
         }
     };
 
@@ -107,6 +109,18 @@ function Header() {
                             }
                         >
                             Trending
+                        </NavLink>
+                        <NavLink
+                            to="/upcoming"
+                            className={({ isActive }) =>
+                                `px-4 py-2 rounded-full text-xs font-semibold uppercase tracking-wider transition-all duration-300 ${
+                                    isActive
+                                        ? "bg-white/10 text-white shadow-[0_2px_10px_rgba(255,255,255,0.05)] border border-white/10"
+                                        : "text-zinc-400 hover:text-zinc-200 hover:bg-white/5 border border-transparent"
+                                }`
+                            }
+                        >
+                            Upcoming
                         </NavLink>
                     </nav>
 
@@ -317,6 +331,19 @@ function Header() {
                             }
                         >
                             Trending
+                        </NavLink>
+                        <NavLink
+                            to="/upcoming"
+                            onClick={() => setIsMobileMenuOpen(false)}
+                            className={({ isActive }) =>
+                                `block w-full px-4 py-2.5 rounded-xl text-sm font-semibold uppercase tracking-wider ${
+                                    isActive
+                                        ? "bg-white/10 text-white border border-white/10"
+                                        : "text-zinc-400 hover:text-white"
+                                }`
+                            }
+                        >
+                            Upcoming
                         </NavLink>
 
                         {!isLoggedIn && (

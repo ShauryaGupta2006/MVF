@@ -1,23 +1,26 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 
-function TrendingMovies() {
+function Search() {
+    const [searchParams] = useSearchParams();
+    const query = searchParams.get("q") || "";
     const [movies, setMovies] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const navigate = useNavigate();
 
-    const fetchTrendingMovies = async () => {
+    const fetchSearchResults = async () => {
+        if (!query.trim()) return;
         setLoading(true);
         setError(null);
         try {
-            const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/trending`);
+            const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/search?query=${encodeURIComponent(query)}`);
             if (!res.ok) throw new Error("Server returned an error. Please try again.");
             const data = await res.json();
             if (data.success) {
                 setMovies(data.data.results);
             } else {
-                throw new Error(data.error || "Failed to fetch trending movies.");
+                throw new Error(data.error || "Search failed.");
             }
         } catch (err) {
             console.error(err);
@@ -28,8 +31,8 @@ function TrendingMovies() {
     };
 
     useEffect(() => {
-        fetchTrendingMovies();
-    }, []);
+        fetchSearchResults();
+    }, [query]);
 
     if (error) {
         return (
@@ -42,9 +45,9 @@ function TrendingMovies() {
                             <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                         </svg>
                     </div>
-                    <h3 className="text-xl font-black uppercase tracking-tight text-white mb-2">Something Went Wrong</h3>
+                    <h3 className="text-xl font-black uppercase tracking-tight text-white mb-2">Search Failed</h3>
                     <p className="text-sm text-zinc-400 font-medium mb-6 leading-relaxed">{error}</p>
-                    <button onClick={fetchTrendingMovies} className="px-6 py-3 rounded-xl bg-linear-to-r from-red-600 to-amber-500 hover:from-red-500 hover:to-amber-400 text-white font-extrabold uppercase text-xs tracking-wider transition-all duration-300 shadow-[0_4px_15px_rgba(239,68,68,0.2)] hover:scale-[1.02] active:scale-[0.98] cursor-pointer">
+                    <button onClick={fetchSearchResults} className="px-6 py-3 rounded-xl bg-linear-to-r from-red-600 to-amber-500 hover:from-red-500 hover:to-amber-400 text-white font-extrabold uppercase text-xs tracking-wider transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] cursor-pointer">
                         Retry
                     </button>
                 </div>
@@ -55,22 +58,35 @@ function TrendingMovies() {
     return (
         <div className="min-h-screen bg-zinc-950 px-4 py-12 sm:px-8">
             {/* Heading */}
-            <div className="relative mb-10 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between border-l-4 border-red-500 pl-4">
+            <div className="relative mb-10 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between border-l-4 border-cyan-500 pl-4">
                 <div>
                     <h2 className="text-2xl font-black uppercase tracking-tight text-white sm:text-3xl">
-                        Trending <span className="bg-linear-to-r from-red-500 to-amber-500 bg-clip-text text-transparent">Movies</span>
+                        Search <span className="bg-linear-to-r from-cyan-500 to-blue-500 bg-clip-text text-transparent">Results</span>
                     </h2>
                     <p className="text-xs font-semibold uppercase tracking-wider text-zinc-500 mt-1">
-                        Real-time popularity forecasts on what's hot right now
+                        {query ? (
+                            <>Showing results for "<span className="text-zinc-300">{query}</span>"</>
+                        ) : (
+                            "Enter a search term to find movies"
+                        )}
                     </p>
                 </div>
-                <div className="flex w-fit items-center gap-1.5 rounded-full border border-red-500/20 bg-red-950/20 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-red-400 backdrop-blur-sm animate-pulse">
-                    <span className="h-1.5 w-1.5 rounded-full bg-red-500 animate-ping"></span>
-                    🔥 Live Tracked
-                </div>
+                {movies.length > 0 && (
+                    <div className="flex w-fit items-center gap-1.5 rounded-full border border-cyan-500/20 bg-cyan-950/20 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-cyan-400 backdrop-blur-sm">
+                        🔍 {movies.length} found
+                    </div>
+                )}
             </div>
 
-            {loading ? (
+            {!query.trim() ? (
+                <div className="flex flex-col items-center justify-center py-20 text-zinc-500">
+                    <svg className="w-20 h-20 mb-6 text-zinc-700" fill="none" stroke="currentColor" strokeWidth="1" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+                    </svg>
+                    <p className="text-lg font-semibold text-zinc-400">Search for movies</p>
+                    <p className="text-sm text-zinc-600 mt-1">Use the search bar in the header to find your favorites.</p>
+                </div>
+            ) : loading ? (
                 <div className="grid gap-6 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
                     {Array.from({ length: 12 }).map((_, i) => (
                         <div key={i} className="animate-pulse rounded-2xl border border-white/5 bg-white/2 p-2">
@@ -83,12 +99,20 @@ function TrendingMovies() {
                         </div>
                     ))}
                 </div>
+            ) : movies.length === 0 ? (
+                <div className="flex flex-col items-center justify-center py-20 text-zinc-500">
+                    <svg className="w-16 h-16 mb-4 text-zinc-700" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M15.182 16.318A4.486 4.486 0 0012.016 15a4.486 4.486 0 00-3.198 1.318M21 12a9 9 0 11-18 0 9 9 0 0118 0zM9.75 9.75c0 .414-.168.75-.375.75S9 10.164 9 9.75 9.168 9 9.375 9s.375.336.375.75zm-.375 0h.008v.015h-.008V9.75zm5.625 0c0 .414-.168.75-.375.75s-.375-.336-.375-.75.168-.75.375-.75.375.336.375.75zm-.375 0h.008v.015h-.008V9.75z" />
+                    </svg>
+                    <p className="text-lg font-semibold">No results found for "{query}"</p>
+                    <p className="text-sm text-zinc-600 mt-1">Try a different search term or check the spelling.</p>
+                </div>
             ) : (
                 <div className="grid gap-6 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
                     {movies.map((movie) => (
                         <div
                             key={movie.id}
-                            className="group relative cursor-pointer overflow-hidden rounded-2xl border border-white/5 bg-white/1 p-2 backdrop-blur-md transition-all duration-300 hover:border-red-500/30 hover:bg-white/4 hover:shadow-[0_12px_40px_rgba(239,68,68,0.15)]"
+                            className="group relative cursor-pointer overflow-hidden rounded-2xl border border-white/5 bg-white/1 p-2 backdrop-blur-md transition-all duration-300 hover:border-cyan-500/30 hover:bg-white/4 hover:shadow-[0_12px_40px_rgba(6,182,212,0.15)]"
                         >
                             <div className="relative overflow-hidden rounded-xl aspect-2/3 bg-zinc-900">
                                 {movie.poster_path ? (
@@ -104,8 +128,8 @@ function TrendingMovies() {
                                     </div>
                                 )}
                                 <div className="absolute inset-0 bg-linear-to-t from-zinc-950 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-3">
-                                    <span className="text-[10px] font-bold text-red-400 bg-red-950/60 border border-red-500/30 px-2 py-0.5 rounded-full backdrop-blur-sm shadow-sm">
-                                        Forecast: Hot 🔥
+                                    <span className="text-[10px] font-bold text-cyan-400 bg-cyan-950/60 border border-cyan-500/30 px-2 py-0.5 rounded-full backdrop-blur-sm shadow-sm">
+                                        Match ✓
                                     </span>
                                 </div>
                             </div>
@@ -123,7 +147,7 @@ function TrendingMovies() {
 
                                 <button
                                     onClick={() => navigate(`/movie/${movie.id}`)}
-                                    className="mt-3 w-full rounded-xl bg-white/5 hover:bg-red-600 border border-white/10 hover:border-red-600 py-2 text-xs font-bold text-zinc-300 hover:text-white transition-all duration-300 shadow-sm cursor-pointer"
+                                    className="mt-3 w-full rounded-xl bg-white/5 hover:bg-cyan-600 border border-white/10 hover:border-cyan-600 py-2 text-xs font-bold text-zinc-300 hover:text-white transition-all duration-300 shadow-sm cursor-pointer"
                                 >
                                     Know More
                                 </button>
@@ -136,4 +160,4 @@ function TrendingMovies() {
     );
 }
 
-export default TrendingMovies;
+export default Search;
