@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import LoadingScreen from "../components/loadingScreen";
 
 function Upcoming() {
     const [upmovies, setUpmovies] = useState([]);
@@ -30,6 +31,11 @@ function Upcoming() {
     useEffect(() => {
         fetchUpmovies();
     }, []);
+
+    if (loading) {
+        return <LoadingScreen message="Fetching Upcoming Releases..." />;
+    }
+
 
     if (error) {
         return (
@@ -70,21 +76,7 @@ function Upcoming() {
                 </div>
             </div>
 
-            {loading ? (
-                <div className="grid gap-6 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
-                    {Array.from({ length: 12 }).map((_, i) => (
-                        <div key={i} className="animate-pulse rounded-2xl border border-white/5 bg-white/2 p-2">
-                            <div className="rounded-xl aspect-2/3 bg-zinc-800"></div>
-                            <div className="p-3 space-y-2">
-                                <div className="h-4 w-3/4 bg-zinc-800 rounded"></div>
-                                <div className="h-3 w-1/2 bg-zinc-800 rounded"></div>
-                                <div className="h-8 w-full bg-zinc-800 rounded-xl mt-3"></div>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            ) : (
-                <div className="grid gap-6 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+            <div className="grid gap-6 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
                     {upmovies.map((movie) => (
                         <div
                             key={movie.id}
@@ -131,7 +123,6 @@ function Upcoming() {
                         </div>
                     ))}
                 </div>
-            )}
         </div>
     );
 }

@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, useSearchParams, useNavigate } from "react-router-dom";
+import LoadingScreen from "../components/loadingScreen";
 
 function Genre() {
     const { genreId } = useParams();
@@ -33,6 +34,11 @@ function Genre() {
     useEffect(() => {
         fetchGenreMovies();
     }, [genreId]);
+
+    if (loading) {
+        return <LoadingScreen message={`Fetching ${genreName} Movies...`} />;
+    }
+
 
     if (error) {
         return (
@@ -73,20 +79,7 @@ function Genre() {
                 </div>
             </div>
 
-            {loading ? (
-                <div className="grid gap-6 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
-                    {Array.from({ length: 12 }).map((_, i) => (
-                        <div key={i} className="animate-pulse rounded-2xl border border-white/5 bg-white/2 p-2">
-                            <div className="rounded-xl aspect-2/3 bg-zinc-800"></div>
-                            <div className="p-3 space-y-2">
-                                <div className="h-4 w-3/4 bg-zinc-800 rounded"></div>
-                                <div className="h-3 w-1/2 bg-zinc-800 rounded"></div>
-                                <div className="h-8 w-full bg-zinc-800 rounded-xl mt-3"></div>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            ) : movies.length === 0 ? (
+            {movies.length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-20 text-zinc-500">
                     <svg className="w-16 h-16 mb-4 text-zinc-700" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />

@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import LoadingScreen from "../components/loadingScreen";
 
 function MovieDetail() {
     const { movieId } = useParams();
@@ -33,6 +34,11 @@ function MovieDetail() {
         window.scrollTo(0, 0);
     }, [movieId]);
 
+    if (loading) {
+        return <LoadingScreen message="Fetching Movie Details..." />;
+    }
+
+
     if (error) {
         return (
             <div className="min-h-[60vh] bg-zinc-950 text-white flex flex-col items-center justify-center px-4 relative overflow-hidden">
@@ -58,29 +64,7 @@ function MovieDetail() {
         );
     }
 
-    if (loading) {
-        return (
-            <div className="min-h-screen bg-zinc-950">
-                {/* Backdrop skeleton */}
-                <div className="relative w-full h-[50vh] bg-zinc-900/40 animate-pulse"></div>
-                <div className="max-w-6xl mx-auto px-4 sm:px-8 -mt-32 relative z-10">
-                    <div className="flex flex-col md:flex-row gap-8">
-                        <div className="w-48 md:w-64 shrink-0 rounded-2xl bg-zinc-800 aspect-2/3 animate-pulse"></div>
-                        <div className="flex-1 space-y-4 pt-4">
-                            <div className="h-8 w-2/3 bg-zinc-800 rounded-lg animate-pulse"></div>
-                            <div className="h-4 w-1/3 bg-zinc-800 rounded animate-pulse"></div>
-                            <div className="h-20 w-full bg-zinc-800 rounded-lg animate-pulse"></div>
-                            <div className="flex gap-3">
-                                <div className="h-6 w-16 bg-zinc-800 rounded-full animate-pulse"></div>
-                                <div className="h-6 w-16 bg-zinc-800 rounded-full animate-pulse"></div>
-                                <div className="h-6 w-16 bg-zinc-800 rounded-full animate-pulse"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        );
-    }
+
 
     if (!movie) return null;
 
