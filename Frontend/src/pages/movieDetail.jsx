@@ -7,6 +7,7 @@ function MovieDetail() {
     const [movie, setMovie] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [activeTrailerKey, setActiveTrailerKey] = useState(null);
     const navigate = useNavigate();
 
     const fetchMovie = async () => {
@@ -35,27 +36,27 @@ function MovieDetail() {
     }, [movieId]);
 
     if (loading) {
-        return <LoadingScreen message="Fetching Movie Details..." />;
+        return <LoadingScreen message="Fetching CINECAST Movie Details..." />;
     }
-
 
     if (error) {
         return (
-            <div className="min-h-[60vh] bg-zinc-950 text-white flex flex-col items-center justify-center px-4 relative overflow-hidden">
-                <div className="absolute -left-10 -top-10 h-72 w-72 rounded-full bg-red-800/10 blur-[80px] pointer-events-none"></div>
-                <div className="relative z-10 flex flex-col items-center max-w-md w-full text-center px-6 py-8 rounded-3xl border border-red-500/15 bg-zinc-900/40 backdrop-blur-xl shadow-2xl">
-                    <div className="relative w-16 h-16 mb-6 flex items-center justify-center rounded-2xl bg-red-950/50 border border-red-500/30 text-red-500">
-                        <svg className="w-8 h-8" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                        </svg>
-                    </div>
-                    <h3 className="text-xl font-black uppercase tracking-tight text-white mb-2">Movie Not Found</h3>
-                    <p className="text-sm text-zinc-400 font-medium mb-6 leading-relaxed">{error}</p>
-                    <div className="flex gap-3">
-                        <button onClick={fetchMovie} className="px-5 py-3 rounded-xl bg-linear-to-r from-red-600 to-amber-500 hover:from-red-500 hover:to-amber-400 text-white font-extrabold uppercase text-xs tracking-wider transition-all duration-300 hover:scale-[1.02] cursor-pointer">
+            <div className="min-h-[60vh] bg-background text-on-surface flex flex-col items-center justify-center px-4">
+                <div className="max-w-md text-center p-8 rounded-2xl bg-surface-container border border-primary-container/30 shadow-2xl">
+                    <span className="material-symbols-outlined text-5xl text-primary-container mb-4">error</span>
+                    <h3 className="text-xl font-bold uppercase mb-2">Movie Not Found</h3>
+                    <p className="text-sm text-on-surface-variant mb-6">{error}</p>
+                    <div className="flex gap-3 justify-center">
+                        <button
+                            onClick={fetchMovie}
+                            className="bg-primary-container text-white px-8 py-3 rounded-full font-semibold text-xs uppercase tracking-wider neon-glow cursor-pointer"
+                        >
                             Retry
                         </button>
-                        <button onClick={() => navigate(-1)} className="px-5 py-3 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 text-white font-extrabold uppercase text-xs tracking-wider transition-all duration-300 hover:scale-[1.02] cursor-pointer">
+                        <button
+                            onClick={() => navigate(-1)}
+                            className="glass-panel text-white px-6 py-3 rounded-full font-semibold text-xs uppercase tracking-wider hover:bg-white/10 transition duration-300 cursor-pointer"
+                        >
                             Go Back
                         </button>
                     </div>
@@ -64,52 +65,46 @@ function MovieDetail() {
         );
     }
 
-
-
     if (!movie) return null;
 
     const releaseYear = movie.release_date ? movie.release_date.split("-")[0] : "";
     const runtime = movie.runtime ? `${Math.floor(movie.runtime / 60)}h ${movie.runtime % 60}m` : null;
-    const director = movie.credits?.crew?.find(p => p.job === "Director");
+    const director = movie.credits?.crew?.find((p) => p.job === "Director");
     const topCast = movie.credits?.cast?.slice(0, 8) || [];
-    const trailer = movie.videos?.results?.find(v => v.type === "Trailer" && v.site === "YouTube");
+    const trailer = movie.videos?.results?.find((v) => v.type === "Trailer" && v.site === "YouTube") || movie.videos?.results?.[0];
     const similarMovies = movie.similar?.results?.slice(0, 6) || [];
 
     return (
-        <div className="min-h-screen bg-zinc-950 text-white">
+        <div className="min-h-screen bg-background text-on-surface pt-20">
             {/* Cinematic Backdrop */}
-            <div className="relative w-full h-[55vh] overflow-hidden">
+            <div className="relative w-full h-[60vh] overflow-hidden">
                 {movie.backdrop_path ? (
                     <img
                         src={`https://image.tmdb.org/t/p/original${movie.backdrop_path}`}
                         alt={movie.title}
-                        className="w-full h-full object-cover object-top filter brightness-75"
+                        className="w-full h-full object-cover filter brightness-75 scale-105"
                     />
                 ) : (
-                    <div className="w-full h-full bg-zinc-900"></div>
+                    <div className="w-full h-full bg-surface-container"></div>
                 )}
-                <div className="absolute inset-0 bg-linear-to-t from-zinc-950 via-zinc-950/50 to-zinc-950/30"></div>
-                <div className="absolute inset-y-0 left-0 w-1/5 bg-linear-to-r from-zinc-950 to-transparent"></div>
-                <div className="absolute inset-y-0 right-0 w-1/5 bg-linear-to-l from-zinc-950 to-transparent"></div>
+                <div className="absolute inset-0 hero-gradient"></div>
 
                 {/* Back Button */}
                 <button
                     onClick={() => navigate(-1)}
-                    className="absolute top-6 left-6 z-20 flex items-center gap-2 px-4 py-2 rounded-full border border-white/10 bg-zinc-950/60 backdrop-blur-md text-sm font-bold text-zinc-300 hover:text-white hover:bg-zinc-950/80 transition-all duration-300 cursor-pointer"
+                    className="absolute top-6 left-6 z-20 flex items-center gap-2 px-4 py-2 rounded-full glass-panel text-sm font-bold text-white hover:bg-white/10 transition-all duration-300 cursor-pointer active:scale-95 shadow-lg"
                 >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-                    </svg>
+                    <span className="material-symbols-outlined text-lg">arrow_back</span>
                     Back
                 </button>
             </div>
 
-            {/* Main Content */}
-            <div className="max-w-6xl mx-auto px-4 sm:px-8 -mt-40 relative z-10 pb-16">
+            {/* Main Content Details */}
+            <div className="max-w-6xl mx-auto px-4 sm:px-margin-desktop -mt-48 relative z-10 pb-20">
                 <div className="flex flex-col md:flex-row gap-8">
                     {/* Poster */}
                     <div className="shrink-0 self-start">
-                        <div className="w-48 md:w-64 rounded-2xl overflow-hidden border border-white/10 shadow-[0_20px_60px_rgba(0,0,0,0.7)]">
+                        <div className="w-52 md:w-64 rounded-2xl overflow-hidden border border-white/10 shadow-2xl bg-surface-container">
                             {movie.poster_path ? (
                                 <img
                                     src={`${import.meta.env.VITE_IMG_BASE_PATH}${movie.poster_path}`}
@@ -117,44 +112,42 @@ function MovieDetail() {
                                     className="w-full h-auto object-cover"
                                 />
                             ) : (
-                                <div className="w-full aspect-2/3 bg-zinc-800 flex items-center justify-center text-zinc-500">
+                                <div className="w-full aspect-2/3 flex items-center justify-center text-on-surface-variant text-sm font-semibold">
                                     No Poster
                                 </div>
                             )}
                         </div>
                     </div>
 
-                    {/* Details */}
-                    <div className="flex-1 flex flex-col gap-5">
+                    {/* Meta Details */}
+                    <div className="flex-1 flex flex-col gap-6">
                         <div>
-                            <h1 className="text-3xl md:text-4xl font-black uppercase tracking-tight leading-tight">
+                            <span className="px-3 py-1 rounded-full bg-primary-container/20 border border-primary-container text-primary text-xs font-bold uppercase tracking-widest inline-block mb-3">
+                                CINECAST Highlight
+                            </span>
+                            <h1 className="text-4xl md:text-5xl font-black uppercase tracking-tight leading-tight text-white">
                                 {movie.title}
                             </h1>
                             {movie.tagline && (
-                                <p className="text-sm text-zinc-400 italic mt-1">"{movie.tagline}"</p>
+                                <p className="text-sm text-on-surface-variant italic mt-1 font-medium">"{movie.tagline}"</p>
                             )}
                         </div>
 
-                        {/* Meta Pills */}
-                        <div className="flex flex-wrap items-center gap-3 text-xs font-bold text-zinc-400">
+                        <div className="flex flex-wrap items-center gap-3 text-xs font-semibold text-on-surface-variant uppercase tracking-wider">
                             {releaseYear && (
-                                <span className="px-3 py-1 rounded-full bg-zinc-800/80 border border-white/5">
-                                    📅 {releaseYear}
+                                <span className="px-3 py-1 rounded-full bg-surface-container border border-white/5">
+                                    {releaseYear}
                                 </span>
                             )}
                             {runtime && (
-                                <span className="px-3 py-1 rounded-full bg-zinc-800/80 border border-white/5">
-                                    ⏱ {runtime}
+                                <span className="px-3 py-1 rounded-full bg-surface-container border border-white/5">
+                                    {runtime}
                                 </span>
                             )}
                             {movie.vote_average > 0 && (
-                                <span className="px-3 py-1 rounded-full bg-amber-950/50 border border-amber-500/20 text-amber-400">
-                                    ★ {movie.vote_average.toFixed(1)} / 10
-                                </span>
-                            )}
-                            {movie.original_language && (
-                                <span className="px-3 py-1 rounded-full bg-zinc-800/80 border border-white/5 uppercase">
-                                    🌐 {movie.original_language}
+                                <span className="px-3 py-1 rounded-full bg-surface-container border border-white/5 text-hype-gold flex items-center gap-1 font-bold">
+                                    <span className="material-symbols-outlined text-sm filled">star</span>
+                                    {movie.vote_average.toFixed(1)} / 10
                                 </span>
                             )}
                         </div>
@@ -166,7 +159,7 @@ function MovieDetail() {
                                     <button
                                         key={g.id}
                                         onClick={() => navigate(`/genre/${g.id}?name=${g.name}`)}
-                                        className="px-3 py-1.5 rounded-full text-[11px] font-bold uppercase tracking-wider border border-white/10 bg-white/5 text-zinc-300 hover:bg-white/10 hover:text-white transition-all duration-300 cursor-pointer"
+                                        className="px-4 py-1.5 rounded-full text-xs font-semibold uppercase tracking-wider bg-surface-container hover:bg-surface-container-high text-on-surface transition-colors cursor-pointer"
                                     >
                                         {g.name}
                                     </button>
@@ -177,8 +170,8 @@ function MovieDetail() {
                         {/* Overview */}
                         {movie.overview && (
                             <div>
-                                <h3 className="text-xs font-black uppercase tracking-[0.2em] text-zinc-500 mb-2">Synopsis</h3>
-                                <p className="text-sm text-zinc-300 leading-relaxed max-w-2xl">
+                                <h3 className="text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-2">Overview</h3>
+                                <p className="text-sm sm:text-base text-on-surface leading-relaxed max-w-2xl">
                                     {movie.overview}
                                 </p>
                             </div>
@@ -187,53 +180,50 @@ function MovieDetail() {
                         {/* Director */}
                         {director && (
                             <div>
-                                <h3 className="text-xs font-black uppercase tracking-[0.2em] text-zinc-500 mb-1">Director</h3>
-                                <p className="text-sm font-semibold text-white">{director.name}</p>
+                                <h3 className="text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-1">Director</h3>
+                                <p className="text-base font-semibold text-white">{director.name}</p>
                             </div>
                         )}
 
-                        {/* Trailer Button */}
+                        {/* Watch Trailer Button */}
                         {trailer && (
-                            <a
-                                href={`https://www.youtube.com/watch?v=${trailer.key}`}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="inline-flex w-fit items-center gap-2 px-6 py-3 rounded-full bg-linear-to-r from-red-600 to-amber-500 hover:from-red-500 hover:to-amber-400 text-white font-extrabold uppercase text-xs tracking-wider transition-all duration-300 shadow-[0_4px_20px_rgba(239,68,68,0.3)] hover:scale-105"
+                            <button
+                                onClick={() => setActiveTrailerKey(trailer.key)}
+                                className="inline-flex w-fit items-center gap-2 px-8 py-3 rounded-full bg-primary-container text-white font-semibold uppercase text-xs tracking-wider neon-glow hover:bg-opacity-90 transition-all cursor-pointer active:scale-95"
                             >
-                                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                                    <path d="M8 5v14l11-7z" />
-                                </svg>
+                                <span className="material-symbols-outlined filled text-xl">play_arrow</span>
                                 Watch Trailer
-                            </a>
+                            </button>
                         )}
                     </div>
                 </div>
 
-                {/* Cast Section */}
+                {/* Top Cast */}
                 {topCast.length > 0 && (
                     <div className="mt-16">
-                        <h3 className="text-xs font-black uppercase tracking-[0.2em] text-zinc-500 mb-6 border-l-4 border-pink-500 pl-3">
+                        <h3 className="text-lg font-bold uppercase tracking-wider text-white mb-6 flex items-center gap-2 border-b border-white/10 pb-3">
+                            <span className="material-symbols-outlined text-primary">group</span>
                             Top Cast
                         </h3>
                         <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-4">
                             {topCast.map((person) => (
-                                <div key={person.id} className="group text-center">
-                                    <div className="w-full aspect-square rounded-2xl overflow-hidden border border-white/5 bg-zinc-900 mb-2 transition-all duration-300 group-hover:border-white/15 group-hover:shadow-lg">
+                                <div key={person.id} className="text-center group">
+                                    <div className="w-full aspect-square rounded-xl overflow-hidden bg-surface-container border border-white/5 mb-2 transition-transform duration-300 group-hover:scale-105">
                                         {person.profile_path ? (
                                             <img
                                                 src={`${import.meta.env.VITE_IMG_BASE_PATH}${person.profile_path}`}
                                                 alt={person.name}
-                                                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                                className="w-full h-full object-cover"
                                                 loading="lazy"
                                             />
                                         ) : (
-                                            <div className="w-full h-full flex items-center justify-center text-zinc-600 text-2xl font-bold">
+                                            <div className="w-full h-full flex items-center justify-center text-on-surface-variant text-xl font-bold">
                                                 {person.name?.charAt(0)}
                                             </div>
                                         )}
                                     </div>
-                                    <p className="text-xs font-bold text-zinc-200 truncate">{person.name}</p>
-                                    <p className="text-[10px] text-zinc-500 truncate">{person.character}</p>
+                                    <p className="text-xs font-semibold text-white truncate">{person.name}</p>
+                                    <p className="text-[10px] text-on-surface-variant truncate">{person.character}</p>
                                 </div>
                             ))}
                         </div>
@@ -243,38 +233,40 @@ function MovieDetail() {
                 {/* Similar Movies */}
                 {similarMovies.length > 0 && (
                     <div className="mt-16">
-                        <h3 className="text-xs font-black uppercase tracking-[0.2em] text-zinc-500 mb-6 border-l-4 border-blue-500 pl-3">
+                        <h3 className="text-lg font-bold uppercase tracking-wider text-white mb-6 flex items-center gap-2 border-b border-white/10 pb-3">
+                            <span className="material-symbols-outlined text-primary">movie</span>
                             Similar Movies
                         </h3>
-                        <div className="grid gap-6 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
+                        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
                             {similarMovies.map((sim) => (
                                 <div
                                     key={sim.id}
                                     onClick={() => navigate(`/movie/${sim.id}`)}
-                                    className="group relative cursor-pointer overflow-hidden rounded-2xl border border-white/5 bg-white/1 p-2 backdrop-blur-md transition-all duration-300 hover:border-blue-500/30 hover:bg-white/4 hover:shadow-[0_12px_40px_rgba(59,130,246,0.15)]"
+                                    className="group relative rounded-lg overflow-hidden cursor-pointer transition-transform duration-500 hover:scale-[1.02] bg-surface-container shadow-lg"
                                 >
-                                    <div className="relative overflow-hidden rounded-xl aspect-2/3 bg-zinc-900">
+                                    <div className="aspect-2/3 w-full relative">
                                         {sim.poster_path ? (
                                             <img
                                                 src={`${import.meta.env.VITE_IMG_BASE_PATH}${sim.poster_path}`}
                                                 alt={sim.title}
-                                                className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                                className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500"
                                                 loading="lazy"
                                             />
                                         ) : (
-                                            <div className="flex h-full w-full items-center justify-center bg-zinc-800 text-zinc-500">
+                                            <div className="flex h-full w-full items-center justify-center text-xs text-on-surface-variant">
                                                 No Image
                                             </div>
                                         )}
                                     </div>
-                                    <div className="p-3">
-                                        <h2 className="truncate text-sm font-bold text-zinc-100 group-hover:text-white transition duration-300">
+                                    <div className="p-3 bg-surface-container">
+                                        <h4 className="font-semibold text-white text-sm truncate mb-1 group-hover:text-primary transition-colors">
                                             {sim.title}
-                                        </h2>
-                                        <div className="flex items-center justify-between mt-1 text-[11px] text-zinc-500 font-medium">
+                                        </h4>
+                                        <div className="flex items-center justify-between text-xs text-on-surface-variant">
                                             <span>{sim.release_date ? sim.release_date.split("-")[0] : "N/A"}</span>
-                                            <span className="flex items-center gap-0.5 text-amber-500">
-                                                ★ <span className="text-zinc-400">{sim.vote_average ? sim.vote_average.toFixed(1) : "N/A"}</span>
+                                            <span className="flex items-center gap-1 text-hype-gold font-bold">
+                                                <span className="material-symbols-outlined text-[14px] filled">star</span>
+                                                {sim.vote_average ? sim.vote_average.toFixed(1) : "N/A"}
                                             </span>
                                         </div>
                                     </div>
@@ -284,6 +276,34 @@ function MovieDetail() {
                     </div>
                 )}
             </div>
+
+            {/* Trailer Modal */}
+            {activeTrailerKey && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md p-4 animate-fadeIn">
+                    <div className="relative w-full max-w-4xl bg-surface-container-low border border-white/10 rounded-2xl overflow-hidden shadow-2xl">
+                        <div className="flex justify-between items-center px-6 py-4 border-b border-white/10 bg-surface-container">
+                            <h3 className="text-lg font-bold text-white uppercase tracking-tight">
+                                {movie.title} — Official Trailer
+                            </h3>
+                            <button
+                                onClick={() => setActiveTrailerKey(null)}
+                                className="text-white/60 hover:text-white transition p-1 cursor-pointer"
+                            >
+                                <span className="material-symbols-outlined text-2xl">close</span>
+                            </button>
+                        </div>
+                        <div className="relative w-full aspect-video bg-black">
+                            <iframe
+                                className="w-full h-full"
+                                src={`https://www.youtube.com/embed/${activeTrailerKey}?autoplay=1`}
+                                title={movie.title}
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                allowFullScreen
+                            ></iframe>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
