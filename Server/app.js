@@ -20,6 +20,40 @@ const tmdbOptions = () => ({
     }
 });
 
+app.get("/",(req,res)=>{
+
+    // 1. Check Login
+    // 2. Fetch Movies Genre wise
+
+    const token = req.cookies.token
+    if(token){
+        //. User Having Login token
+        jwt.verify(token,process.env.JWT_SECRET,(err,decoded)=>{
+            if(err){
+                res.status(401).json({
+                    success:false,
+                    error:"Unauthorized"
+                })
+                return
+            }
+            req.user = decoded
+        })
+
+    }
+    else{
+        res.status(401).json({
+            success:false,
+            error:"Unauthorized"
+        })
+        return
+    }
+
+    res.json({
+        success:true,
+        message:"Backend is working"
+    })
+})
+
 app.get("/trending", async (req, res) => {
     try {
         const url = 'https://api.themoviedb.org/3/movie/popular?language=en-US&page=1';

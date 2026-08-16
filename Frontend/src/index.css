@@ -1,19 +1,59 @@
 @import "tailwindcss";
 
 @theme {
-  --color-primary: #e11d48;
-  --color-primary-fixed: #ffdada;
-  --color-primary-fixed-dim: #ffb3b6;
-  --color-surface: #121212;
-  --color-surface-container: #1e1e1e;
-  --color-surface-container-low: #181818;
+  --color-background: #131313;
+  --color-surface: #131313;
+  --color-surface-dim: #131313;
+  --color-surface-container: #201f1f;
+  --color-surface-container-low: #1c1b1b;
+  --color-surface-container-lowest: #0e0e0e;
   --color-surface-container-high: #2a2a2a;
-  --color-surface-container-highest: #333333;
-  --color-surface-variant: #222222;
-  --color-on-surface: #dae2fd;
-  --color-on-surface-variant: #a0a0a0;
-  --color-tertiary: #74d8bd;
-  --font-sans: "Inter", sans-serif;
+  --color-surface-container-highest: #353534;
+  --color-surface-variant: #353534;
+  --color-surface-bright: #3a3939;
+
+  --color-on-background: #e5e2e1;
+  --color-on-surface: #e5e2e1;
+  --color-on-surface-variant: #c4c7c8;
+
+  --color-primary: #ffffff;
+  --color-on-primary: #2f3131;
+  --color-primary-fixed: #e2e2e2;
+
+  --color-secondary: #c8c6c5;
+  --color-on-secondary: #313030;
+  --color-secondary-fixed: #e5e2e1;
+  --color-on-secondary-fixed-variant: #474746;
+
+  --color-tertiary: #ffffff;
+  --color-tertiary-fixed: #dce1ff;
+  --color-tertiary-container: #dce1ff;
+  --color-on-tertiary-fixed: #001551;
+
+  --color-accent-rose: #e11d48;
+  --color-hype-gold: #eab308;
+
+  --color-accent-blue: #3b82f6;
+  --color-accent-blue-light: #60a5fa;
+  --color-accent-blue-glow: rgba(59, 130, 246, 0.25);
+  
+  --color-outline: #8e9192;
+  --color-outline-variant: #444748;
+
+  --font-display: "Outfit", "Plus Jakarta Sans", system-ui, sans-serif;
+  --font-body: "Plus Jakarta Sans", system-ui, sans-serif;
+  --font-sans: "Plus Jakarta Sans", system-ui, sans-serif;
+}
+
+/* Base styles with ultra-smooth font rendering */
+body {
+  background-color: #131313;
+  color: #e5e2e1;
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  letter-spacing: -0.01em;
 }
 
 /* Material Symbols Outlined base helper */
@@ -47,59 +87,34 @@
 }
 
 /* Glassmorphism & Micro-interactions */
-.glass-card {
-    background: rgba(30, 30, 30, 0.6);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.07);
+.glass-panel {
+    background: rgba(22, 23, 30, 0.65);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.glass-panel-blue {
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(59, 130, 246, 0.25);
+}
+
+.cinematic-glow {
+    transition: box-shadow 0.4s ease, transform 0.4s ease;
+}
+.cinematic-glow:hover {
+    box-shadow: 0 0 35px rgba(59, 130, 246, 0.2);
 }
 
 .card-hover-lift {
-    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease;
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease;
 }
 .card-hover-lift:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 16px 36px -8px rgba(0, 0, 0, 0.6), 0 0 20px rgba(225, 29, 72, 0.15);
-}
-
-/* Swiper Navigation Glassmorphism Style */
-.swiper-button-next,
-.swiper-button-prev {
-    background: rgba(18, 18, 18, 0.8) !important;
-    backdrop-filter: blur(8px) !important;
-    -webkit-backdrop-filter: blur(8px) !important;
-    border: 1px solid rgba(255, 255, 255, 0.1) !important;
-    width: 42px !important;
-    height: 42px !important;
-    border-radius: 50% !important;
-    color: rgba(255, 255, 255, 0.8) !important;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5) !important;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-}
-
-.swiper-button-next:hover,
-.swiper-button-prev:hover {
-    background: #e11d48 !important;
-    border-color: #e11d48 !important;
-    color: #fff !important;
-    box-shadow: 0 0 20px rgba(225, 29, 72, 0.5) !important;
-    transform: scale(1.08) !important;
-}
-
-.swiper-button-next::after,
-.swiper-button-prev::after {
-    font-size: 14px !important;
-    font-weight: 900 !important;
-}
-
-.swiper {
-    position: relative !important;
-}
-.swiper-button-prev {
-    left: 8px !important;
-}
-.swiper-button-next {
-    right: 8px !important;
+    transform: translateY(-5px);
+    box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.7), 0 0 25px rgba(59, 130, 246, 0.2);
+    border-color: rgba(59, 130, 246, 0.3);
 }
 
 /* Custom Animations for Loading & Shimmer */

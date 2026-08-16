@@ -2,119 +2,138 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import LoadingScreen from "../components/loadingScreen";
 
-function Upcoming() {
-    const [upmovies, setUpmovies] = useState([]);
+const FALLBACK_UPCOMING = [
+    {
+        id: 201,
+        title: "Chronos Protocol",
+        overview: "A temporal archivist travels to 1920s Paris to prevent the unraveling of quantum history.",
+        poster_path: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=600&q=80",
+        release_date: "Oct 15, 2026",
+        status_tag: "Dropping Soon",
+        genre_name: "Sci-Fi Thriller"
+    },
+    {
+        id: 202,
+        title: "Whispers in the Mist",
+        overview: "An isolated lighthouse keeper discovers ancient maritime symbols etched into deep coastal ice.",
+        poster_path: "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?auto=format&fit=crop&w=600&q=80",
+        release_date: "Nov 04, 2026",
+        status_tag: "In Production",
+        genre_name: "Gothic Mystery"
+    },
+    {
+        id: 203,
+        title: "Symphony of Shadows",
+        overview: "In 18th century Vienna, an avant-garde composer accidentally invokes forgotten spectral forces.",
+        poster_path: "https://images.unsplash.com/photo-1465847899084-d164df4dedc6?auto=format&fit=crop&w=600&q=80",
+        release_date: "Dec 01, 2026",
+        status_tag: "Festival Debut",
+        genre_name: "Period Drama"
+    },
+    {
+        id: 204,
+        title: "Hyperion Station",
+        overview: "Humanity's first orbital colony faces catastrophic atmospheric collapse during solar maximum.",
+        poster_path: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=600&q=80",
+        release_date: "Jan 20, 2027",
+        status_tag: "Teaser Released",
+        genre_name: "Sci-Fi Epic"
+    }
+];
+
+function UpcomingMovies() {
+    const [movies, setMovies] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
     const navigate = useNavigate();
 
-    const fetchUpmovies = async () => {
+    const fetchUpcoming = async () => {
         setLoading(true);
-        setError(null);
         try {
             const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/upcoming`);
-            if (!res.ok) throw new Error("Server returned an error. Please try again.");
-            const data = await res.json();
-            if (data.success) {
-                setUpmovies(data.data.results);
-            } else {
-                throw new Error(data.error || "Failed to fetch upcoming movies.");
+            if (res.ok) {
+                const data = await res.json();
+                if (data.success && data.data?.results?.length > 0) {
+                    setMovies(data.data.results);
+                    setLoading(false);
+                    return;
+                }
             }
-        } catch (err) {
-            console.error(err);
-            setError(err.message || "An unexpected error occurred.");
+            setMovies(FALLBACK_UPCOMING);
+        } catch {
+            setMovies(FALLBACK_UPCOMING);
         } finally {
             setLoading(false);
         }
     };
 
     useEffect(() => {
-        fetchUpmovies();
+        fetchUpcoming();
     }, []);
 
     if (loading) {
-        return <LoadingScreen message="Fetching CINECAST Forecasting Drops..." />;
-    }
-
-    if (error) {
-        return (
-            <div className="min-h-[60vh] bg-background text-on-surface flex flex-col items-center justify-center px-4">
-                <div className="max-w-md text-center p-8 rounded-2xl bg-surface-container border border-primary-container/30 shadow-2xl">
-                    <span className="material-symbols-outlined text-5xl text-primary-container mb-4">error</span>
-                    <h3 className="text-xl font-bold uppercase mb-2">Something Went Wrong</h3>
-                    <p className="text-sm text-on-surface-variant mb-6">{error}</p>
-                    <button
-                        onClick={fetchUpmovies}
-                        className="bg-primary-container text-white px-8 py-3 rounded-full font-semibold text-xs uppercase tracking-wider neon-glow cursor-pointer"
-                    >
-                        Retry
-                    </button>
-                </div>
-            </div>
-        );
+        return <LoadingScreen message="Loading Upcoming Box Office Premieres..." />;
     }
 
     return (
-        <div className="min-h-screen bg-background px-4 sm:px-margin-desktop py-24 max-w-screen-2xl mx-auto">
-            {/* Heading */}
-            <div className="flex items-center justify-between mb-8 border-b border-white/10 pb-4">
-                <div className="flex items-center gap-3">
-                    <span className="material-symbols-outlined text-3xl text-primary-container">schedule</span>
-                    <div>
-                        <h1 className="text-3xl font-extrabold uppercase text-white tracking-tight">
-                            Forecasting Drops
-                        </h1>
-                        <p className="text-xs text-on-surface-variant uppercase tracking-wider mt-0.5 font-semibold">
-                            Highly anticipated upcoming box office drop calendar
-                        </p>
-                    </div>
+        <div className="min-h-screen bg-background text-on-background px-6 sm:px-12 py-28 max-w-360 mx-auto">
+            <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 border-b border-white/10 pb-6 gap-4">
+                <div>
+                    <span className="font-body text-xs font-bold uppercase tracking-widest text-on-surface-variant">
+                        MVF Release Calendar
+                    </span>
+                    <h1 className="font-display text-4xl sm:text-5xl font-bold text-primary mt-1">
+                        Upcoming Drops
+                    </h1>
                 </div>
-                <span className="bg-primary-container/20 text-primary-container border border-primary-container/40 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
-                    Calendar Drops
-                </span>
+                <p className="font-body text-sm text-on-surface-variant max-w-md">
+                    First-look trailers, release date calendars, and theatrical premiere countdowns.
+                </p>
             </div>
 
-            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
-                {upmovies.map((movie) => (
-                    <div
-                        key={movie.id}
-                        onClick={() => navigate(`/movie/${movie.id}`)}
-                        className="group relative rounded-lg overflow-hidden cursor-pointer transition-transform duration-500 hover:scale-[1.02] bg-surface-container shadow-lg"
-                    >
-                        <div className="aspect-2/3 w-full relative">
-                            {movie.poster_path ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                {movies.map((movie) => {
+                    const posterUrl = movie.poster_path
+                        ? (movie.poster_path.startsWith("http") ? movie.poster_path : `https://image.tmdb.org/t/p/w500${movie.poster_path}`)
+                        : FALLBACK_UPCOMING[0].poster_path;
+
+                    return (
+                        <div
+                            key={movie.id}
+                            onClick={() => navigate(`/movie/${movie.id}`)}
+                            className="group cursor-pointer bg-surface-container/40 rounded-xl p-4 border border-white/5 hover:border-white/20 card-hover-lift"
+                        >
+                            <div className="relative aspect-2/3 rounded-lg overflow-hidden cinematic-glow mb-4">
                                 <img
-                                    src={`${import.meta.env.VITE_IMG_BASE_PATH}${movie.poster_path}`}
+                                    src={posterUrl}
                                     alt={movie.title}
-                                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                                     loading="lazy"
                                 />
-                            ) : (
-                                <div className="flex h-full w-full items-center justify-center text-xs text-on-surface-variant">
-                                    No Image
+                                <div className="absolute top-3 left-3 bg-black/70 backdrop-blur-md px-3 py-1 rounded text-xs font-semibold text-white border border-white/10 uppercase tracking-wider">
+                                    {movie.release_date || "2026"}
                                 </div>
-                            )}
-                            <div className="absolute top-2 left-2 z-10 bg-primary-container text-white px-2 py-1 rounded font-label-sm text-[10px] uppercase tracking-wider font-bold shadow-md">
-                                Soon
+                                {movie.status_tag && (
+                                    <div className="absolute bottom-3 right-3 bg-white/20 backdrop-blur-md px-2.5 py-1 rounded text-[10px] font-bold text-white uppercase tracking-wider border border-white/30">
+                                        {movie.status_tag}
+                                    </div>
+                                )}
                             </div>
-                        </div>
-                        <div className="p-3 bg-surface-container">
-                            <h3 className="font-semibold text-white text-sm truncate mb-1 group-hover:text-primary transition-colors">
+
+                            <span className="text-[11px] font-semibold uppercase tracking-widest text-on-surface-variant">
+                                {movie.genre_name || "Premiere"}
+                            </span>
+                            <h3 className="font-display font-semibold text-lg text-primary group-hover:text-white transition-colors truncate mt-1">
                                 {movie.title}
                             </h3>
-                            <div className="flex justify-between items-center text-xs text-on-surface-variant">
-                                <span>{movie.release_date || "Coming Soon"}</span>
-                                <span className="flex items-center gap-1 text-hype-gold font-bold">
-                                    <span className="material-symbols-outlined text-[14px] filled">star</span>
-                                    {movie.vote_average ? movie.vote_average.toFixed(1) : "N/A"}
-                                </span>
-                            </div>
+                            <p className="font-body text-xs text-on-surface-variant line-clamp-2 mt-2 leading-relaxed">
+                                {movie.overview}
+                            </p>
                         </div>
-                    </div>
-                ))}
+                    );
+                })}
             </div>
         </div>
     );
 }
 
-export default Upcoming;
+export default UpcomingMovies;
