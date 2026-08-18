@@ -6,20 +6,25 @@ import Genre from "./pages/genre";
 import Search from "./pages/search";
 import MovieDetail from "./pages/movieDetail";
 import Layout from "./components/layout";
+import NotFound from "./pages/notFound";
+import Signup from "./pages/signup";
 
 function App() {
   return (
     <BrowserRouter>
-      <Layout>
-        <Routes>
+      <Routes>
+        <Route element={<Layout />}>
           <Route path="/" element={<Home />} />
           <Route path="/trending" element={<Trending />} />
           <Route path="/upcoming" element={<Upcoming />} />
           <Route path="/genre/:genreId" element={<Genre />} />
           <Route path="/search" element={<Search />} />
           <Route path="/movie/:movieId" element={<MovieDetail />} />
-        </Routes>
-      </Layout>
+          {/* <Route path="/login" element={<Login />} /> */}
+          <Route path="*" element={<NotFound />} />
+        </Route>
+        <Route path="/auth/signup" element={<Signup />} />
+      </Routes>
     </BrowserRouter>
   );
 }

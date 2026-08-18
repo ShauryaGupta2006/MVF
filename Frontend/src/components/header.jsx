@@ -2,7 +2,6 @@ import { useState, useEffect, useRef } from "react";
 import { NavLink, Link, useNavigate } from "react-router-dom";
 import WatchlistModal from "./watchlistModal";
 import ReviewsModal from "./reviewsModal";
-import AuthModal from "./authModal";
 
 function Header() {
     const [scrolled, setScrolled] = useState(false);
@@ -11,9 +10,9 @@ function Header() {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isWatchlistOpen, setIsWatchlistOpen] = useState(false);
     const [isReviewsOpen, setIsReviewsOpen] = useState(false);
-    const [isAuthOpen, setIsAuthOpen] = useState(false);
     const [savedWatchlist, setSavedWatchlist] = useState([]);
-    
+    const [loggedin, setLoggedin] = useState(false);
+
     const searchInputRef = useRef(null);
     const navigate = useNavigate();
 
@@ -70,18 +69,30 @@ function Header() {
         localStorage.setItem("cineaste_watchlist", JSON.stringify(updated));
         window.dispatchEvent(new Event("watchlist_updated"));
     };
-
+    async function isloggedin() {
+        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/auth/isloggedin`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({})
+        });
+        const data = await response.json();
+        setLoggedin(data.loggedin);
+    }
+    useEffect(() => {
+        isloggedin();
+    }, []);
     return (
         <>
             <header
-                className={`fixed top-0 w-full z-40 transition-all duration-300 ${
-                    scrolled
+                className={`fixed top-0 w-full z-40 transition-all duration-300 ${scrolled
                         ? "bg-background/90 backdrop-blur-xl border-b border-white/10 shadow-xl py-3"
                         : "bg-background/80 backdrop-blur-md py-4 border-b border-white/5"
-                }`}
+                    }`}
             >
                 <div className="flex justify-between items-center px-6 sm:px-12 w-full max-w-360 mx-auto">
-                    
+
                     {/* Unified Brand Logo: MVF | MovieForecasts */}
                     <Link
                         to="/"
@@ -188,19 +199,35 @@ function Header() {
                                 <span className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-white animate-pulse"></span>
                             )}
                         </button>
+                        {loggedin ? (
+                            <Link
+                                to="/account"
+                                className="hover:scale-105 transition-transform duration-200 w-9 h-9 rounded-full overflow-hidden border border-white/20 cursor-pointer shrink-0"
+                                title="Account"
+                            >
+                                <img
+                                    alt="User profile avatar"
+                                    className="w-full h-full object-cover"
+                                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuDwMu2TzzKtq5kC3CNOwyBXjBHAgVca-h083I_KeKizlPcaoJ2czLOt5Nhx7GXoVpyuXlMwQd_hKhzGBB1zCUF2av0dPzVdfOvj1ObZtIYwH9bL3qnv-MiH6lbtESDbII9b_52j8tznqJf4CaXu8ooADGPhubLs8WYJzv9VnHTWUnGXsY8a3XCvp6kK6HwsMtrHGzeNPTb-0mNJ0L5i72ZjAinTk0XIWRON7DnGRtkQ09P2ZNX_Jz-f"
+                                />
+                            </Link>
+                        ) : (
+                            <div className="flex items-center gap-2.5">
+                                <Link
+                                    to="/auth/login"
+                                    className="px-4 py-1.5 text-xs sm:text-sm font-medium text-on-surface-variant hover:text-white rounded-full transition-all duration-200 hover:bg-white/10 border border-transparent hover:border-white/15 cursor-pointer active:scale-95"
+                                >
+                                    Log In
+                                </Link>
+                                <Link
+                                    to="/auth/signup"
+                                    className="px-4.5 py-1.5 text-xs sm:text-sm font-semibold text-white bg-linear-to-r from-blue-600 via-blue-500 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 rounded-full shadow-[0_0_15px_rgba(37,99,235,0.4)] hover:shadow-[0_0_22px_rgba(37,99,235,0.6)] transition-all duration-200 hover:scale-[1.04] active:scale-95 cursor-pointer"
+                                >
+                                    Sign Up
+                                </Link>
+                            </div>
+                        )}
 
-                        <button
-                            aria-label="User Account"
-                            onClick={() => setIsAuthOpen(true)}
-                            className="hover:scale-105 transition-transform duration-200 w-9 h-9 rounded-full overflow-hidden border border-white/20 cursor-pointer shrink-0"
-                            title="Account & Auth"
-                        >
-                            <img
-                                alt="User profile avatar"
-                                className="w-full h-full object-cover"
-                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuDwMu2TzzKtq5kC3CNOwyBXjBHAgVca-h083I_KeKizlPcaoJ2czLOt5Nhx7GXoVpyuXlMwQd_hKhzGBB1zCUF2av0dPzVdfOvj1ObZtIYwH9bL3qnv-MiH6lbtESDbII9b_52j8tznqJf4CaXu8ooADGPhubLs8WYJzv9VnHTWUnGXsY8a3XCvp6kK6HwsMtrHGzeNPTb-0mNJ0L5i72ZjAinTk0XIWRON7DnGRtkQ09P2ZNX_Jz-f"
-                            />
-                        </button>
 
                         {/* Mobile Hamburger Toggle */}
                         <button
@@ -271,15 +298,32 @@ function Header() {
                             >
                                 Editorial Reviews
                             </button>
-                            <button
-                                onClick={() => {
-                                    setIsAuthOpen(true);
-                                    setIsMobileMenuOpen(false);
-                                }}
-                                className="text-left text-primary font-bold"
-                            >
-                                Sign In / Account
-                            </button>
+                            {loggedin ? (
+                                <Link
+                                    to="/account"
+                                    onClick={() => setIsMobileMenuOpen(false)}
+                                    className="text-left text-primary font-bold"
+                                >
+                                    My Account
+                                </Link>
+                            ) : (
+                                <div className="flex flex-col gap-2 pt-2 border-t border-white/10">
+                                    <Link
+                                        to="/login"
+                                        onClick={() => setIsMobileMenuOpen(false)}
+                                        className="w-full text-center py-2 text-sm font-semibold text-white bg-white/5 hover:bg-white/10 border border-white/10 rounded-full transition-all"
+                                    >
+                                        Log In
+                                    </Link>
+                                    <Link
+                                        to="/signup"
+                                        onClick={() => setIsMobileMenuOpen(false)}
+                                        className="w-full text-center py-2 text-sm font-semibold text-white bg-linear-to-r from-blue-600 to-indigo-600 rounded-full shadow-[0_0_12px_rgba(37,99,235,0.4)] transition-all"
+                                    >
+                                        Sign Up
+                                    </Link>
+                                </div>
+                            )}
                         </div>
                     </div>
                 )}
@@ -296,11 +340,6 @@ function Header() {
             <ReviewsModal
                 isOpen={isReviewsOpen}
                 onClose={() => setIsReviewsOpen(false)}
-            />
-
-            <AuthModal
-                isOpen={isAuthOpen}
-                onClose={() => setIsAuthOpen(false)}
             />
         </>
     );

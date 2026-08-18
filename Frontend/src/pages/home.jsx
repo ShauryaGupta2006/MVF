@@ -254,6 +254,7 @@ function Home() {
                                 • {heroYear} • {heroRuntime}
                             </span>
                         </div>
+                        
 
                         <h1 className="font-display font-bold text-4xl sm:text-6xl md:text-7xl text-primary leading-tight drop-shadow-xl">
                             {heroMovie.title}
@@ -299,29 +300,7 @@ function Home() {
             </section>
 
             {/* 2. Dynamic Genre Filter Pills Bar */}
-            <section className="max-w-360 mx-auto px-6 md:px-16 mb-12">
-                <div className="flex items-center gap-3 overflow-x-auto hide-scrollbar py-2 border-b border-white/5">
-                    {GENRE_CATEGORIES.map((cat) => (
-                        <button
-                            key={cat.id}
-                            onClick={() => {
-                                if (cat.id === "all") {
-                                    setSelectedGenre("all");
-                                } else {
-                                    navigate(`/genre/${cat.id}?name=${encodeURIComponent(cat.name)}`);
-                                }
-                            }}
-                            className={`px-5 py-2 rounded-full font-body text-xs font-semibold uppercase tracking-wider shrink-0 transition-all cursor-pointer ${
-                                selectedGenre === cat.id
-                                    ? "bg-blue-600 text-white shadow-[0_0_15px_rgba(59,130,246,0.4)] scale-105"
-                                    : "bg-surface-container/60 text-on-surface-variant hover:text-white hover:bg-surface-container border border-white/5"
-                            }`}
-                        >
-                            {cat.name}
-                        </button>
-                    ))}
-                </div>
-            </section>
+            
 
             {/* 3. Trending Now (Popular vs Recently Added Toggles + Carousel Navigator Tools) */}
             <section className="max-w-360 mx-auto px-6 md:px-16 space-y-8 mb-20">
@@ -357,8 +336,8 @@ function Home() {
                         </div>
 
                         {/* Dual View Tabs: Popular vs Recently Added */}
-                        <div className="flex items-center bg-surface-container/80 p-1 rounded-lg border border-white/10">
-                            <button
+                        {/* <div className="flex items-center bg-surface-container/80 p-1 rounded-lg border border-white/10">
+                            {/* <button
                                 onClick={() => setTrendTab("popular")}
                                 className={`px-4 py-1.5 rounded-md text-xs font-semibold uppercase tracking-wider transition-all cursor-pointer ${
                                     trendTab === "popular"
@@ -367,8 +346,8 @@ function Home() {
                                 }`}
                             >
                                 Popular
-                            </button>
-                            <button
+                            </button> */}
+                            {/* <button
                                 onClick={() => setTrendTab("recent")}
                                 className={`px-4 py-1.5 rounded-md text-xs font-semibold uppercase tracking-wider transition-all cursor-pointer ${
                                     trendTab === "recent"
@@ -377,8 +356,8 @@ function Home() {
                                 }`}
                             >
                                 Recently Added
-                            </button>
-                        </div>
+                            </button> */}
+                        {/* </div> */}
                     </div>
                 </div>
 

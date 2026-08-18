@@ -5,11 +5,16 @@ const app = express();
 require("dotenv").config();
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
+const jwt = require("jsonwebtoken");
+const authRoutes = require("./src/routes/auth.js")
+const database = require("./src/config/db.js")
 
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+
+app.use("/auth",authRoutes);
 
 // Helper to build TMDB fetch options
 const tmdbOptions = () => ({
@@ -107,6 +112,7 @@ app.get("/movie/:movieId", async (req, res) => {
     const { movieId } = req.params;
     try {
         const url = `https://api.themoviedb.org/3/movie/${movieId}?language=en-US&append_to_response=credits,videos,similar`;
+        // const url = `https://api.themoviedb.org/3/find/${movieId}?external_source=imdb_id&language=en-US`;
         const response = await fetch(url, tmdbOptions());
         const json = await response.json();
         res.json({ success: true, data: json });
@@ -115,10 +121,6 @@ app.get("/movie/:movieId", async (req, res) => {
     }
 });
 
-// Basic error handler
-app.use((err, req, res, next) => {
-    console.error("Unhandled error:", err.message);
-    res.status(500).json({ success: false, error: "Internal server error." });
-});
+
 
 module.exports = app;
