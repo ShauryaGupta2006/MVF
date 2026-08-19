@@ -10,48 +10,15 @@ export default function Signup() {
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
     const [loading, setLoading] = useState(false);
-    const [activeCard, setActiveCard] = useState(0);
+    const [mounted, setMounted] = useState(false);
 
     const navigate = useNavigate();
 
-    // Live forecasting tickers for the left side MVF live element
-    const liveForecasts = [
-        {
-            title: "Neon Horizon",
-            genre: "Sci-Fi / Thriller",
-            predictedRating: "9.2 / 10",
-            boxOffice: "$148M Est. Opening",
-            confidence: "96% AI Accuracy",
-            trend: "+34% Virality",
-            image: "https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=800&q=80"
-        },
-        {
-            title: "The Crimson Void",
-            genre: "Psychological / Sci-Fi",
-            predictedRating: "8.9 / 10",
-            boxOffice: "$92M Est. Opening",
-            confidence: "94% AI Accuracy",
-            trend: "+48% Buzz Spike",
-            image: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=800&q=80"
-        },
-        {
-            title: "Midnight Broadcast",
-            genre: "Film Noir / Drama",
-            predictedRating: "9.4 / 10",
-            boxOffice: "$65M Est. Opening",
-            confidence: "98% AI Accuracy",
-            trend: "+28% Critical Acclaim",
-            image: "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=800&q=80"
-        }
-    ];
-
-    // Cycle through live forecast cards automatically
+    // Trigger smooth entrance animation on mount
     useEffect(() => {
-        const interval = setInterval(() => {
-            setActiveCard((prev) => (prev + 1) % liveForecasts.length);
-        }, 4000);
-        return () => clearInterval(interval);
-    }, [liveForecasts.length]);
+        const timer = setTimeout(() => setMounted(true), 50);
+        return () => clearTimeout(timer);
+    }, []);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -103,141 +70,50 @@ export default function Signup() {
     };
 
     return (
-        <div className="min-h-screen bg-[#131314] text-[#e5e2e3] flex flex-col lg:flex-row font-sans selection:bg-violet-500/30 selection:text-violet-200">
-            {/* Left Side: MVF Live Interactive Dashboard & Branding */}
-            <div className="hidden lg:flex lg:w-1/2 relative bg-[#0e0e0f] flex-col justify-between p-12 overflow-hidden border-r border-white/5">
-                {/* Dynamic Ambient Glows */}
-                <div className="absolute top-[-10%] left-[-10%] w-125 h-125 bg-violet-600/20 rounded-full blur-[140px] pointer-events-none" />
-                <div className="absolute bottom-[-10%] right-[-10%] w-125 h-125 bg-emerald-500/15 rounded-full blur-[140px] pointer-events-none" />
-                
-                {/* Background Subtle Grid Texture */}
-                <div className="absolute inset-0 bg-[radial-gradient(#ffffff0a_1px,transparent_1px)] bg-size-[24px_24px] pointer-events-none opacity-60" />
+        <div className="min-h-screen bg-[#131314] text-[#e5e2e3] flex flex-col justify-center items-center p-4 sm:p-8 relative overflow-hidden font-sans selection:bg-violet-500/30 selection:text-violet-200">
+            {/* Ambient Background Orbs & Radial Grid */}
+            <div className="absolute top-[-15%] left-1/2 -translate-x-1/2 w-160 h-160 bg-violet-600/15 rounded-full blur-[150px] pointer-events-none" />
+            <div className="absolute bottom-[-15%] right-[-10%] w-130 h-130 bg-emerald-500/10 rounded-full blur-[150px] pointer-events-none" />
+            <div className="absolute inset-0 bg-[radial-gradient(#ffffff0a_1px,transparent_1px)] bg-size-[24px_24px] pointer-events-none opacity-50" />
 
-                {/* Top Branding & Live Pulse Indicator */}
-                <div className="relative z-10 flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-xl bg-linear-to-tr from-violet-600 to-indigo-500 flex items-center justify-center font-bold text-white shadow-lg shadow-violet-500/30 tracking-widest text-lg">
+            <div 
+                className={`w-full max-w-md relative z-10 space-y-6 transition-all duration-700 ease-out transform ${
+                    mounted ? "opacity-100 translate-y-0 scale-100" : "opacity-0 translate-y-6 scale-95"
+                }`}
+            >
+                {/* Centered Brand Header */}
+                <div className="flex flex-col items-center text-center space-y-3">
+                    <Link to="/" className="flex items-center gap-3 group">
+                        <div className="w-11 h-11 rounded-xl bg-linear-to-tr from-violet-600 to-indigo-500 flex items-center justify-center font-bold text-white shadow-lg shadow-violet-500/30 tracking-widest text-xl group-hover:scale-105 transition-transform">
                             MVF
                         </div>
-                        <div>
-                            <span className="font-bold text-xl tracking-tight text-white block">MovieForecasts</span>
+                        <div className="text-left">
+                            <span className="font-bold text-2xl tracking-tight text-white block">MovieForecasts</span>
                             <span className="text-[10px] uppercase font-semibold text-violet-400 tracking-widest block">AI Intelligence Platform</span>
                         </div>
-                    </div>
-
-                    <div className="flex items-center gap-2 bg-surface-container/60 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-emerald-500/30 shadow-sm">
-                        <span className="relative flex h-2 w-2">
-                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                            <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-                        </span>
-                        <span className="text-xs font-semibold uppercase tracking-wider text-emerald-400">Live AI Engine</span>
-                    </div>
+                    </Link>
                 </div>
 
-                {/* Middle Interactive MVF Forecast Card */}
-                <div className="relative z-10 my-auto py-8">
-                    <div className="max-w-lg space-y-6">
-                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-violet-500/10 border border-violet-500/20 text-violet-300 text-xs font-semibold uppercase tracking-wider">
-                            <svg className="w-3.5 h-3.5 text-violet-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                            </svg>
-                            Real-Time Predictive Analytics
-                        </div>
+                {/* Main Centered Signup Card */}
+                <div className="relative bg-[#1c1b1c]/80 border border-white/10 backdrop-blur-2xl p-6 sm:p-8 rounded-2xl shadow-2xl space-y-6 overflow-hidden">
+                    
+                    {/* Moving Accent Light Beam along top border using h-0.5 */}
+                    <div className="absolute top-0 left-0 right-0 h-0.5 bg-linear-to-r from-transparent via-violet-400 to-transparent animate-shimmer opacity-80 pointer-events-none" />
 
-                        <h2 className="text-4xl xl:text-5xl font-bold tracking-tight text-white leading-tight">
-                            Predicting Box Office Trends <br />
-                            <span className="bg-linear-to-r from-violet-400 via-purple-300 to-emerald-400 bg-clip-text text-transparent">
-                                Before They Premiere
-                            </span>
-                        </h2>
-                        
-                        <p className="text-gray-400 text-sm leading-relaxed">
-                            Join thousands of film enthusiasts using neural algorithms to forecast box office revenue, audience engagement, and critical acclaim.
-                        </p>
+                    {/* Active Loading Progress Bar transition when submitting using h-0.75 */}
+                    {loading && (
+                        <div className="absolute top-0 left-0 right-0 h-0.75 bg-linear-to-r from-violet-600 via-indigo-400 to-emerald-400 animate-shimmer z-20" />
+                    )}
 
-                        {/* Live Forecast Preview Card */}
-                        <div className="relative group rounded-2xl p-5 bg-[#1c1b1c]/80 border border-white/10 backdrop-blur-xl shadow-2xl transition-all duration-500 hover:border-violet-500/40">
-                            <div className="flex items-start gap-4">
-                                <img 
-                                    src={liveForecasts[activeCard].image} 
-                                    alt={liveForecasts[activeCard].title} 
-                                    className="w-20 h-28 object-cover rounded-xl shadow-md border border-white/10 shrink-0 transition-transform duration-500 group-hover:scale-105"
-                                />
-                                <div className="flex-1 min-w-0 space-y-2">
-                                    <div className="flex items-center justify-between gap-2">
-                                        <h4 className="font-bold text-white text-base truncate">{liveForecasts[activeCard].title}</h4>
-                                        <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 shrink-0">
-                                            {liveForecasts[activeCard].confidence}
-                                        </span>
-                                    </div>
-                                    <p className="text-xs text-gray-400">{liveForecasts[activeCard].genre}</p>
-
-                                    <div className="grid grid-cols-2 gap-2 pt-2 border-t border-white/5 text-xs">
-                                        <div>
-                                            <span className="text-gray-500 text-[10px] block uppercase font-medium">Predicted Score</span>
-                                            <span className="font-bold text-violet-300">{liveForecasts[activeCard].predictedRating}</span>
-                                        </div>
-                                        <div>
-                                            <span className="text-gray-500 text-[10px] block uppercase font-medium">Box Office</span>
-                                            <span className="font-bold text-emerald-400">{liveForecasts[activeCard].boxOffice}</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* Card Dots Indicator */}
-                            <div className="flex justify-center gap-1.5 mt-4 pt-2">
-                                {liveForecasts.map((_, idx) => (
-                                    <button
-                                        key={idx}
-                                        onClick={() => setActiveCard(idx)}
-                                        className={`h-1.5 rounded-full transition-all duration-300 ${activeCard === idx ? "w-6 bg-violet-400" : "w-1.5 bg-white/20 hover:bg-white/40"}`}
-                                        aria-label={`View forecast ${idx + 1}`}
-                                    />
-                                ))}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Footer Quote / Fine print */}
-                <div className="relative z-10 flex items-center justify-between text-xs text-gray-500 pt-6 border-t border-white/5">
-                    <span>© {new Date().getFullYear()} MovieForecasts Inc.</span>
-                    <div className="flex items-center gap-4">
-                        <span className="hover:text-gray-300 cursor-pointer transition-colors">Privacy</span>
-                        <span>•</span>
-                        <span className="hover:text-gray-300 cursor-pointer transition-colors">Terms</span>
-                        <span>•</span>
-                        <span className="hover:text-gray-300 cursor-pointer transition-colors">API</span>
-                    </div>
-                </div>
-            </div>
-
-            {/* Right Side: Sign Up Form */}
-            <div className="w-full lg:w-1/2 flex flex-col justify-center items-center p-6 sm:p-12 min-h-screen relative z-10 bg-[#131314]">
-                {/* Mobile Branding (Visible only on smaller screens) */}
-                <div className="lg:hidden w-full max-w-md mb-8 flex items-center justify-between">
-                    <div className="flex items-center gap-2.5">
-                        <div className="w-8 h-8 rounded-lg bg-linear-to-tr from-violet-600 to-indigo-500 flex items-center justify-center font-bold text-white text-sm shadow-md">
-                            MVF
-                        </div>
-                        <span className="font-bold text-lg text-white tracking-tight">MovieForecasts</span>
-                    </div>
-                    <span className="text-[10px] font-semibold uppercase tracking-wider text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
-                        Live Engine
-                    </span>
-                </div>
-
-                <div className="w-full max-w-md space-y-8">
                     {/* Header */}
-                    <div className="space-y-2 text-left">
-                        <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-white">Create your account</h1>
-                        <p className="text-sm text-gray-400">Join MovieForecasts to explore real-time film predictions.</p>
+                    <div className="space-y-1.5 text-center sm:text-left">
+                        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white">Create your account</h1>
+                        <p className="text-xs sm:text-sm text-gray-400">Join MovieForecasts to explore real-time predictions.</p>
                     </div>
 
-                    {/* Alerts */}
+                    {/* Error Banner */}
                     {error && (
-                        <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 text-xs flex items-center gap-2 animate-fadeIn">
+                        <div className="p-3.5 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 text-xs flex items-center gap-2.5 animate-fadeIn">
                             <svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
@@ -245,8 +121,9 @@ export default function Signup() {
                         </div>
                     )}
 
+                    {/* Success Banner */}
                     {success && (
-                        <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs flex items-center gap-2 animate-fadeIn">
+                        <div className="p-3.5 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs flex items-center gap-2.5 animate-fadeIn">
                             <svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                             </svg>
@@ -274,7 +151,7 @@ export default function Signup() {
                                     value={name}
                                     onChange={(e) => setName(e.target.value)}
                                     required
-                                    className="w-full bg-[#1c1b1c] border border-white/10 rounded-xl py-3 pl-11 pr-4 text-white text-sm placeholder-gray-600 focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20 focus:outline-none transition-all"
+                                    className="w-full bg-[#131314] border border-white/10 rounded-xl py-3 pl-11 pr-4 text-white text-sm placeholder-gray-600 focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20 focus:outline-none transition-all"
                                 />
                             </div>
                         </div>
@@ -297,7 +174,7 @@ export default function Signup() {
                                     value={username}
                                     onChange={(e) => setUsername(e.target.value)}
                                     required
-                                    className="w-full bg-[#1c1b1c] border border-white/10 rounded-xl py-3 pl-11 pr-4 text-white text-sm placeholder-gray-600 focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20 focus:outline-none transition-all"
+                                    className="w-full bg-[#131314] border border-white/10 rounded-xl py-3 pl-11 pr-4 text-white text-sm placeholder-gray-600 focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20 focus:outline-none transition-all"
                                 />
                             </div>
                         </div>
@@ -320,7 +197,7 @@ export default function Signup() {
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
                                     required
-                                    className="w-full bg-[#1c1b1c] border border-white/10 rounded-xl py-3 pl-11 pr-4 text-white text-sm placeholder-gray-600 focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20 focus:outline-none transition-all"
+                                    className="w-full bg-[#131314] border border-white/10 rounded-xl py-3 pl-11 pr-4 text-white text-sm placeholder-gray-600 focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20 focus:outline-none transition-all"
                                 />
                             </div>
                         </div>
@@ -343,7 +220,7 @@ export default function Signup() {
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
                                     required
-                                    className="w-full bg-[#1c1b1c] border border-white/10 rounded-xl py-3 pl-11 pr-4 text-white text-sm placeholder-gray-600 focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20 focus:outline-none transition-all"
+                                    className="w-full bg-[#131314] border border-white/10 rounded-xl py-3 pl-11 pr-4 text-white text-sm placeholder-gray-600 focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20 focus:outline-none transition-all"
                                 />
                             </div>
                         </div>
@@ -366,17 +243,17 @@ export default function Signup() {
                                     value={confirmPassword}
                                     onChange={(e) => setConfirmPassword(e.target.value)}
                                     required
-                                    className="w-full bg-[#1c1b1c] border border-white/10 rounded-xl py-3 pl-11 pr-4 text-white text-sm placeholder-gray-600 focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20 focus:outline-none transition-all"
+                                    className="w-full bg-[#131314] border border-white/10 rounded-xl py-3 pl-11 pr-4 text-white text-sm placeholder-gray-600 focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20 focus:outline-none transition-all"
                                 />
                             </div>
                         </div>
 
                         {/* Primary Submit CTA */}
-                        <div className="pt-3">
+                        <div className="pt-2">
                             <button
                                 type="submit"
                                 disabled={loading}
-                                className="w-full py-3.5 px-6 rounded-xl bg-linear-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 active:scale-[0.99] text-white font-semibold text-xs uppercase tracking-[0.15em] transition-all duration-200 shadow-lg shadow-violet-600/25 hover:shadow-violet-600/40 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                                className="w-full py-3.5 px-6 rounded-xl bg-linear-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 active:scale-[0.99] text-white font-semibold text-xs uppercase tracking-[0.15em] transition-all duration-200 shadow-lg shadow-violet-600/25 hover:shadow-violet-600/40 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidden"
                             >
                                 {loading ? (
                                     <>
@@ -399,12 +276,12 @@ export default function Signup() {
                     </form>
 
                     {/* Divider */}
-                    <div className="relative my-6">
+                    <div className="relative my-4">
                         <div className="absolute inset-0 flex items-center">
                             <div className="w-full border-t border-white/10"></div>
                         </div>
                         <div className="relative flex justify-center text-xs">
-                            <span className="px-4 bg-[#131314] text-gray-500 uppercase tracking-widest text-[10px] font-semibold">Or register with</span>
+                            <span className="px-3 bg-[#1c1b1c] text-gray-500 uppercase tracking-widest text-[10px] font-semibold">Or register with</span>
                         </div>
                     </div>
 
@@ -412,7 +289,7 @@ export default function Signup() {
                     <div className="grid grid-cols-2 gap-3">
                         <button
                             type="button"
-                            className="flex items-center justify-center gap-2.5 w-full bg-[#1c1b1c] border border-white/10 hover:border-white/20 text-gray-200 text-xs font-semibold py-3 rounded-xl hover:bg-white/5 transition-all duration-200 cursor-pointer"
+                            className="flex items-center justify-center gap-2.5 w-full bg-[#131314] border border-white/10 hover:border-white/20 text-gray-200 text-xs font-semibold py-2.5 rounded-xl hover:bg-white/5 transition-all duration-200 cursor-pointer"
                         >
                             <svg className="w-4 h-4" viewBox="0 0 24 24">
                                 <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
@@ -425,7 +302,7 @@ export default function Signup() {
 
                         <button
                             type="button"
-                            className="flex items-center justify-center gap-2.5 w-full bg-[#1c1b1c] border border-white/10 hover:border-white/20 text-gray-200 text-xs font-semibold py-3 rounded-xl hover:bg-white/5 transition-all duration-200 cursor-pointer"
+                            className="flex items-center justify-center gap-2.5 w-full bg-[#131314] border border-white/10 hover:border-white/20 text-gray-200 text-xs font-semibold py-2.5 rounded-xl hover:bg-white/5 transition-all duration-200 cursor-pointer"
                         >
                             <svg className="w-4 h-4 fill-current text-white" viewBox="0 0 384 512">
                                 <path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z" />
@@ -434,24 +311,20 @@ export default function Signup() {
                         </button>
                     </div>
 
-                    {/* Bottom Navigation Link */}
-                    <div className="text-center pt-2">
-                        <p className="text-sm text-gray-400">
+                    {/* Link to Login */}
+                    <div className="text-center pt-2 border-t border-white/5">
+                        <p className="text-xs sm:text-sm text-gray-400">
                             Already have an account?{" "}
                             <Link to="/login" className="text-violet-400 hover:text-violet-300 font-semibold hover:underline transition-all">
                                 Log in here
                             </Link>
                         </p>
                     </div>
+                </div>
 
-                    {/* Fine print */}
-                    <div className="text-center pt-4">
-                        <p className="text-[11px] text-gray-600 leading-relaxed">
-                            By creating an account, you agree to MovieForecasts&apos;{" "}
-                            <a href="#" className="underline hover:text-gray-400">Terms of Service</a> and{" "}
-                            <a href="#" className="underline hover:text-gray-400">Privacy Policy</a>.
-                        </p>
-                    </div>
+                {/* Footer copyright */}
+                <div className="text-center text-xs text-gray-500 pt-2">
+                    <span>© {new Date().getFullYear()} MovieForecasts Inc. All rights reserved.</span>
                 </div>
             </div>
         </div>
