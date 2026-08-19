@@ -19,3 +19,9 @@ Thumbs.db
 .vscode/*
 !.vscode/extensions.json
 .idea/
+
+
+claude.md
+progress.md
+.gitignore
+things_to_add.md

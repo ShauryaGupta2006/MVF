@@ -25,7 +25,7 @@ route.post("/isloggedin", async (req, res) => {
 route.post("/signup", async (req, res) => {
     try {
         const { name, username, email, password, conpass } = req.body;
-        console.log(name, username, email, password, conpass);
+
         if (password !== conpass) {
             return res.json({ success: false, message: "Passwords do not match" });
         }
@@ -55,9 +55,15 @@ route.post("/signup", async (req, res) => {
             maxAge: 1000 * 60 * 60 * 24 * 20,
             sameSite: 'strict'
         });
-    } catch (err) {
+    } catch (err) { 
         return res.status(500).json({ success: false, message: err.message });
     }
+})
+
+route.post("/login",(req,res)=>{
+    const {email,password} = req.body;
+    console.log(email,password);
+    res.json({success:true,message:"Login Successful"})
 })
 
 module.exports = route;

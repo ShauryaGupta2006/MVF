@@ -8,7 +8,7 @@ import MovieDetail from "./pages/movieDetail";
 import Layout from "./components/layout";
 import NotFound from "./pages/notFound";
 import Signup from "./pages/signup";
-
+import Login from "./pages/login"
 function App() {
   return (
     <BrowserRouter>
@@ -20,10 +20,10 @@ function App() {
           <Route path="/genre/:genreId" element={<Genre />} />
           <Route path="/search" element={<Search />} />
           <Route path="/movie/:movieId" element={<MovieDetail />} />
-          {/* <Route path="/login" element={<Login />} /> */}
           <Route path="*" element={<NotFound />} />
         </Route>
         <Route path="/auth/signup" element={<Signup />} />
+        <Route path="/auth/login" element={<Login />} />
       </Routes>
     </BrowserRouter>
   );
