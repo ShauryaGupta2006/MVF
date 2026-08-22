@@ -88,6 +88,80 @@ route.post("/login", async (req, res) => {
     } catch (err) {
         return res.status(500).json({ success: false, message: err.message });
     }
-})
+});
+
+route.post("/google", async (req, res) => {
+    try {
+        const { credential } = req.body;
+        if (!credential) {
+            return res.status(400).json({ success: false, message: "Google credential token is required" });
+        }
+
+        const { OAuth2Client } = require("google-auth-library");
+        const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+
+        const ticket = await client.verifyIdToken({
+            idToken: credential,
+            audience: process.env.GOOGLE_CLIENT_ID,
+        });
+
+        const payload = ticket.getPayload();
+        const { sub: googleId, email, name, picture } = payload;
+
+        if (!email) {
+            return res.status(400).json({ success: false, message: "Email not provided by Google account" });
+        }
+
+        // Check if user exists with this email or googleId
+        let user = await User.findOne({ $or: [{ email }, { googleId }] });
+
+        if (!user) {
+            // Generate clean unique username
+            let baseUsername = (name || email.split("@")[0]).toLowerCase().replace(/[^a-z0-9]/g, "");
+            let username = baseUsername;
+            let counter = 1;
+            while (await User.findOne({ username })) {
+                username = `${baseUsername}${Math.floor(100 + Math.random() * 900)}${counter}`;
+                counter++;
+            }
+
+            user = new User({
+                name: name || "User",
+                username: username || `user_${Date.now()}`,
+                email,
+                googleId,
+                avatar: picture || "",
+            });
+            await user.save();
+        } else {
+            // Link googleId or update avatar if missing
+            if (!user.googleId) user.googleId = googleId;
+            if (!user.avatar && picture) user.avatar = picture;
+            await user.save();
+        }
+
+        const token = jwt.sign({ id: user._id, email: user.email }, process.env.JWT_SECRET, { expiresIn: "20d", algorithm: "HS256" });
+
+        return res.cookie("token", token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            maxAge: 1000 * 60 * 60 * 24 * 20,
+            sameSite: "lax"
+        }).status(200).json({
+            success: true,
+            message: "Google login successful",
+            user: {
+                id: user._id,
+                name: user.name,
+                username: user.username,
+                email: user.email,
+                avatar: user.avatar
+            }
+        });
+    } catch (err) {
+        console.error("Google Auth Error:", err);
+        return res.status(401).json({ success: false, message: "Google authentication failed", error: err.message });
+    }
+});
 
 module.exports = route;

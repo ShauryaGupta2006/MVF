@@ -9,11 +9,13 @@ const MOCK_FEATURED_MOVIES = [
         overview: "In a sprawling megalopolis where memories are currency, a rogue archivist uncovers a conspiracy that threatens to erase the city's past entirely. A visually stunning journey through the neon-drenched underbelly of tomorrow.",
         backdrop_path: "https://lh3.googleusercontent.com/aida-public/AB6AXuDZvaRR5wzv1dCyHZ88iWaSlJTFbPmoe804z-j7J5_Kn4-taIVaId4Y0wgjsua1BzPg0ZmcUBLRM_4FUx4EtayhkAEDmgVzEQCEeSC1GETWKwBpiwQAzf042BDdjyVe4CpMeNFCvhuDdgEeJGdD-FwWfPG17_1bUlXGUMm4Lm3LT2a-PdPU5M3IVWyC7GhrOzGUCdaA7-DoaDXUTj8D92NHQfpoaDfABb1xK_07SiTYMexcatRmjaT_",
         poster_path: "https://lh3.googleusercontent.com/aida-public/AB6AXuDZvaRR5wzv1dCyHZ88iWaSlJTFbPmoe804z-j7J5_Kn4-taIVaId4Y0wgjsua1BzPg0ZmcUBLRM_4FUx4EtayhkAEDmgVzEQCEeSC1GETWKwBpiwQAzf042BDdjyVe4CpMeNFCvhuDdgEeJGdD-FwWfPG17_1bUlXGUMm4Lm3LT2a-PdPU5M3IVWyC7GhrOzGUCdaA7-DoaDXUTj8D92NHQfpoaDfABb1xK_07SiTYMexcatRmjaT_",
-        vote_average: 4.8,
-        hype_score: "92%",
+        vote_average: 9.2,
+        hype_score: "96%",
         genre_name: "Sci-Fi Thriller",
         release_date: "2024-03-15",
         runtime: "2h 14m",
+        forecast_box_office: "$185M+",
+        sentiment: "94% Positive",
         trailer_key: "L61p2uyiMSo"
     },
     {
@@ -22,10 +24,12 @@ const MOCK_FEATURED_MOVIES = [
         overview: "A minimalist, high-tension psychological thriller set aboard a deep space research outpost trapped in the shadow of an uncharted cosmic singularity.",
         poster_path: "https://lh3.googleusercontent.com/aida-public/AB6AXuBj3Dc3EGKUjecizNECPpcNxKrH-ruEKe8ZsNe6vU2fJV-5cWh4LlD0aBrJnOF96q-IsGd7tYf0UFE2o0vRbCVtzXO3rrEUeOkQXRfYpdVGiD7uikQwbhSdxa3Yb2M0yNDgL90B0HE46AD8eculRM7hwlYwjFgV3lLKPOx54WuG_HJJmsPmiy9_I41UL_Try642O5aLd6w0zzqgsh5rBAUSESMffuGJJoPo2P4Q-k1Pmd-KsWUtH8eY",
         vote_average: 8.9,
-        hype_score: "96%",
+        hype_score: "94%",
         genre_name: "Psychological Thriller",
         release_date: "2024-05-20",
         runtime: "1h 58m",
+        forecast_box_office: "$120M+",
+        sentiment: "91% Positive",
         trailer_key: "8g18jFHCLXk"
     },
     {
@@ -33,11 +37,13 @@ const MOCK_FEATURED_MOVIES = [
         title: "Midnight Broadcast",
         overview: "An elegant film noir drama capturing a lonely late-night radio host who begins receiving mysterious calls predicting events before they unfold.",
         poster_path: "https://lh3.googleusercontent.com/aida-public/AB6AXuAunIZhNERCrd9QpK8BEPcaJNxwbmtXDHCJJUY_EFutqyJ7CSQis8BifosvaWff91lIGvdcTb2PcnlkHO-LBjofbA1UYTEQV60IwJAv3YWze8I-h61GAxWH3n6CHWK_G4e9_ZToc6DzGen_6rmRr12qXseENxsssM4BffJfkLMX37dqCL8EsjlQR_oMwB_APvL73DwEdS2uVIjoVMU54PdSaipa98HY60uwwreI12kJhNgPAA4_LoOJ",
-        vote_average: 9.2,
-        hype_score: "94%",
+        vote_average: 9.4,
+        hype_score: "98%",
         genre_name: "Drama • Noir",
         release_date: "2024-02-10",
         runtime: "2h 05m",
+        forecast_box_office: "$95M+",
+        sentiment: "96% Positive",
         trailer_key: "Way9Dexny3w"
     },
     {
@@ -50,6 +56,8 @@ const MOCK_FEATURED_MOVIES = [
         genre_name: "Mystery • Fantasy",
         release_date: "2024-04-01",
         runtime: "1h 50m",
+        forecast_box_office: "$65M+",
+        sentiment: "87% Positive",
         trailer_key: "YoHD9XEInc0"
     },
     {
@@ -62,6 +70,8 @@ const MOCK_FEATURED_MOVIES = [
         genre_name: "Crime Action",
         release_date: "2024-01-28",
         runtime: "2h 10m",
+        forecast_box_office: "$140M+",
+        sentiment: "89% Positive",
         trailer_key: "d9MyW72ELq0"
     }
 ];
@@ -73,7 +83,8 @@ const MOCK_UPCOMING_PREMIERES = [
         overview: "A temporal archivist travels to 1920s Paris to prevent the unraveling of quantum history.",
         poster_path: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=600&q=80",
         release_date: "Oct 15, 2026",
-        genre_name: "Sci-Fi"
+        genre_name: "Sci-Fi",
+        hype: "95%"
     },
     {
         id: 202,
@@ -81,34 +92,35 @@ const MOCK_UPCOMING_PREMIERES = [
         overview: "An isolated lighthouse keeper discovers ancient maritime symbols etched into deep coastal ice.",
         poster_path: "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?auto=format&fit=crop&w=600&q=80",
         release_date: "Nov 04, 2026",
-        genre_name: "Gothic Mystery"
+        genre_name: "Gothic Mystery",
+        hype: "91%"
     },
     {
         id: 203,
         title: "Symphony of Shadows",
-        overview: "In 18th century Vienna, an avant-garde composer accidentally invokes forgotten spectral forces.",
+        overview: "In 18th century Vienna, an avant-garde composer invokes forgotten spectral forces.",
         poster_path: "https://images.unsplash.com/photo-1465847899084-d164df4dedc6?auto=format&fit=crop&w=600&q=80",
         release_date: "Dec 01, 2026",
-        genre_name: "Period Drama"
+        genre_name: "Period Drama",
+        hype: "89%"
     }
 ];
 
 const GENRE_CATEGORIES = [
-    { id: "all", name: "All Genres" },
-    { id: "878", name: "Sci-Fi" },
-    { id: "28", name: "Action" },
-    { id: "53", name: "Thriller" },
-    { id: "18", name: "Drama" },
-    { id: "27", name: "Horror" },
-    { id: "80", name: "Crime" },
-    { id: "16", name: "Animation" }
+    { id: "all", name: "All Genres", icon: "movie" },
+    { id: "878", name: "Sci-Fi", icon: "rocket_launch" },
+    { id: "28", name: "Action", icon: "local_fire_department" },
+    { id: "53", name: "Thriller", icon: "bolt" },
+    { id: "18", name: "Drama", icon: "theater_comedy" },
+    { id: "27", name: "Horror", icon: "psychology" },
+    { id: "80", name: "Crime", icon: "fingerprint" },
+    { id: "16", name: "Animation", icon: "auto_awesome" }
 ];
 
 function Home() {
     const [movies, setMovies] = useState([]);
     const [status, setStatus] = useState("loading");
     const [selectedGenre, setSelectedGenre] = useState("all");
-    const [trendTab, setTrendTab] = useState("popular"); // "popular" | "recent"
     const [watchlist, setWatchlist] = useState([]);
     const [activeTrailerKey, setActiveTrailerKey] = useState(null);
     const [trailerMovieTitle, setTrailerMovieTitle] = useState("");
@@ -118,7 +130,7 @@ function Home() {
 
     const scrollCarousel = (direction) => {
         if (carouselRef.current) {
-            const scrollAmount = direction === "left" ? -380 : 380;
+            const scrollAmount = direction === "left" ? -340 : 340;
             carouselRef.current.scrollBy({ left: scrollAmount, behavior: "smooth" });
         }
     };
@@ -141,7 +153,9 @@ function Home() {
     const fetchMovies = async () => {
         setStatus("loading");
         try {
-            const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/trending`);
+            const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/trending`, {
+                credentials: "include"
+            });
             if (res.ok) {
                 const data = await res.json();
                 if (data.success && data.data?.results?.length > 0) {
@@ -167,11 +181,11 @@ function Home() {
         ? (heroMovie.backdrop_path.startsWith("http") ? heroMovie.backdrop_path : `https://image.tmdb.org/t/p/original${heroMovie.backdrop_path}`)
         : MOCK_FEATURED_MOVIES[0].backdrop_path;
 
-    const heroRating = heroMovie.vote_average ? heroMovie.vote_average.toFixed(1) : "4.8";
+    const heroRating = heroMovie.vote_average ? heroMovie.vote_average.toFixed(1) : "9.2";
     const heroYear = heroMovie.release_date ? heroMovie.release_date.split("-")[0] : "2024";
     const heroGenre = heroMovie.genre_name || "Sci-Fi Thriller";
     const heroRuntime = heroMovie.runtime || "2h 14m";
-    const heroHype = heroMovie.hype_score || "92%";
+    const heroHype = heroMovie.hype_score || "96%";
 
     const toggleWatchlist = (movieObj, e) => {
         if (e) e.stopPropagation();
@@ -208,216 +222,236 @@ function Home() {
         setTrailerMovieTitle(movieObj.title);
     };
 
-    // Sorting by trendTab (Popular vs Recently Added)
-    const sortedMovies = [...movies].sort((a, b) => {
-        if (trendTab === "recent") {
-            return new Date(b.release_date || 0) - new Date(a.release_date || 0);
-        }
-        return (b.vote_average || 0) - (a.vote_average || 0);
-    });
-
     if (status === "loading") {
         return <LoadingScreen message="Initializing MovieForecasts Engine..." />;
     }
 
     return (
-        <div className="min-h-screen bg-background text-on-background pt-20 pb-32">
+        <div className="min-h-screen bg-[#0a0b0e] text-[#e5e2e1] pt-20 pb-32">
             
-            {/* 1. Cinematic Hero Section with 92% Hype Score */}
-            <section className="max-w-360 mx-auto px-6 md:px-16 pt-4 pb-12">
-                <div className="relative w-full h-[70vh] min-h-145 rounded-xl overflow-hidden cinematic-glow cursor-pointer group border border-white/10 shadow-2xl">
+            {/* 1. Cinematic Hero Spotlight */}
+            <section className="max-w-360 mx-auto px-4 sm:px-8 md:px-12 pt-4 pb-10">
+                <div className="relative w-full h-[72vh] min-h-150 rounded-2xl overflow-hidden group border border-white/8 shadow-2xl bg-[#111218]">
                     
+                    {/* Background Backdrop with Parallax Scale */}
                     <div
-                        className="absolute inset-0 w-full h-full bg-cover bg-center transition-transform duration-1000 group-hover:scale-105"
+                        className="absolute inset-0 w-full h-full bg-cover bg-center transition-transform duration-1000 ease-out group-hover:scale-103"
                         style={{ backgroundImage: `url('${heroBackdrop}')` }}
-                    ></div>
+                    />
 
-                    <div className="absolute inset-0 bg-linear-to-t from-background via-background/60 to-transparent"></div>
-                    <div className="absolute inset-0 bg-linear-to-r from-background/90 via-background/40 to-transparent"></div>
+                    {/* Gradient & Vignette Overlays */}
+                    <div className="absolute inset-0 bg-linear-to-t from-[#0a0b0e] via-[#0a0b0e]/70 to-transparent" />
+                    <div className="absolute inset-0 bg-linear-to-r from-[#0a0b0e] via-[#0a0b0e]/60 to-transparent w-full md:w-3/4" />
+                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_80%,rgba(99,102,241,0.15),transparent_60%)] pointer-events-none" />
 
-                    <div className="absolute bottom-0 left-0 p-8 md:p-16 w-full md:w-2/3 flex flex-col gap-5 z-10">
-                        {/* Hype Score Pill */}
-                        <div className="flex items-center gap-3">
-                            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-950/70 border border-blue-500/40 text-blue-300 font-body text-xs font-bold uppercase tracking-wider backdrop-blur-md shadow-[0_0_15px_rgba(59,130,246,0.25)]">
-                                <span className="w-2 h-2 rounded-full bg-blue-400 animate-pulse"></span>
-                                {heroHype} Hype Score
+                    {/* Hero Content */}
+                    <div className="absolute bottom-0 left-0 p-6 sm:p-10 md:p-14 w-full md:w-3/4 flex flex-col gap-4 z-10">
+                        
+                        {/* Meta Badges */}
+                        <div className="flex flex-wrap items-center gap-2.5">
+                            {/* AI Hype Score Badge */}
+                            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-violet-500/20 border border-violet-500/30 text-violet-300 text-xs font-bold tracking-wide backdrop-blur-md shadow-xs shadow-violet-500/20">
+                                <span className="w-2 h-2 rounded-full bg-violet-400 animate-pulse" />
+                                {heroHype} Hype Index
                             </span>
 
-                            <span className="px-3 py-1 border border-white/20 rounded font-body text-xs font-semibold text-primary bg-black/50 backdrop-blur-md uppercase tracking-wider">
+                            {/* Genre Pill */}
+                            <span className="px-3 py-1 rounded-full bg-white/8 border border-white/12 text-xs font-semibold text-gray-200 backdrop-blur-md">
                                 {heroGenre}
                             </span>
-                            <span className="font-body text-sm font-semibold text-on-surface-variant flex items-center gap-1">
-                                <span className="material-symbols-outlined text-[16px] text-blue-400 filled">star</span>
+
+                            {/* Quality Tag */}
+                            <span className="px-2.5 py-0.5 rounded bg-white/5 border border-white/8 text-[11px] font-bold text-gray-400 uppercase tracking-widest">
+                                4K UHD • HDR
+                            </span>
+
+                            {/* Rating */}
+                            <span className="text-xs font-semibold text-amber-300 flex items-center gap-1 bg-amber-500/10 px-2.5 py-1 rounded-full border border-amber-500/20">
+                                <span className="material-symbols-outlined text-sm filled text-amber-400">star</span>
                                 {heroRating}
                             </span>
-                            <span className="font-body text-sm font-medium text-on-surface-variant">
-                                • {heroYear} • {heroRuntime}
+
+                            <span className="text-xs font-medium text-gray-400">
+                                {heroYear} • {heroRuntime}
                             </span>
                         </div>
-                        
 
-                        <h1 className="font-display font-bold text-4xl sm:text-6xl md:text-7xl text-primary leading-tight drop-shadow-xl">
+                        {/* Title */}
+                        <h1 className="font-display font-extrabold text-3xl sm:text-5xl md:text-6xl text-white tracking-tight leading-[1.1] drop-shadow-xl">
                             {heroMovie.title}
                         </h1>
 
-                        <p className="font-body text-base md:text-lg text-on-surface line-clamp-3 max-w-2xl leading-relaxed opacity-90 drop-shadow-md">
+                        {/* Overview */}
+                        <p className="text-sm sm:text-base text-gray-300 line-clamp-3 max-w-2xl leading-relaxed opacity-90 drop-shadow-md">
                             {heroMovie.overview}
                         </p>
 
-                        <div className="flex flex-wrap gap-4 pt-3">
+                        {/* Actions */}
+                        <div className="flex flex-wrap items-center gap-3 pt-2">
                             <button
                                 onClick={() => openTrailer(heroMovie)}
-                                className="bg-primary text-on-primary font-body font-semibold text-sm px-7 py-3.5 rounded-2xl hover:scale-[1.02] active:scale-95 transition-all flex items-center gap-2 cursor-pointer shadow-[0_0_20px_rgba(255,255,255,0.2)] hover:shadow-[0_0_25px_rgba(59,130,246,0.4)]"
+                                className="bg-white text-black hover:bg-white/90 font-semibold text-xs sm:text-sm px-6 py-3 rounded-full transition-all shadow-lg shadow-white/10 hover:shadow-white/20 active:scale-95 flex items-center gap-2 cursor-pointer font-sans"
                             >
-                                <span className="material-symbols-outlined filled text-xl text-blue-600">play_arrow</span>
-                                Watch Now
+                                <span className="material-symbols-outlined filled text-lg text-black">play_arrow</span>
+                                Watch Trailer
                             </button>
 
                             <button
                                 onClick={() => navigate(`/movie/${heroMovie.id}`)}
-                                className="bg-surface-container/80 border border-white/20 text-white font-body font-semibold text-sm px-7 py-3.5 rounded hover:bg-white/10 hover:border-white/40 hover:scale-[1.02] active:scale-95 transition-all flex items-center gap-2 cursor-pointer glass-panel"
+                                className="bg-white/8 hover:bg-white/14 border border-white/15 text-white font-semibold text-xs sm:text-sm px-5 py-3 rounded-full transition-all active:scale-95 flex items-center gap-2 cursor-pointer backdrop-blur-md"
                             >
-                                <span className="material-symbols-outlined text-lg text-blue-400">info</span>
-                                Read More
+                                <span className="material-symbols-outlined text-base text-violet-400">info</span>
+                                View Details
                             </button>
 
                             <button
                                 onClick={(e) => toggleWatchlist(heroMovie, e)}
-                                className={`font-body font-semibold text-sm px-7 py-3.5 rounded transition-all flex items-center gap-2 cursor-pointer active:scale-95 glass-panel ${
+                                className={`font-semibold text-xs sm:text-sm px-5 py-3 rounded-full transition-all active:scale-95 flex items-center gap-2 cursor-pointer backdrop-blur-md ${
                                     watchlist.includes(heroMovie.id)
-                                        ? "bg-blue-600/30 border-blue-400/50 text-blue-200"
-                                        : "border border-white/20 text-primary hover:bg-white/10"
+                                        ? "bg-violet-600/30 border border-violet-400/50 text-violet-200"
+                                        : "bg-white/4 border border-white/15 text-gray-200 hover:bg-white/8"
                                 }`}
                             >
-                                <span className="material-symbols-outlined text-lg">
-                                    {watchlist.includes(heroMovie.id) ? "check" : "add"}
+                                <span className="material-symbols-outlined text-base">
+                                    {watchlist.includes(heroMovie.id) ? "check" : "bookmark_add"}
                                 </span>
-                                {watchlist.includes(heroMovie.id) ? "In Watchlist" : "Watchlist"}
+                                {watchlist.includes(heroMovie.id) ? "Saved in Watchlist" : "Watchlist"}
                             </button>
                         </div>
                     </div>
                 </div>
             </section>
 
-            {/* 2. Dynamic Genre Filter Pills Bar */}
-            
+            {/* 2. Genre Categories Bar */}
+            <section className="max-w-360 mx-auto px-4 sm:px-8 md:px-12 mb-10">
+                <div className="flex items-center gap-2 overflow-x-auto hide-scrollbar pb-2">
+                    {GENRE_CATEGORIES.map((genre) => {
+                        const isActive = selectedGenre === genre.id;
+                        return (
+                            <button
+                                key={genre.id}
+                                onClick={() => {
+                                    setSelectedGenre(genre.id);
+                                    if (genre.id !== "all") {
+                                        navigate(`/genre/${genre.id}?name=${encodeURIComponent(genre.name)}`);
+                                    }
+                                }}
+                                className={`px-4 py-2 rounded-full text-xs font-semibold whitespace-nowrap transition-all flex items-center gap-1.5 cursor-pointer shrink-0 ${
+                                    isActive
+                                        ? "bg-white text-black shadow-md shadow-white/10 scale-100"
+                                        : "bg-white/3 text-gray-400 hover:text-white hover:bg-white/7 border border-white/6"
+                                }`}
+                            >
+                                <span className="material-symbols-outlined text-sm">{genre.icon}</span>
+                                <span>{genre.name}</span>
+                            </button>
+                        );
+                    })}
+                </div>
+            </section>
 
-            {/* 3. Trending Now (Popular vs Recently Added Toggles + Carousel Navigator Tools) */}
-            <section className="max-w-360 mx-auto px-6 md:px-16 space-y-8 mb-20">
-                <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+            {/* 3. Trending Now Carousel */}
+            <section className="max-w-360 mx-auto px-4 sm:px-8 md:px-12 space-y-6 mb-16">
+                <div className="flex items-end justify-between">
                     <div>
-                        <h2 className="font-display text-3xl md:text-4xl font-semibold text-primary">
-                            Trending Now
+                        <h2 className="font-display text-2xl sm:text-3xl font-bold text-white tracking-tight">
+                            Trending Cinema
                         </h2>
-                        <p className="font-body text-xs text-on-surface-variant mt-1">
-                            Real-time box office momentum & hype discovery
+                        <p className="text-xs text-gray-400 mt-1">
+                            Real-time box office velocity, ratings & audience excitement
                         </p>
                     </div>
 
-                    <div className="flex items-center gap-3 shrink-0">
-                        {/* Carousel Arrow Navigator Tools */}
-                        <div className="flex items-center gap-1 bg-surface-container/80 p-1 rounded-lg border border-white/10">
-                            <button
-                                onClick={() => scrollCarousel("left")}
-                                aria-label="Scroll Carousel Left"
-                                className="w-8 h-8 rounded hover:bg-blue-600 hover:text-white text-on-surface-variant flex items-center justify-center transition-all active:scale-95 cursor-pointer"
-                                title="Scroll Left"
-                            >
-                                <span className="material-symbols-outlined text-lg">chevron_left</span>
-                            </button>
-                            <button
-                                onClick={() => scrollCarousel("right")}
-                                aria-label="Scroll Carousel Right"
-                                className="w-8 h-8 rounded hover:bg-blue-600 hover:text-white text-on-surface-variant flex items-center justify-center transition-all active:scale-95 cursor-pointer"
-                                title="Scroll Right"
-                            >
-                                <span className="material-symbols-outlined text-lg">chevron_right</span>
-                            </button>
-                        </div>
-
-                        {/* Dual View Tabs: Popular vs Recently Added */}
-                        {/* <div className="flex items-center bg-surface-container/80 p-1 rounded-lg border border-white/10">
-                            {/* <button
-                                onClick={() => setTrendTab("popular")}
-                                className={`px-4 py-1.5 rounded-md text-xs font-semibold uppercase tracking-wider transition-all cursor-pointer ${
-                                    trendTab === "popular"
-                                        ? "bg-blue-600 text-white font-bold shadow-[0_0_12px_rgba(59,130,246,0.3)]"
-                                        : "text-on-surface-variant hover:text-white"
-                                }`}
-                            >
-                                Popular
-                            </button> */}
-                            {/* <button
-                                onClick={() => setTrendTab("recent")}
-                                className={`px-4 py-1.5 rounded-md text-xs font-semibold uppercase tracking-wider transition-all cursor-pointer ${
-                                    trendTab === "recent"
-                                        ? "bg-blue-600 text-white font-bold shadow-[0_0_12px_rgba(59,130,246,0.3)]"
-                                        : "text-on-surface-variant hover:text-white"
-                                }`}
-                            >
-                                Recently Added
-                            </button> */}
-                        {/* </div> */}
+                    {/* Carousel Nav Controls */}
+                    <div className="flex items-center gap-2">
+                        <button
+                            onClick={() => scrollCarousel("left")}
+                            aria-label="Scroll left"
+                            className="w-8 h-8 rounded-full bg-white/4 border border-white/8 hover:border-white/20 text-gray-300 hover:text-white flex items-center justify-center transition-all cursor-pointer active:scale-95"
+                        >
+                            <span className="material-symbols-outlined text-base">chevron_left</span>
+                        </button>
+                        <button
+                            onClick={() => scrollCarousel("right")}
+                            aria-label="Scroll right"
+                            className="w-8 h-8 rounded-full bg-white/4 border border-white/8 hover:border-white/20 text-gray-300 hover:text-white flex items-center justify-center transition-all cursor-pointer active:scale-95"
+                        >
+                            <span className="material-symbols-outlined text-base">chevron_right</span>
+                        </button>
+                        <Link
+                            to="/trending"
+                            className="text-xs font-semibold text-violet-400 hover:text-violet-300 ml-2 hidden sm:flex items-center gap-1 transition-colors"
+                        >
+                            Explore All <span className="material-symbols-outlined text-sm">arrow_forward</span>
+                        </Link>
                     </div>
                 </div>
 
-                {/* Poster Card Carousel with ref */}
-                <div ref={carouselRef} className="flex overflow-x-auto gap-6 pb-8 hide-scrollbar -mx-6 px-6 md:mx-0 md:px-0">
-                    {sortedMovies.map((movie) => {
+                {/* Poster Card Carousel */}
+                <div
+                    ref={carouselRef}
+                    className="flex overflow-x-auto gap-5 pb-6 hide-scrollbar -mx-4 px-4 sm:mx-0 sm:px-0"
+                >
+                    {movies.map((movie) => {
                         const posterUrl = movie.poster_path
                             ? (movie.poster_path.startsWith("http") ? movie.poster_path : `https://image.tmdb.org/t/p/w500${movie.poster_path}`)
                             : MOCK_FEATURED_MOVIES[1].poster_path;
-                        const rating = movie.vote_average ? movie.vote_average.toFixed(1) : "8.5";
+                        const rating = movie.vote_average ? movie.vote_average.toFixed(1) : "8.8";
                         const isSaved = watchlist.includes(movie.id);
 
                         return (
                             <div
                                 key={movie.id}
-                                className="flex-none w-48 md:w-64 group cursor-pointer"
+                                className="flex-none w-44 sm:w-56 group cursor-pointer"
                                 onClick={() => navigate(`/movie/${movie.id}`)}
                             >
-                                <div className="relative aspect-2/3 rounded-lg overflow-hidden cinematic-glow mb-4 card-hover-lift bg-surface-container border border-white/5">
+                                <div className="relative aspect-2/3 rounded-xl overflow-hidden mb-3 card-hover-lift bg-[#13141a] border border-white/8">
                                     <img
                                         src={posterUrl}
                                         alt={movie.title}
-                                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                                        className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-104"
                                         loading="lazy"
                                     />
-                                    
-                                    <div className="absolute top-3 right-3 glass-panel px-2.5 py-1 rounded flex items-center gap-1">
-                                        <span className="material-symbols-outlined text-[14px] text-tertiary-fixed filled">star</span>
-                                        <span className="font-body text-xs font-semibold text-primary">{rating}</span>
+
+                                    {/* Star Rating Pill */}
+                                    <div className="absolute top-2.5 right-2.5 px-2 py-0.5 rounded-full bg-black/60 backdrop-blur-md border border-white/10 flex items-center gap-1">
+                                        <span className="material-symbols-outlined text-[12px] text-amber-400 filled">star</span>
+                                        <span className="text-[11px] font-bold text-white">{rating}</span>
                                     </div>
 
+                                    {/* Watchlist Quick Toggle */}
                                     <button
                                         onClick={(e) => toggleWatchlist(movie, e)}
-                                        className={`absolute top-3 left-3 p-1.5 rounded-full glass-panel hover:scale-110 transition-transform ${
-                                            isSaved ? "text-white bg-white/30" : "text-white/70 hover:text-white"
+                                        className={`absolute top-2.5 left-2.5 w-7 h-7 rounded-full flex items-center justify-center backdrop-blur-md transition-all active:scale-90 ${
+                                            isSaved
+                                                ? "bg-violet-600 text-white shadow-md shadow-violet-600/40"
+                                                : "bg-black/50 text-gray-300 hover:text-white border border-white/10 hover:bg-black/70"
                                         }`}
                                         title={isSaved ? "Remove from watchlist" : "Add to watchlist"}
                                     >
-                                        <span className="material-symbols-outlined text-sm">
+                                        <span className="material-symbols-outlined text-xs">
                                             {isSaved ? "check" : "bookmark"}
                                         </span>
                                     </button>
 
+                                    {/* Hover Trailer Play Trigger */}
                                     <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                                        <span
+                                        <div
                                             onClick={(e) => {
                                                 e.stopPropagation();
                                                 openTrailer(movie);
                                             }}
-                                            className="material-symbols-outlined text-[48px] text-primary hover:scale-110 transition-transform cursor-pointer"
+                                            className="w-11 h-11 rounded-full bg-white/90 text-black flex items-center justify-center shadow-lg hover:scale-110 transition-transform cursor-pointer"
                                         >
-                                            play_circle
-                                        </span>
+                                            <span className="material-symbols-outlined text-2xl filled text-black">play_arrow</span>
+                                        </div>
                                     </div>
                                 </div>
 
-                                <h3 className="font-body font-semibold text-sm md:text-base text-primary truncate group-hover:text-white transition-colors">
+                                <h3 className="font-semibold text-sm text-white truncate group-hover:text-violet-300 transition-colors">
                                     {movie.title}
                                 </h3>
-                                <p className="font-body text-xs text-on-surface-variant mt-1">
+                                <p className="text-xs text-gray-400 mt-0.5">
                                     {movie.genre_name || (movie.release_date ? movie.release_date.split("-")[0] : "2024")}
                                 </p>
                             </div>
@@ -426,45 +460,98 @@ function Home() {
                 </div>
             </section>
 
-            {/* 4. Upcoming Premieres Spotlight */}
-            <section className="max-w-360 mx-auto px-6 md:px-16 space-y-8">
+            {/* 4. AI Movie Intelligence & Forecasting Cards */}
+            <section className="max-w-360 mx-auto px-4 sm:px-8 md:px-12 space-y-6 mb-16">
+                <div className="flex items-center gap-2">
+                    <span className="w-2.5 h-2.5 rounded-full bg-violet-400 animate-pulse" />
+                    <h2 className="font-display text-2xl sm:text-3xl font-bold text-white tracking-tight">
+                        AI Box Office Forecasts & Analytics
+                    </h2>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                    {MOCK_FEATURED_MOVIES.slice(0, 3).map((item) => (
+                        <div
+                            key={item.id}
+                            onClick={() => navigate(`/movie/${item.id}`)}
+                            className="p-5 rounded-2xl bg-[#111218] border border-white/7 hover:border-violet-500/30 transition-all card-hover-lift cursor-pointer space-y-4 relative overflow-hidden group"
+                        >
+                            {/* Subtle Ambient Backlight */}
+                            <div className="absolute top-0 right-0 w-32 h-32 bg-violet-600/10 rounded-full blur-2xl pointer-events-none group-hover:bg-violet-600/20 transition-all" />
+
+                            <div className="flex items-center justify-between">
+                                <span className="px-2.5 py-1 rounded-full bg-violet-500/10 border border-violet-500/20 text-violet-300 text-[11px] font-bold">
+                                    {item.genre_name}
+                                </span>
+                                <span className="text-xs font-semibold text-emerald-400 flex items-center gap-1">
+                                    <span className="material-symbols-outlined text-sm">trending_up</span>
+                                    {item.sentiment}
+                                </span>
+                            </div>
+
+                            <div>
+                                <h3 className="font-display font-bold text-lg text-white group-hover:text-violet-300 transition-colors">
+                                    {item.title}
+                                </h3>
+                                <p className="text-xs text-gray-400 line-clamp-2 mt-1">
+                                    {item.overview}
+                                </p>
+                            </div>
+
+                            <div className="pt-3 border-t border-white/6 flex items-center justify-between">
+                                <div>
+                                    <span className="text-[10px] uppercase tracking-wider text-gray-400 font-semibold block">Opening Forecast</span>
+                                    <span className="text-base font-bold text-white tracking-tight">{item.forecast_box_office}</span>
+                                </div>
+                                <div className="text-right">
+                                    <span className="text-[10px] uppercase tracking-wider text-gray-400 font-semibold block">Hype Confidence</span>
+                                    <span className="text-base font-bold text-violet-400">{item.hype_score}</span>
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </section>
+
+            {/* 5. Upcoming Premieres Spotlight */}
+            <section className="max-w-360 mx-auto px-4 sm:px-8 md:px-12 space-y-6">
                 <div className="flex items-end justify-between">
                     <div>
-                        <h2 className="font-display text-3xl md:text-4xl font-semibold text-primary">
-                            Upcoming Drops
+                        <h2 className="font-display text-2xl sm:text-3xl font-bold text-white tracking-tight">
+                            Premiere Calendar
                         </h2>
-                        <p className="font-body text-xs text-on-surface-variant mt-1">
-                            Premiere calendar and release date previews
+                        <p className="text-xs text-gray-400 mt-1">
+                            Anticipated film releases and festival debut dates
                         </p>
                     </div>
                     <Link
                         to="/upcoming"
-                        className="font-body text-sm font-semibold text-on-surface-variant hover:text-primary flex items-center gap-1 transition-colors"
+                        className="text-xs font-semibold text-violet-400 hover:text-violet-300 flex items-center gap-1 transition-colors"
                     >
-                        View Calendar <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
+                        View Full Calendar <span className="material-symbols-outlined text-sm">arrow_forward</span>
                     </Link>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
                     {MOCK_UPCOMING_PREMIERES.map((item) => (
                         <div
                             key={item.id}
                             onClick={() => navigate(`/movie/${item.id}`)}
-                            className="flex items-center gap-4 p-4 rounded-xl bg-surface-container/40 border border-white/5 hover:border-white/20 cursor-pointer card-hover-lift"
+                            className="flex items-center gap-4 p-4 rounded-2xl bg-[#111218] border border-white/6 hover:border-white/20 transition-all cursor-pointer card-hover-lift"
                         >
                             <img
                                 src={item.poster_path}
                                 alt={item.title}
-                                className="w-20 h-28 object-cover rounded-lg shrink-0 border border-white/10"
+                                className="w-18 h-24 object-cover rounded-xl shrink-0 border border-white/10"
                             />
-                            <div>
-                                <span className="px-2.5 py-0.5 rounded bg-white/10 text-[10px] font-bold text-white uppercase tracking-wider inline-block mb-1">
+                            <div className="space-y-1">
+                                <span className="px-2.5 py-0.5 rounded-full bg-white/8 text-[10px] font-bold text-gray-300 uppercase tracking-wider inline-block">
                                     {item.release_date}
                                 </span>
-                                <h4 className="font-display font-semibold text-base text-primary truncate">
+                                <h4 className="font-display font-semibold text-sm text-white truncate">
                                     {item.title}
                                 </h4>
-                                <p className="font-body text-xs text-on-surface-variant line-clamp-2 mt-1">
+                                <p className="text-xs text-gray-400 line-clamp-2">
                                     {item.overview}
                                 </p>
                             </div>
@@ -473,19 +560,19 @@ function Home() {
                 </div>
             </section>
 
-            {/* 5. Trailer Video Modal */}
+            {/* 6. Trailer Video Modal */}
             {activeTrailerKey && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-md p-4 animate-fadeIn">
-                    <div className="w-full max-w-4xl bg-surface-container rounded-2xl border border-white/10 overflow-hidden shadow-2xl relative">
-                        <div className="flex items-center justify-between p-4 border-b border-white/10">
-                            <h3 className="font-display font-semibold text-lg text-primary">
-                                {trailerMovieTitle} — Trailer
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-xl p-4 animate-fadeIn">
+                    <div className="w-full max-w-4xl bg-[#14151c] rounded-2xl border border-white/15 overflow-hidden shadow-2xl relative">
+                        <div className="flex items-center justify-between px-6 py-4 border-b border-white/10">
+                            <h3 className="font-display font-bold text-base text-white">
+                                {trailerMovieTitle} — Official Trailer
                             </h3>
                             <button
                                 onClick={() => setActiveTrailerKey(null)}
-                                className="w-8 h-8 rounded-full flex items-center justify-center text-on-surface-variant hover:text-white hover:bg-white/10 transition-colors"
+                                className="w-8 h-8 rounded-full flex items-center justify-center text-gray-400 hover:text-white hover:bg-white/10 transition-colors"
                             >
-                                <span className="material-symbols-outlined text-xl">close</span>
+                                <span className="material-symbols-outlined text-lg">close</span>
                             </button>
                         </div>
                         <div className="aspect-video w-full">
@@ -495,7 +582,7 @@ function Home() {
                                 title={`${trailerMovieTitle} Trailer`}
                                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                 allowFullScreen
-                            ></iframe>
+                            />
                         </div>
                     </div>
                 </div>

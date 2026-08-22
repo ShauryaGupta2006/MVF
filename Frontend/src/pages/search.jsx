@@ -58,33 +58,34 @@ function Search() {
 
     const fetchSearchResults = async () => {
         if (!query.trim()) {
-            setMovies([]);
+            setMovies(SEARCH_SAMPLE_DATABASE);
             return;
         }
+
         setLoading(true);
         try {
-            const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/search?query=${encodeURIComponent(query)}`);
+            const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/search?query=${encodeURIComponent(query)}`, {
+                credentials: "include"
+            });
             if (res.ok) {
                 const data = await res.json();
-                if (data.success && data.data?.results?.length > 0) {
+                if (data.success && data.data?.results) {
                     setMovies(data.data.results);
                     setLoading(false);
                     return;
                 }
             }
-            // Fallback match
-            const matched = SEARCH_SAMPLE_DATABASE.filter(m => 
-                m.title.toLowerCase().includes(query.toLowerCase()) || 
-                m.genre_name.toLowerCase().includes(query.toLowerCase()) ||
-                m.overview.toLowerCase().includes(query.toLowerCase())
+            // Fallback filtering
+            const filtered = SEARCH_SAMPLE_DATABASE.filter(m =>
+                m.title.toLowerCase().includes(query.toLowerCase()) ||
+                (m.overview && m.overview.toLowerCase().includes(query.toLowerCase()))
             );
-            setMovies(matched.length > 0 ? matched : SEARCH_SAMPLE_DATABASE);
+            setMovies(filtered.length > 0 ? filtered : SEARCH_SAMPLE_DATABASE);
         } catch {
-            const matched = SEARCH_SAMPLE_DATABASE.filter(m => 
-                m.title.toLowerCase().includes(query.toLowerCase()) || 
-                m.genre_name.toLowerCase().includes(query.toLowerCase())
+            const filtered = SEARCH_SAMPLE_DATABASE.filter(m =>
+                m.title.toLowerCase().includes(query.toLowerCase())
             );
-            setMovies(matched.length > 0 ? matched : SEARCH_SAMPLE_DATABASE);
+            setMovies(filtered.length > 0 ? filtered : SEARCH_SAMPLE_DATABASE);
         } finally {
             setLoading(false);
         }
@@ -95,48 +96,42 @@ function Search() {
     }, [query]);
 
     return (
-        <div className="min-h-screen bg-background text-on-background px-6 sm:px-12 py-28 max-w-360 mx-auto">
-            {/* Heading */}
-            <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 border-b border-white/10 pb-6 gap-4">
+        <div className="min-h-screen bg-[#0a0b0e] text-[#e5e2e1] px-4 sm:px-8 md:px-12 py-28 max-w-360 mx-auto">
+            {/* Search Header */}
+            <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 border-b border-white/8 pb-6 gap-4">
                 <div>
-                    <span className="font-body text-xs font-bold uppercase tracking-widest text-on-surface-variant">
-                        Library Search
+                    <span className="text-xs font-bold uppercase tracking-widest text-violet-400">
+                        Cinema Intelligence Search
                     </span>
-                    <h1 className="font-display text-4xl sm:text-5xl font-bold text-primary mt-1">
-                        {query ? `Results for "${query}"` : "Search Library"}
+                    <h1 className="font-display text-3xl sm:text-4xl md:text-5xl font-bold text-white mt-1 tracking-tight">
+                        {query ? `Results for "${query}"` : "Global Film Catalog"}
                     </h1>
                 </div>
-                {movies.length > 0 && (
-                    <span className="bg-white/10 text-white border border-white/20 px-3.5 py-1 rounded-full text-xs font-semibold uppercase tracking-wider">
-                        {movies.length} {movies.length === 1 ? "Result" : "Results"}
-                    </span>
-                )}
+                <p className="text-xs sm:text-sm text-gray-400">
+                    Found {movies.length} matches
+                </p>
             </div>
 
-            {!query.trim() ? (
-                <div className="flex flex-col items-center justify-center py-20 text-on-surface-variant">
-                    <span className="material-symbols-outlined text-6xl text-white/20 mb-4">search</span>
-                    <p className="font-display text-xl font-bold text-white">Search Cinéaste Archives</p>
-                    <p className="font-body text-sm text-on-surface-variant mt-1">Enter a film title, genre, or director to explore.</p>
-                </div>
-            ) : loading ? (
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
-                    {Array.from({ length: 5 }).map((_, i) => (
-                        <div key={i} className="animate-pulse bg-surface-container rounded-lg aspect-2/3"></div>
-                    ))}
+            {loading ? (
+                <div className="flex items-center justify-center py-24">
+                    <div className="flex flex-col items-center gap-3">
+                        <div className="w-8 h-8 rounded-full border-2 border-violet-500 border-t-transparent animate-spin" />
+                        <span className="text-xs text-gray-400">Searching global library...</span>
+                    </div>
                 </div>
             ) : movies.length === 0 ? (
-                <div className="flex flex-col items-center justify-center py-20 text-on-surface-variant">
-                    <span className="material-symbols-outlined text-6xl text-white/20 mb-4">movie_off</span>
-                    <p className="font-display text-xl font-bold text-white">No results found for "{query}"</p>
-                    <p className="font-body text-sm text-on-surface-variant mt-1">Try another search term or check spelling.</p>
+                <div className="text-center py-24 space-y-4">
+                    <span className="material-symbols-outlined text-5xl text-gray-600">search_off</span>
+                    <h3 className="font-display text-xl font-bold text-white">No titles matched your query</h3>
+                    <p className="text-xs text-gray-400">Try searching for different keywords, actor names, or genres.</p>
                 </div>
             ) : (
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 sm:gap-8">
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5 sm:gap-6">
                     {movies.map((movie) => {
                         const posterUrl = movie.poster_path
                             ? (movie.poster_path.startsWith("http") ? movie.poster_path : `https://image.tmdb.org/t/p/w500${movie.poster_path}`)
                             : SEARCH_SAMPLE_DATABASE[0].poster_path;
+                        const rating = movie.vote_average ? movie.vote_average.toFixed(1) : "8.5";
 
                         return (
                             <div
@@ -144,27 +139,30 @@ function Search() {
                                 onClick={() => navigate(`/movie/${movie.id}`)}
                                 className="group cursor-pointer"
                             >
-                                <div className="relative aspect-2/3 rounded-lg overflow-hidden cinematic-glow mb-4 card-hover-lift bg-surface-container border border-white/5">
+                                <div className="relative aspect-2/3 rounded-xl overflow-hidden mb-3 card-hover-lift bg-[#13141a] border border-white/8">
                                     <img
                                         src={posterUrl}
                                         alt={movie.title}
-                                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                                        className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-104"
                                         loading="lazy"
                                     />
-                                    
-                                    <div className="absolute top-3 right-3 glass-panel px-2.5 py-1 rounded flex items-center gap-1">
-                                        <span className="material-symbols-outlined text-[14px] text-tertiary-fixed filled">star</span>
-                                        <span className="font-body text-xs font-semibold text-primary">
-                                            {movie.vote_average ? movie.vote_average.toFixed(1) : "8.5"}
-                                        </span>
+
+                                    {/* Rating Badge */}
+                                    <div className="absolute top-2.5 right-2.5 px-2 py-0.5 rounded-full bg-black/60 backdrop-blur-md border border-white/10 flex items-center gap-1">
+                                        <span className="material-symbols-outlined text-[12px] text-amber-400 filled">star</span>
+                                        <span className="text-[11px] font-bold text-white">{rating}</span>
+                                    </div>
+
+                                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                                        <span className="material-symbols-outlined text-4xl text-white">play_circle</span>
                                     </div>
                                 </div>
 
-                                <h3 className="font-body font-semibold text-base text-primary truncate group-hover:text-white transition-colors">
+                                <h3 className="font-semibold text-sm text-white truncate group-hover:text-violet-300 transition-colors">
                                     {movie.title}
                                 </h3>
-                                <p className="font-body text-xs text-on-surface-variant mt-1">
-                                    {movie.release_date ? movie.release_date.split("-")[0] : "2024"} • {movie.genre_name || "Film"}
+                                <p className="text-xs text-gray-400 mt-0.5">
+                                    {movie.release_date ? movie.release_date.split("-")[0] : "2024"}
                                 </p>
                             </div>
                         );

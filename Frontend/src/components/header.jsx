@@ -87,32 +87,43 @@ function Header() {
     return (
         <>
             <header
-                className={`fixed top-0 w-full z-40 transition-all duration-300 ${scrolled
-                        ? "bg-background/90 backdrop-blur-xl border-b border-white/10 shadow-xl py-3"
-                        : "bg-background/80 backdrop-blur-md py-4 border-b border-white/5"
-                    }`}
+                className={`fixed top-0 inset-x-0 z-40 transition-all duration-300 ${
+                    scrolled
+                        ? "bg-[#0c0d12]/85 backdrop-blur-2xl border-b border-white/8 shadow-2xl py-3"
+                        : "bg-[#0c0d12]/50 backdrop-blur-lg border-b border-white/4 py-4"
+                }`}
             >
-                <div className="flex justify-between items-center px-6 sm:px-12 w-full max-w-360 mx-auto">
+                <div className="flex justify-between items-center px-4 sm:px-8 md:px-12 w-full max-w-360 mx-auto">
 
                     {/* Unified Brand Logo: MVF | MovieForecasts */}
                     <Link
                         to="/"
-                        className="font-display font-bold text-2xl sm:text-3xl tracking-tight text-primary hover:opacity-90 transition-opacity flex items-center gap-2 group"
+                        className="flex items-center gap-3 group shrink-0"
                     >
-                        <span className="font-extrabold tracking-tighter text-white group-hover:text-blue-400 transition-colors">MVF</span>
-                        <span className="text-blue-500/50 font-normal font-sans text-xl">|</span>
-                        <span className="font-display text-white">MovieForecasts</span>
+                        <div className="w-9 h-9 rounded-xl bg-linear-to-tr from-violet-600 via-indigo-500 to-cyan-400 flex items-center justify-center font-extrabold text-white text-sm shadow-md shadow-violet-500/25 group-hover:scale-105 transition-transform">
+                            MVF
+                        </div>
+                        <div className="flex flex-col">
+                            <span className="font-display font-bold text-lg sm:text-xl tracking-tight text-white group-hover:text-violet-300 transition-colors">
+                                MovieForecasts
+                            </span>
+                            <span className="text-[9px] uppercase tracking-widest text-violet-400 font-semibold -mt-1 hidden sm:block">
+                                Cinema Intelligence
+                            </span>
+                        </div>
                     </Link>
 
-                    {/* Desktop Navigation */}
-                    <nav className="hidden md:flex gap-8 items-center">
+                    {/* Desktop Navigation Pills */}
+                    <nav className="hidden md:flex items-center gap-1.5 p-1 rounded-full bg-white/3 border border-white/6 backdrop-blur-md">
                         <NavLink
                             to="/"
                             end
                             className={({ isActive }) =>
-                                isActive
-                                    ? "text-blue-400 font-semibold border-b-2 border-blue-500 pb-1 transition-all duration-200"
-                                    : "text-on-surface-variant font-medium hover:text-white transition-colors duration-200 hover:scale-[1.03]"
+                                `px-4 py-1.5 rounded-full text-xs font-semibold tracking-wide transition-all ${
+                                    isActive
+                                        ? "bg-white/10 text-white shadow-xs border border-white/10"
+                                        : "text-gray-400 hover:text-white hover:bg-white/4"
+                                }`
                             }
                         >
                             Home
@@ -121,9 +132,11 @@ function Header() {
                         <NavLink
                             to="/trending"
                             className={({ isActive }) =>
-                                isActive
-                                    ? "text-blue-400 font-semibold border-b-2 border-blue-500 pb-1 transition-all duration-200"
-                                    : "text-on-surface-variant font-medium hover:text-white transition-colors duration-200 hover:scale-[1.03]"
+                                `px-4 py-1.5 rounded-full text-xs font-semibold tracking-wide transition-all ${
+                                    isActive
+                                        ? "bg-white/10 text-white shadow-xs border border-white/10"
+                                        : "text-gray-400 hover:text-white hover:bg-white/4"
+                                }`
                             }
                         >
                             Trending
@@ -132,9 +145,11 @@ function Header() {
                         <NavLink
                             to="/upcoming"
                             className={({ isActive }) =>
-                                isActive
-                                    ? "text-blue-400 font-semibold border-b-2 border-blue-500 pb-1 transition-all duration-200"
-                                    : "text-on-surface-variant font-medium hover:text-white transition-colors duration-200 hover:scale-[1.03]"
+                                `px-4 py-1.5 rounded-full text-xs font-semibold tracking-wide transition-all ${
+                                    isActive
+                                        ? "bg-white/10 text-white shadow-xs border border-white/10"
+                                        : "text-gray-400 hover:text-white hover:bg-white/4"
+                                }`
                             }
                         >
                             Upcoming
@@ -142,11 +157,11 @@ function Header() {
 
                         <button
                             onClick={() => setIsWatchlistOpen(true)}
-                            className="relative text-on-surface-variant font-medium hover:text-white transition-colors duration-200 hover:scale-[1.03] cursor-pointer flex items-center gap-1.5"
+                            className="px-4 py-1.5 rounded-full text-xs font-semibold tracking-wide text-gray-400 hover:text-white hover:bg-white/4 transition-all flex items-center gap-1.5 cursor-pointer"
                         >
                             <span>Watchlist</span>
                             {savedWatchlist.length > 0 && (
-                                <span className="bg-blue-600 text-white text-[10px] font-bold rounded-full w-4 h-4 flex items-center justify-center shadow-[0_0_10px_rgba(59,130,246,0.5)]">
+                                <span className="bg-violet-600 text-white text-[10px] font-bold rounded-full px-1.5 py-0.2 shadow-[0_0_10px_rgba(139,92,246,0.6)]">
                                     {savedWatchlist.length}
                                 </span>
                             )}
@@ -154,56 +169,59 @@ function Header() {
 
                         <button
                             onClick={() => setIsReviewsOpen(true)}
-                            className="text-on-surface-variant font-medium hover:text-white transition-colors duration-200 hover:scale-[1.03] cursor-pointer"
+                            className="px-4 py-1.5 rounded-full text-xs font-semibold tracking-wide text-gray-400 hover:text-white hover:bg-white/4 transition-all cursor-pointer"
                         >
                             Reviews
                         </button>
                     </nav>
 
                     {/* Action Tools */}
-                    <div className="flex items-center gap-5 text-primary">
+                    <div className="flex items-center gap-3">
                         {isSearchOpen ? (
-                            <form onSubmit={handleSearchSubmit} className="relative flex items-center">
+                            <form onSubmit={handleSearchSubmit} className="relative flex items-center animate-fadeIn">
                                 <input
                                     ref={searchInputRef}
                                     type="text"
-                                    placeholder="Search library, hype ratings..."
+                                    placeholder="Search titles, actors, genres..."
                                     value={searchQuery}
                                     onChange={(e) => setSearchQuery(e.target.value)}
-                                    className="w-48 sm:w-64 bg-surface-container text-white text-xs sm:text-sm rounded-full py-1.5 pl-4 pr-8 border border-white/30 focus:outline-none focus:ring-1 focus:ring-primary transition-all"
+                                    className="w-48 sm:w-64 bg-[#14151b] text-white text-xs rounded-full py-1.5 pl-4 pr-8 border border-white/15 focus:outline-none focus:border-violet-500 transition-all shadow-inner"
                                 />
                                 <button
                                     type="button"
                                     onClick={() => setIsSearchOpen(false)}
-                                    className="absolute right-2.5 text-on-surface-variant hover:text-white"
+                                    className="absolute right-2.5 text-gray-400 hover:text-white"
                                 >
-                                    <span className="material-symbols-outlined text-lg">close</span>
+                                    <span className="material-symbols-outlined text-base">close</span>
                                 </button>
                             </form>
                         ) : (
                             <button
                                 aria-label="Search"
                                 onClick={() => setIsSearchOpen(true)}
-                                className="hover:scale-105 transition-transform duration-200 cursor-pointer"
+                                className="w-9 h-9 rounded-full bg-white/4 border border-white/6 hover:border-white/20 text-gray-300 hover:text-white flex items-center justify-center transition-all cursor-pointer hover:scale-105 active:scale-95"
+                                title="Search"
                             >
-                                <span className="material-symbols-outlined text-2xl">search</span>
+                                <span className="material-symbols-outlined text-lg">search</span>
                             </button>
                         )}
 
                         <button
                             aria-label="Watchlist Drawer"
                             onClick={() => setIsWatchlistOpen(true)}
-                            className="hover:scale-105 transition-transform duration-200 cursor-pointer relative"
+                            className="w-9 h-9 rounded-full bg-white/4 border border-white/6 hover:border-white/20 text-gray-300 hover:text-white flex items-center justify-center transition-all cursor-pointer hover:scale-105 active:scale-95 relative"
+                            title="Watchlist"
                         >
-                            <span className="material-symbols-outlined text-2xl">notifications</span>
+                            <span className="material-symbols-outlined text-lg">bookmark</span>
                             {savedWatchlist.length > 0 && (
-                                <span className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-white animate-pulse"></span>
+                                <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-violet-400 animate-pulse"></span>
                             )}
                         </button>
+
                         {loggedin ? (
                             <Link
                                 to="/account"
-                                className="hover:scale-105 transition-transform duration-200 w-9 h-9 rounded-full overflow-hidden border border-white/20 cursor-pointer shrink-0"
+                                className="w-9 h-9 rounded-full overflow-hidden border border-white/20 hover:border-violet-400 transition-all cursor-pointer shrink-0 hover:scale-105"
                                 title="Account"
                             >
                                 <img
@@ -213,27 +231,26 @@ function Header() {
                                 />
                             </Link>
                         ) : (
-                            <div className="flex items-center gap-2.5">
+                            <div className="flex items-center gap-2">
                                 <Link
                                     to="/auth/login"
-                                    className="px-4 py-1.5 text-xs sm:text-sm font-medium text-on-surface-variant hover:text-white rounded-full transition-all duration-200 hover:bg-white/10 border border-transparent hover:border-white/15 cursor-pointer active:scale-95"
+                                    className="px-3.5 py-1.5 text-xs font-semibold text-gray-300 hover:text-white rounded-full transition-all hover:bg-white/6 border border-transparent hover:border-white/10 cursor-pointer active:scale-95"
                                 >
-                                    Log In
+                                    Sign In
                                 </Link>
                                 <Link
                                     to="/auth/signup"
-                                    className="px-4.5 py-1.5 text-xs sm:text-sm font-semibold text-white bg-linear-to-r from-blue-600 via-blue-500 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 rounded-full shadow-[0_0_15px_rgba(37,99,235,0.4)] hover:shadow-[0_0_22px_rgba(37,99,235,0.6)] transition-all duration-200 hover:scale-[1.04] active:scale-95 cursor-pointer"
+                                    className="px-4 py-1.5 text-xs font-semibold text-white bg-linear-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 rounded-full shadow-md shadow-violet-600/25 hover:shadow-violet-600/40 transition-all hover:scale-[1.02] active:scale-95 cursor-pointer"
                                 >
-                                    Sign Up
+                                    Get Started
                                 </Link>
                             </div>
                         )}
 
-
                         {/* Mobile Hamburger Toggle */}
                         <button
                             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                            className="md:hidden text-primary focus:outline-none ml-1"
+                            className="md:hidden text-gray-300 hover:text-white focus:outline-none ml-1 p-1"
                         >
                             <span className="material-symbols-outlined text-2xl">
                                 {isMobileMenuOpen ? "close" : "menu"}
@@ -244,84 +261,102 @@ function Header() {
 
                 {/* Mobile Navigation Drawer */}
                 {isMobileMenuOpen && (
-                    <div className="md:hidden bg-surface-container-low border-b border-white/10 px-6 py-4 flex flex-col gap-4">
+                    <div className="md:hidden bg-[#101117] border-b border-white/10 px-6 py-5 flex flex-col gap-4 animate-fadeIn">
                         <form onSubmit={handleSearchSubmit} className="relative">
                             <input
                                 type="text"
                                 placeholder="Search movies & forecasts..."
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
-                                className="w-full bg-surface-container text-white text-sm rounded-full py-2 pl-4 pr-10 border border-white/10 focus:border-white focus:outline-none"
+                                className="w-full bg-[#171821] text-white text-sm rounded-full py-2.5 pl-4 pr-10 border border-white/10 focus:border-violet-500 focus:outline-none"
                             />
-                            <button type="submit" className="absolute right-3 top-2 text-primary">
+                            <button type="submit" className="absolute right-3.5 top-2.5 text-gray-400">
                                 <span className="material-symbols-outlined text-xl">search</span>
                             </button>
                         </form>
 
-                        <div className="flex flex-col gap-3 font-medium text-sm">
+                        <div className="flex flex-col gap-2 font-medium text-sm">
                             <NavLink
                                 to="/"
                                 end
                                 onClick={() => setIsMobileMenuOpen(false)}
-                                className={({ isActive }) => (isActive ? "text-primary font-bold" : "text-on-surface-variant")}
+                                className={({ isActive }) =>
+                                    `py-2 px-3 rounded-lg transition-colors ${
+                                        isActive ? "bg-white/10 text-white font-bold" : "text-gray-400 hover:text-white"
+                                    }`
+                                }
                             >
                                 Home
                             </NavLink>
                             <NavLink
                                 to="/trending"
                                 onClick={() => setIsMobileMenuOpen(false)}
-                                className={({ isActive }) => (isActive ? "text-primary font-bold" : "text-on-surface-variant")}
+                                className={({ isActive }) =>
+                                    `py-2 px-3 rounded-lg transition-colors ${
+                                        isActive ? "bg-white/10 text-white font-bold" : "text-gray-400 hover:text-white"
+                                    }`
+                                }
                             >
                                 Trending
                             </NavLink>
                             <NavLink
                                 to="/upcoming"
                                 onClick={() => setIsMobileMenuOpen(false)}
-                                className={({ isActive }) => (isActive ? "text-primary font-bold" : "text-on-surface-variant")}
+                                className={({ isActive }) =>
+                                    `py-2 px-3 rounded-lg transition-colors ${
+                                        isActive ? "bg-white/10 text-white font-bold" : "text-gray-400 hover:text-white"
+                                    }`
+                                }
                             >
-                                Upcoming
+                                Upcoming Releases
                             </NavLink>
                             <button
                                 onClick={() => {
                                     setIsWatchlistOpen(true);
                                     setIsMobileMenuOpen(false);
                                 }}
-                                className="text-left text-on-surface-variant hover:text-white"
+                                className="py-2 px-3 rounded-lg text-left text-gray-400 hover:text-white flex items-center justify-between"
                             >
-                                Watchlist ({savedWatchlist.length})
+                                <span>Watchlist</span>
+                                {savedWatchlist.length > 0 && (
+                                    <span className="bg-violet-600 text-white text-xs font-bold px-2 py-0.5 rounded-full">
+                                        {savedWatchlist.length}
+                                    </span>
+                                )}
                             </button>
                             <button
                                 onClick={() => {
                                     setIsReviewsOpen(true);
                                     setIsMobileMenuOpen(false);
                                 }}
-                                className="text-left text-on-surface-variant hover:text-white"
+                                className="py-2 px-3 rounded-lg text-left text-gray-400 hover:text-white"
                             >
                                 Editorial Reviews
                             </button>
+
                             {loggedin ? (
                                 <Link
                                     to="/account"
                                     onClick={() => setIsMobileMenuOpen(false)}
-                                    className="text-left text-primary font-bold"
+                                    className="py-2 px-3 rounded-lg text-left text-white font-bold bg-white/5"
                                 >
                                     My Account
                                 </Link>
                             ) : (
-                                <div className="flex flex-col gap-2 pt-2 border-t border-white/10">
+                                <div className="flex flex-col gap-2 pt-3 border-t border-white/10">
                                     <Link
-                                        to="/login"
+                                        to="/auth/login"
                                         onClick={() => setIsMobileMenuOpen(false)}
-                                        className="w-full text-center py-2 text-sm font-semibold text-white bg-white/5 hover:bg-white/10 border border-white/10 rounded-full transition-all"
+                                        className="w-full text-center py-2.5 text-xs font-semibold text-white bg-white/5 hover:bg-white/10 border border-white/10 rounded-full transition-all"
                                     >
-                                        Log In
+                                        Sign In
                                     </Link>
                                     <Link
-                                        to="/signup"
+                                        to="/auth/signup"
                                         onClick={() => setIsMobileMenuOpen(false)}
-                                        className="w-full text-center py-2 text-sm font-semibold text-white bg-linear-to-r from-blue-600 to-indigo-600 rounded-full shadow-[0_0_12px_rgba(37,99,235,0.4)] transition-all"
+                                        className="w-full text-center py-2.5 text-xs font-semibold text-white bg-linear-to-r from-violet-600 to-indigo-600 rounded-full shadow-md shadow-violet-600/25 transition-all"
                                     >
-                                        Sign Up
+                                        Create Free Account
                                     </Link>
                                 </div>
                             )}

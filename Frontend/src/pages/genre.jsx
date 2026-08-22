@@ -58,7 +58,9 @@ function Genre() {
     const fetchGenreMovies = async () => {
         setLoading(true);
         try {
-            const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/genre/${genreId}`);
+            const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/genre/${genreId}`, {
+                credentials: "include"
+            });
             if (res.ok) {
                 const data = await res.json();
                 if (data.success && data.data?.results?.length > 0) {
@@ -67,12 +69,9 @@ function Genre() {
                     return;
                 }
             }
-            // Fallback match by ID
-            const matched = GENRE_FALLBACKS.filter(m => m.genre_ids.includes(Number(genreId)));
-            setMovies(matched.length > 0 ? matched : GENRE_FALLBACKS);
+            setMovies(GENRE_FALLBACKS);
         } catch {
-            const matched = GENRE_FALLBACKS.filter(m => m.genre_ids.includes(Number(genreId)));
-            setMovies(matched.length > 0 ? matched : GENRE_FALLBACKS);
+            setMovies(GENRE_FALLBACKS);
         } finally {
             setLoading(false);
         }
@@ -83,30 +82,33 @@ function Genre() {
     }, [genreId]);
 
     if (loading) {
-        return <LoadingScreen message={`Fetching ${genreName} Box Office Analytics...`} />;
+        return <LoadingScreen message={`Exploring ${genreName} Archive...`} />;
     }
 
     return (
-        <div className="min-h-screen bg-background text-on-background px-6 sm:px-12 py-28 max-w-360 mx-auto">
-            <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 border-b border-white/10 pb-6 gap-4">
+        <div className="min-h-screen bg-[#0a0b0e] text-[#e5e2e1] px-4 sm:px-8 md:px-12 py-28 max-w-360 mx-auto">
+            {/* Header */}
+            <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 border-b border-white/8 pb-6 gap-4">
                 <div>
-                    <span className="font-body text-xs font-bold uppercase tracking-widest text-on-surface-variant">
-                        Genre Catalog
+                    <span className="text-xs font-bold uppercase tracking-widest text-violet-400">
+                        Genre Category Showcase
                     </span>
-                    <h1 className="font-display text-4xl sm:text-5xl font-bold text-primary mt-1">
-                        {genreName} Collection
+                    <h1 className="font-display text-3xl sm:text-4xl md:text-5xl font-bold text-white mt-1 tracking-tight">
+                        {genreName} Cinema
                     </h1>
                 </div>
-                <span className="bg-white/10 text-white border border-white/20 px-3.5 py-1 rounded-full text-xs font-semibold uppercase tracking-wider">
-                    {movies.length} {movies.length === 1 ? "Movie" : "Movies"} Cataloged
-                </span>
+                <p className="text-xs sm:text-sm text-gray-400">
+                    Showing {movies.length} curated {genreName} titles
+                </p>
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 sm:gap-8">
+            {/* Movies Grid */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5 sm:gap-6">
                 {movies.map((movie) => {
                     const posterUrl = movie.poster_path
                         ? (movie.poster_path.startsWith("http") ? movie.poster_path : `https://image.tmdb.org/t/p/w500${movie.poster_path}`)
                         : GENRE_FALLBACKS[0].poster_path;
+                    const rating = movie.vote_average ? movie.vote_average.toFixed(1) : "8.5";
 
                     return (
                         <div
@@ -114,26 +116,29 @@ function Genre() {
                             onClick={() => navigate(`/movie/${movie.id}`)}
                             className="group cursor-pointer"
                         >
-                            <div className="relative aspect-2/3 rounded-lg overflow-hidden cinematic-glow mb-4 card-hover-lift bg-surface-container border border-white/5">
+                            <div className="relative aspect-2/3 rounded-xl overflow-hidden mb-3 card-hover-lift bg-[#13141a] border border-white/8">
                                 <img
                                     src={posterUrl}
                                     alt={movie.title}
-                                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                                    className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-104"
                                     loading="lazy"
                                 />
-                                
-                                <div className="absolute top-3 right-3 glass-panel px-2.5 py-1 rounded flex items-center gap-1">
-                                    <span className="material-symbols-outlined text-[14px] text-tertiary-fixed filled">star</span>
-                                    <span className="font-body text-xs font-semibold text-primary">
-                                        {movie.vote_average ? movie.vote_average.toFixed(1) : "8.5"}
-                                    </span>
+
+                                {/* Rating Badge */}
+                                <div className="absolute top-2.5 right-2.5 px-2 py-0.5 rounded-full bg-black/60 backdrop-blur-md border border-white/10 flex items-center gap-1">
+                                    <span className="material-symbols-outlined text-[12px] text-amber-400 filled">star</span>
+                                    <span className="text-[11px] font-bold text-white">{rating}</span>
+                                </div>
+
+                                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                                    <span className="material-symbols-outlined text-4xl text-white">play_circle</span>
                                 </div>
                             </div>
 
-                            <h3 className="font-body font-semibold text-base text-primary truncate group-hover:text-white transition-colors">
+                            <h3 className="font-semibold text-sm text-white truncate group-hover:text-violet-300 transition-colors">
                                 {movie.title}
                             </h3>
-                            <p className="font-body text-xs text-on-surface-variant mt-1">
+                            <p className="text-xs text-gray-400 mt-0.5">
                                 {movie.release_date ? movie.release_date.split("-")[0] : "2024"}
                             </p>
                         </div>
