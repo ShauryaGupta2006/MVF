@@ -128,10 +128,19 @@ body {
     100% { transform: translateX(100%); }
 }
 
+@keyframes ambientGlow {
+    0%, 100% { opacity: 0.35; transform: scale(1); }
+    50% { opacity: 0.65; transform: scale(1.08); }
+}
+
 .animate-spin-reverse {
     animation: spinReverse 6s linear infinite;
 }
 
 .animate-shimmer {
     animation: shimmerProgress 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.animate-glow-pulse {
+    animation: ambientGlow 8s ease-in-out infinite;
 }

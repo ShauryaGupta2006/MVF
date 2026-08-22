@@ -9,7 +9,16 @@ const jwt = require("jsonwebtoken");
 const authRoutes = require("./src/routes/auth.js")
 const database = require("./src/config/db.js")
 
-app.use(cors());
+app.use(cors({
+    origin: (origin, callback) => {
+        // Allow requests with no origin (e.g. mobile apps, curl) or localhost dev servers
+        if (!origin || origin.startsWith("http://localhost") || origin.startsWith("http://127.0.0.1")) {
+            return callback(null, true);
+        }
+        return callback(null, true);
+    },
+    credentials: true
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());

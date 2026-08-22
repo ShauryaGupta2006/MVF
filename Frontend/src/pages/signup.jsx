@@ -43,6 +43,7 @@ export default function Signup() {
                 headers: {
                     "Content-Type": "application/json"
                 },
+                credentials: "include",
                 body: JSON.stringify({
                     name,
                     username,
@@ -72,8 +73,8 @@ export default function Signup() {
     return (
         <div className="min-h-screen bg-[#131314] text-[#e5e2e3] flex flex-col justify-center items-center p-4 sm:p-8 relative overflow-hidden font-sans selection:bg-violet-500/30 selection:text-violet-200">
             {/* Ambient Background Orbs & Radial Grid */}
-            <div className="absolute top-[-15%] left-1/2 -translate-x-1/2 w-160 h-160 bg-violet-600/15 rounded-full blur-[150px] pointer-events-none" />
-            <div className="absolute bottom-[-15%] right-[-10%] w-130 h-130 bg-emerald-500/10 rounded-full blur-[150px] pointer-events-none" />
+            <div className="absolute top-[-15%] left-1/2 -translate-x-1/2 w-160 h-160 bg-violet-600/15 rounded-full blur-[150px] pointer-events-none animate-glow-pulse" />
+            <div className="absolute bottom-[-15%] right-[-10%] w-130 h-130 bg-emerald-500/10 rounded-full blur-[150px] pointer-events-none animate-glow-pulse" style={{ animationDelay: '4s' }} />
             <div className="absolute inset-0 bg-[radial-gradient(#ffffff0a_1px,transparent_1px)] bg-size-[24px_24px] pointer-events-none opacity-50" />
 
             <div 
@@ -97,10 +98,10 @@ export default function Signup() {
                 {/* Main Centered Signup Card */}
                 <div className="relative bg-[#1c1b1c]/80 border border-white/10 backdrop-blur-2xl p-6 sm:p-8 rounded-2xl shadow-2xl space-y-6 overflow-hidden">
                     
-                    {/* Moving Accent Light Beam along top border using h-0.5 */}
-                    <div className="absolute top-0 left-0 right-0 h-0.5 bg-linear-to-r from-transparent via-violet-400 to-transparent animate-shimmer opacity-80 pointer-events-none" />
+                    {/* Sleek Static Top Border Accent Line */}
+                    <div className="absolute top-0 inset-x-8 h-px bg-linear-to-r from-transparent via-violet-500/60 to-transparent pointer-events-none" />
 
-                    {/* Active Loading Progress Bar transition when submitting using h-0.75 */}
+                    {/* Active Loading Progress Bar (only during submission) */}
                     {loading && (
                         <div className="absolute top-0 left-0 right-0 h-0.75 bg-linear-to-r from-violet-600 via-indigo-400 to-emerald-400 animate-shimmer z-20" />
                     )}

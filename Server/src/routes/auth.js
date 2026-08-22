@@ -45,25 +45,49 @@ route.post("/signup", async (req, res) => {
 
         await newUser.save();
 
-        const token = jwt.sign({ email: email }, process.env.JWT_SECRET, { expiresIn: "20d", algorithm: "HS256"})
+        const token = jwt.sign({ id: newUser._id, email: newUser.email }, process.env.JWT_SECRET, { expiresIn: "20d", algorithm: "HS256" });
 
-
-
-        return res.status(201).json({ success: true, message: "User Registered Successfully" }).cookie("token", token, {
+        return res.cookie("token", token, {
             httpOnly: true,
-            secure: true,
+            secure: process.env.NODE_ENV === "production",
             maxAge: 1000 * 60 * 60 * 24 * 20,
-            sameSite: 'strict'
-        });
+            sameSite: 'lax'
+        }).status(201).json({ success: true, message: "User Registered Successfully" });
     } catch (err) { 
         return res.status(500).json({ success: false, message: err.message });
     }
 })
 
-route.post("/login",(req,res)=>{
-    const {email,password} = req.body;
-    console.log(email,password);
-    res.json({success:true,message:"Login Successful"})
+route.post("/login", async (req, res) => {
+    try {
+        const { email, password } = req.body;
+
+        if (!email || !password) {
+            return res.status(400).json({ success: false, message: "Email and password are required" });
+        }
+
+        const user = await User.findOne({ email });
+
+        if (user) {
+            // Email found, checking password
+            const isPasswordValid = await bcrypt.compare(password, user.password);
+            if (isPasswordValid) {
+                const token = jwt.sign({ id: user._id, email: user.email }, process.env.JWT_SECRET, { expiresIn: "20d", algorithm: "HS256" });
+                return res.cookie("token", token, {
+                    httpOnly: true,
+                    secure: process.env.NODE_ENV === "production",
+                    maxAge: 1000 * 60 * 60 * 24 * 20,
+                    sameSite: 'lax'
+                }).status(201).json({ success: true, message: "Login Successful" });
+            } else {
+                return res.status(401).json({ success: false, message: "Invalid Credentials" });
+            }
+        } else {
+            return res.status(401).json({ success: false, message: "Invalid Credentials" });
+        }
+    } catch (err) {
+        return res.status(500).json({ success: false, message: err.message });
+    }
 })
 
 module.exports = route;

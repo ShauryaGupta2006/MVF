@@ -75,6 +75,7 @@ function Header() {
             headers: {
                 "Content-Type": "application/json",
             },
+            credentials: "include",
             body: JSON.stringify({})
         });
         const data = await response.json();
