@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import LoadingScreen from "../components/loadingScreen";
-import BirthdayWish from "../components/BirthdayWish";
 
 const MOCK_FEATURED_MOVIES = [
     {
@@ -561,8 +560,7 @@ function Home() {
                 </div>
             </section>
 
-            {/* Birthday Wish Component for Father */}
-            <BirthdayWish targetUrl="https://birthday-magic-rr5v.vercel.app/" />
+
 
             {/* 6. Trailer Video Modal */}
             {activeTrailerKey && (
