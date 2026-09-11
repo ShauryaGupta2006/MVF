@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import GoogleLogin from "../components/GoogleLogin";
+import Logo from "../components/Logo";
 
 export default function Signup() {
     const [name, setName] = useState("");
@@ -85,15 +86,7 @@ export default function Signup() {
             >
                 {/* Centered Brand Header */}
                 <div className="flex flex-col items-center text-center space-y-3">
-                    <Link to="/" className="flex items-center gap-3 group">
-                        <div className="w-11 h-11 rounded-xl bg-linear-to-tr from-violet-600 to-indigo-500 flex items-center justify-center font-bold text-white shadow-lg shadow-violet-500/30 tracking-widest text-xl group-hover:scale-105 transition-transform">
-                            MVF
-                        </div>
-                        <div className="text-left">
-                            <span className="font-bold text-2xl tracking-tight text-white block">MovieForecasts</span>
-                            <span className="text-[10px] uppercase font-semibold text-violet-400 tracking-widest block">AI Intelligence Platform</span>
-                        </div>
-                    </Link>
+                    <Logo size="lg" subtitle="AI Intelligence Platform" />
                 </div>
 
                 {/* Main Centered Signup Card */}

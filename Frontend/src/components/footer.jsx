@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import Logo from "./Logo";
 
 function Footer() {
     return (
@@ -6,14 +7,7 @@ function Footer() {
             <div className="max-w-360 mx-auto grid grid-cols-1 md:grid-cols-4 gap-10 mb-12">
                 {/* Brand Column */}
                 <div className="space-y-3 md:col-span-2">
-                    <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-xl bg-linear-to-tr from-violet-600 to-indigo-500 flex items-center justify-center font-extrabold text-white text-xs shadow-md shadow-violet-500/25">
-                            MVF
-                        </div>
-                        <span className="font-display text-xl font-bold tracking-tight text-white">
-                            MovieForecasts
-                        </span>
-                    </div>
+                    <Logo size="md" subtitle="" />
                     <p className="text-xs text-gray-400 max-w-md leading-relaxed">
                         The next-generation film intelligence and box office discovery platform. Real-time predictions, curated reviews, and theatrical tracking powered by algorithmic analysis.
                     </p>
