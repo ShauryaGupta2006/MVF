@@ -41,7 +41,11 @@ export default function Login() {
             });
 
             const data = await res.json();
-            if ((res.status === 201) && data.success === true) {
+            if ((res.ok || res.status === 201 || res.status === 200) && data.success === true) {
+                if (data.token) {
+                    localStorage.setItem("token", data.token);
+                }
+                window.dispatchEvent(new Event("auth_state_changed"));
                 setValidUser(true);
                 setSuccess(data.message || "Login successful! Redirecting...");
                 setTimeout(() => {
@@ -60,11 +64,16 @@ export default function Login() {
 
     const IsLoggedIn = async () => {
         try {
+            const token = localStorage.getItem("token");
+            const headers = {
+                "Content-Type": "application/json"
+            };
+            if (token) {
+                headers["Authorization"] = `Bearer ${token}`;
+            }
             const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/auth/isloggedin`, {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
+                headers,
                 credentials: "include"
             });
             const data = await res.json();

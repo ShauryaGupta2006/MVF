@@ -57,6 +57,10 @@ export default function Signup() {
 
             const data = await res.json();
             if ((res.ok || res.status === 201) && data.success) {
+                if (data.token) {
+                    localStorage.setItem("token", data.token);
+                }
+                window.dispatchEvent(new Event("auth_state_changed"));
                 setSuccess(data.message || "Account created successfully! Redirecting...");
                 setTimeout(() => {
                     navigate("/");

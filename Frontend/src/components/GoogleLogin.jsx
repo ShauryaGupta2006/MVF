@@ -58,6 +58,10 @@ export default function GoogleLogin({ onSuccess }) {
 
       const data = await res.json();
       console.log("Google login response:", data);
+      if (data.token) {
+        localStorage.setItem("token", data.token);
+      }
+      window.dispatchEvent(new Event("auth_state_changed"));
       if (onSuccess) {
         onSuccess(data);
       }

@@ -4,9 +4,18 @@ const jwt = require("jsonwebtoken")
 const User = require("../models/User.js")
 const bcrypt = require("bcrypt")
 
+const isProduction = process.env.NODE_ENV === "production";
+
+const getCookieOptions = () => ({
+    httpOnly: true,
+    secure: isProduction,
+    sameSite: isProduction ? "none" : "lax",
+    maxAge: 1000 * 60 * 60 * 24 * 20,
+});
+
 route.post("/isloggedin", async (req, res) => {
     try {
-        const token = req.cookies.token;
+        const token = req.cookies?.token || req.headers.authorization?.replace(/^Bearer\s+/i, "");
         if (!token) {
             return res.json({ loggedin: false });
         }
@@ -16,7 +25,7 @@ route.post("/isloggedin", async (req, res) => {
         if (!user) {
             return res.json({ loggedin: false });
         }
-        return res.json({ loggedin: true });
+        return res.json({ loggedin: true, user: { id: user._id, name: user.name, username: user.username, email: user.email, avatar: user.avatar } });
     } catch (err) {
         return res.status(401).json({ loggedin: false, error: err.message });
     }
@@ -47,12 +56,7 @@ route.post("/signup", async (req, res) => {
 
         const token = jwt.sign({ id: newUser._id, email: newUser.email }, process.env.JWT_SECRET, { expiresIn: "20d", algorithm: "HS256" });
 
-        return res.cookie("token", token, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            maxAge: 1000 * 60 * 60 * 24 * 20,
-            sameSite: 'lax'
-        }).status(201).json({ success: true, message: "User Registered Successfully" });
+        return res.cookie("token", token, getCookieOptions()).status(201).json({ success: true, message: "User Registered Successfully", token });
     } catch (err) { 
         return res.status(500).json({ success: false, message: err.message });
     }
@@ -73,12 +77,7 @@ route.post("/login", async (req, res) => {
             const isPasswordValid = await bcrypt.compare(password, user.password);
             if (isPasswordValid) {
                 const token = jwt.sign({ id: user._id, email: user.email }, process.env.JWT_SECRET, { expiresIn: "20d", algorithm: "HS256" });
-                return res.cookie("token", token, {
-                    httpOnly: true,
-                    secure: process.env.NODE_ENV === "production",
-                    maxAge: 1000 * 60 * 60 * 24 * 20,
-                    sameSite: 'lax'
-                }).status(201).json({ success: true, message: "Login Successful" });
+                return res.cookie("token", token, getCookieOptions()).status(201).json({ success: true, message: "Login Successful", token });
             } else {
                 return res.status(401).json({ success: false, message: "Invalid Credentials" });
             }
@@ -142,14 +141,10 @@ route.post("/google", async (req, res) => {
 
         const token = jwt.sign({ id: user._id, email: user.email }, process.env.JWT_SECRET, { expiresIn: "20d", algorithm: "HS256" });
 
-        return res.cookie("token", token, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            maxAge: 1000 * 60 * 60 * 24 * 20,
-            sameSite: "lax"
-        }).status(200).json({
+        return res.cookie("token", token, getCookieOptions()).status(200).json({
             success: true,
             message: "Google login successful",
+            token,
             user: {
                 id: user._id,
                 name: user.name,
@@ -162,6 +157,15 @@ route.post("/google", async (req, res) => {
         console.error("Google Auth Error:", err);
         return res.status(401).json({ success: false, message: "Google authentication failed", error: err.message });
     }
+});
+
+route.post("/logout", (req, res) => {
+    res.clearCookie("token", {
+        httpOnly: true,
+        secure: isProduction,
+        sameSite: isProduction ? "none" : "lax",
+    });
+    return res.json({ success: true, message: "Logged out successfully" });
 });
 
 module.exports = route;

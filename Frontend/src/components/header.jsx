@@ -73,16 +73,22 @@ function Header() {
 
     async function isloggedin() {
         try {
+            const token = localStorage.getItem("token");
+            const headers = {
+                "Content-Type": "application/json",
+            };
+            if (token) {
+                headers["Authorization"] = `Bearer ${token}`;
+            }
+
             const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/auth/isloggedin`, {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
+                headers,
                 credentials: "include",
                 body: JSON.stringify({})
             });
             const data = await response.json();
-            setLoggedin(data.loggedin);
+            setLoggedin(Boolean(data.loggedin));
         } catch {
             setLoggedin(false);
         }
@@ -90,6 +96,8 @@ function Header() {
 
     useEffect(() => {
         isloggedin();
+        window.addEventListener("auth_state_changed", isloggedin);
+        return () => window.removeEventListener("auth_state_changed", isloggedin);
     }, []);
 
     return (
