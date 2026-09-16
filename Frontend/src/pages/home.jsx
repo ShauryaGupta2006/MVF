@@ -1,138 +1,124 @@
 import { useState, useEffect, useRef } from "react";
-import { useNavigate, Link } from "react-router-dom";
-import LoadingScreen from "../components/loadingScreen";
+import { useNavigate } from "react-router-dom";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation, Pagination, Autoplay, EffectFade } from "swiper/modules";
 
-const MOCK_FEATURED_MOVIES = [
-    {
-        id: 101,
-        title: "Neon Horizon",
-        overview: "In a sprawling megalopolis where memories are currency, a rogue archivist uncovers a conspiracy that threatens to erase the city's past entirely. A visually stunning journey through the neon-drenched underbelly of tomorrow.",
-        backdrop_path: "https://lh3.googleusercontent.com/aida-public/AB6AXuDZvaRR5wzv1dCyHZ88iWaSlJTFbPmoe804z-j7J5_Kn4-taIVaId4Y0wgjsua1BzPg0ZmcUBLRM_4FUx4EtayhkAEDmgVzEQCEeSC1GETWKwBpiwQAzf042BDdjyVe4CpMeNFCvhuDdgEeJGdD-FwWfPG17_1bUlXGUMm4Lm3LT2a-PdPU5M3IVWyC7GhrOzGUCdaA7-DoaDXUTj8D92NHQfpoaDfABb1xK_07SiTYMexcatRmjaT_",
-        poster_path: "https://lh3.googleusercontent.com/aida-public/AB6AXuDZvaRR5wzv1dCyHZ88iWaSlJTFbPmoe804z-j7J5_Kn4-taIVaId4Y0wgjsua1BzPg0ZmcUBLRM_4FUx4EtayhkAEDmgVzEQCEeSC1GETWKwBpiwQAzf042BDdjyVe4CpMeNFCvhuDdgEeJGdD-FwWfPG17_1bUlXGUMm4Lm3LT2a-PdPU5M3IVWyC7GhrOzGUCdaA7-DoaDXUTj8D92NHQfpoaDfABb1xK_07SiTYMexcatRmjaT_",
-        vote_average: 9.2,
-        hype_score: "96%",
-        genre_name: "Sci-Fi Thriller",
-        release_date: "2024-03-15",
-        runtime: "2h 14m",
-        forecast_box_office: "$185M+",
-        sentiment: "94% Positive",
-        trailer_key: "L61p2uyiMSo"
-    },
-    {
-        id: 102,
-        title: "The Crimson Void",
-        overview: "A minimalist, high-tension psychological thriller set aboard a deep space research outpost trapped in the shadow of an uncharted cosmic singularity.",
-        poster_path: "https://lh3.googleusercontent.com/aida-public/AB6AXuBj3Dc3EGKUjecizNECPpcNxKrH-ruEKe8ZsNe6vU2fJV-5cWh4LlD0aBrJnOF96q-IsGd7tYf0UFE2o0vRbCVtzXO3rrEUeOkQXRfYpdVGiD7uikQwbhSdxa3Yb2M0yNDgL90B0HE46AD8eculRM7hwlYwjFgV3lLKPOx54WuG_HJJmsPmiy9_I41UL_Try642O5aLd6w0zzqgsh5rBAUSESMffuGJJoPo2P4Q-k1Pmd-KsWUtH8eY",
-        vote_average: 8.9,
-        hype_score: "94%",
-        genre_name: "Psychological Thriller",
-        release_date: "2024-05-20",
-        runtime: "1h 58m",
-        forecast_box_office: "$120M+",
-        sentiment: "91% Positive",
-        trailer_key: "8g18jFHCLXk"
-    },
-    {
-        id: 103,
-        title: "Midnight Broadcast",
-        overview: "An elegant film noir drama capturing a lonely late-night radio host who begins receiving mysterious calls predicting events before they unfold.",
-        poster_path: "https://lh3.googleusercontent.com/aida-public/AB6AXuAunIZhNERCrd9QpK8BEPcaJNxwbmtXDHCJJUY_EFutqyJ7CSQis8BifosvaWff91lIGvdcTb2PcnlkHO-LBjofbA1UYTEQV60IwJAv3YWze8I-h61GAxWH3n6CHWK_G4e9_ZToc6DzGen_6rmRr12qXseENxsssM4BffJfkLMX37dqCL8EsjlQR_oMwB_APvL73DwEdS2uVIjoVMU54PdSaipa98HY60uwwreI12kJhNgPAA4_LoOJ",
-        vote_average: 9.4,
-        hype_score: "98%",
-        genre_name: "Drama • Noir",
-        release_date: "2024-02-10",
-        runtime: "2h 05m",
-        forecast_box_office: "$95M+",
-        sentiment: "96% Positive",
-        trailer_key: "Way9Dexny3w"
-    },
-    {
-        id: 104,
-        title: "Echoes of the Estate",
-        overview: "A surreal gothic fantasy following an architect tasked with restoring a grand European manor that mysteriously shifts layout every midnight.",
-        poster_path: "https://lh3.googleusercontent.com/aida-public/AB6AXuDGwndbP8iVi7KokY6-_ppy3kdmJwjOMHeNxbaicFwjlAu3pd9jFYC2QSYdVKNpoPGDYzOQ48vwWbckmipaDhqQmh-MnbStY_mDV5aT4buTQnULUa6xBwCDfMH04N5o5mWkxMrcVHMWAXVYuV9RKZ5xAXsOfkCwZBrsZ_9-Ac7UXYwf7BHfAUnIq6_-K7l38BGc_CXAJUabjkD4Vsp7hQlAidOv9xM0HV12pN_0-AQdkNOnJdvnLfBh",
-        vote_average: 7.8,
-        hype_score: "88%",
-        genre_name: "Mystery • Fantasy",
-        release_date: "2024-04-01",
-        runtime: "1h 50m",
-        forecast_box_office: "$65M+",
-        sentiment: "87% Positive",
-        trailer_key: "YoHD9XEInc0"
-    },
-    {
-        id: 105,
-        title: "Alleyway Saints",
-        overview: "A gritty action thriller focusing on a seasoned detective battling against corrupt city officials in a neon-drenched metropolis.",
-        poster_path: "https://lh3.googleusercontent.com/aida-public/AB6AXuCkUWLqhiwTJDRiXyz8bVhq1tOePlHAHSMIfQVFN2b0FYoEw942UBwsiO58EDQiHHS5Y8IInr8GnZT_Jgz_fM9MZYLqBlmgOsd1da-l6GBRA0Cp_BsefkBHkXRyqTUDFR04_VNEV_B6WirIOZQw483Q0boooNn_o1HEnguCUdlfDfRaFWLPP1sJQVFZuIF6nh3zaONgh1VOwv5MEd0V9EmmVPiXc_m6goVEiS9fpnV1pZnzLTI19oPP",
-        vote_average: 8.5,
-        hype_score: "90%",
-        genre_name: "Crime Action",
-        release_date: "2024-01-28",
-        runtime: "2h 10m",
-        forecast_box_office: "$140M+",
-        sentiment: "89% Positive",
-        trailer_key: "d9MyW72ELq0"
-    }
-];
 
-const MOCK_UPCOMING_PREMIERES = [
-    {
-        id: 201,
-        title: "Chronos Protocol",
-        overview: "A temporal archivist travels to 1920s Paris to prevent the unraveling of quantum history.",
-        poster_path: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=600&q=80",
-        release_date: "Oct 15, 2026",
-        genre_name: "Sci-Fi",
-        hype: "95%"
-    },
-    {
-        id: 202,
-        title: "Whispers in the Mist",
-        overview: "An isolated lighthouse keeper discovers ancient maritime symbols etched into deep coastal ice.",
-        poster_path: "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?auto=format&fit=crop&w=600&q=80",
-        release_date: "Nov 04, 2026",
-        genre_name: "Gothic Mystery",
-        hype: "91%"
-    },
-    {
-        id: 203,
-        title: "Symphony of Shadows",
-        overview: "In 18th century Vienna, an avant-garde composer invokes forgotten spectral forces.",
-        poster_path: "https://images.unsplash.com/photo-1465847899084-d164df4dedc6?auto=format&fit=crop&w=600&q=80",
-        release_date: "Dec 01, 2026",
-        genre_name: "Period Drama",
-        hype: "89%"
-    }
-];
+
+// Swiper Styles
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
+import "swiper/css/effect-fade";
+
+
 
 const GENRE_CATEGORIES = [
-    { id: "all", name: "All Genres", icon: "movie" },
+    { id: "all", name: "All Featured", icon: "local_fire_department" },
+    { id: "28", name: "Action", icon: "bolt" },
     { id: "878", name: "Sci-Fi", icon: "rocket_launch" },
-    { id: "28", name: "Action", icon: "local_fire_department" },
-    { id: "53", name: "Thriller", icon: "bolt" },
+    { id: "12", name: "Adventure", icon: "explore" },
+    { id: "16", name: "Animation", icon: "animation" },
     { id: "18", name: "Drama", icon: "theater_comedy" },
-    { id: "27", name: "Horror", icon: "psychology" },
-    { id: "80", name: "Crime", icon: "fingerprint" },
-    { id: "16", name: "Animation", icon: "auto_awesome" }
+    { id: "53", name: "Thriller", icon: "psychology" },
+    { id: "80", name: "Crime", icon: "local_police" },
+    { id: "9648", name: "Mystery", icon: "visibility" },
+    { id: "35", name: "Comedy", icon: "mood" }
+];
+
+// Rich Explore Genre Showcase Cards
+const EXPLORE_GENRES = [
+    { id: 28, name: "Action", icon: "bolt", gradient: "from-orange-500 to-red-600", count: "120+ Films" },
+    { id: 878, name: "Sci-Fi", icon: "rocket_launch", gradient: "from-cyan-500 to-blue-600", count: "95+ Films" },
+    { id: 12, name: "Adventure", icon: "explore", gradient: "from-amber-400 to-orange-500", count: "80+ Films" },
+    { id: 16, name: "Animation", icon: "animation", gradient: "from-pink-500 to-purple-600", count: "65+ Films" },
+    { id: 18, name: "Drama", icon: "theater_comedy", gradient: "from-violet-500 to-indigo-600", count: "150+ Films" },
+    { id: 53, name: "Thriller", icon: "psychology", gradient: "from-red-600 to-zinc-800", count: "110+ Films" },
+    { id: 80, name: "Crime", icon: "local_police", gradient: "from-emerald-500 to-teal-700", count: "70+ Films" },
+    { id: 35, name: "Comedy", icon: "mood", gradient: "from-yellow-400 to-amber-600", count: "85+ Films" }
 ];
 
 function Home() {
     const [movies, setMovies] = useState([]);
-    const [status, setStatus] = useState("loading");
+    const [trendingMovies, setTrendingMovies] = useState([]);
+    const [upcomingMovies, setUpcomingMovies] = useState([]);
+    const [state, setState] = useState("loading"); // loading, found, error
     const [selectedGenre, setSelectedGenre] = useState("all");
-    const [watchlist, setWatchlist] = useState([]);
     const [activeTrailerKey, setActiveTrailerKey] = useState(null);
-    const [trailerMovieTitle, setTrailerMovieTitle] = useState("");
+    const [activeTrailerTitle, setActiveTrailerTitle] = useState("");
 
-    const carouselRef = useRef(null);
+    // Swiper instance references for 100% deterministic, instant navigation control
+    const heroSwiperRef = useRef(null);
+    const genreNavSwiperRef = useRef(null);
+    const featuredCardsSwiperRef = useRef(null);
+    const upcomingCardsSwiperRef = useRef(null);
+    const exploreCardsSwiperRef = useRef(null);
+
     const navigate = useNavigate();
 
-    const scrollCarousel = (direction) => {
-        if (carouselRef.current) {
-            const scrollAmount = direction === "left" ? -340 : 340;
-            carouselRef.current.scrollBy({ left: scrollAmount, behavior: "smooth" });
+    // Lazy initialization for watchlist to prevent setState cascading effect in useEffect
+    const [watchlist, setWatchlist] = useState(() => {
+        try {
+            const list = JSON.parse(localStorage.getItem("cineaste_watchlist") || "[]");
+            return list.map((m) => m.id);
+        } catch {
+            return [];
         }
+    });
+
+    const getTrendingMovies = async () => {
+        try {
+            const backendUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:4400";
+            const res = await fetch(`${backendUrl}/trending`, {
+                credentials: "include"
+            });
+
+            if (res.ok) {
+                const resData = await res.json();
+                if ((resData.success === true || resData.success === "success") && resData.data?.results?.length > 0) {
+                    const results = resData.data.results;
+                    setTrendingMovies(results);
+                    setMovies(results.slice(0, 8));
+                    setState("found");
+                    return;
+                }
+            }
+            else {
+                setState("error")
+                return;
+            }
+        } catch {
+            setState("error")
+            return;
+        }
+    };
+
+    const getUpcomingMovies = async () => {
+        try {
+            const backendUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:4400";
+            const res = await fetch(`${backendUrl}/upcoming`, {
+                credentials: "include"
+            });
+
+            if (res.ok) {
+                const resData = await res.json();
+                if ((resData.success === true || resData.success === "success") && resData.data?.results?.length > 0) {
+                    setUpcomingMovies(resData.data.results);
+                    return;
+                }
+            }
+        } catch (err) {
+            console.error("Failed to fetch upcoming movies:", err);
+        }
+    };
+
+
+
+    const getImageUrl = (path, size = "original") => {
+        if (!path) return "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=1200&q=80";
+        if (path.startsWith("http")) return path;
+        const base = size === "original" ? "https://image.tmdb.org/t/p/original" : "https://image.tmdb.org/t/p/w500";
+        return `${base}${path}`;
     };
 
     const syncWatchlist = () => {
@@ -144,67 +130,24 @@ function Home() {
         }
     };
 
-    useEffect(() => {
-        syncWatchlist();
-        window.addEventListener("watchlist_updated", syncWatchlist);
-        return () => window.removeEventListener("watchlist_updated", syncWatchlist);
-    }, []);
-
-    const fetchMovies = async () => {
-        setStatus("loading");
-        try {
-            const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/trending`, {
-                credentials: "include"
-            });
-            if (res.ok) {
-                const data = await res.json();
-                if (data.success && data.data?.results?.length > 0) {
-                    setMovies(data.data.results);
-                    setStatus("success");
-                    return;
-                }
-            }
-            setMovies(MOCK_FEATURED_MOVIES);
-            setStatus("success");
-        } catch {
-            setMovies(MOCK_FEATURED_MOVIES);
-            setStatus("success");
-        }
-    };
-
-    useEffect(() => {
-        fetchMovies();
-    }, []);
-
-    const heroMovie = movies.length > 0 ? movies[0] : MOCK_FEATURED_MOVIES[0];
-    const heroBackdrop = heroMovie.backdrop_path
-        ? (heroMovie.backdrop_path.startsWith("http") ? heroMovie.backdrop_path : `https://image.tmdb.org/t/p/original${heroMovie.backdrop_path}`)
-        : MOCK_FEATURED_MOVIES[0].backdrop_path;
-
-    const heroRating = heroMovie.vote_average ? heroMovie.vote_average.toFixed(1) : "9.2";
-    const heroYear = heroMovie.release_date ? heroMovie.release_date.split("-")[0] : "2024";
-    const heroGenre = heroMovie.genre_name || "Sci-Fi Thriller";
-    const heroRuntime = heroMovie.runtime || "2h 14m";
-    const heroHype = heroMovie.hype_score || "96%";
-
-    const toggleWatchlist = (movieObj, e) => {
+    const toggleWatchlist = (movie, e) => {
         if (e) e.stopPropagation();
         try {
             const currentList = JSON.parse(localStorage.getItem("cineaste_watchlist") || "[]");
-            const exists = currentList.some((item) => item.id === movieObj.id);
+            const exists = currentList.some((item) => item.id === movie.id);
             let updated;
             if (exists) {
-                updated = currentList.filter((item) => item.id !== movieObj.id);
+                updated = currentList.filter((item) => item.id !== movie.id);
             } else {
                 updated = [
                     ...currentList,
                     {
-                        id: movieObj.id,
-                        title: movieObj.title,
-                        poster_path: movieObj.poster_path,
-                        vote_average: movieObj.vote_average,
-                        release_date: movieObj.release_date,
-                        genre: movieObj.genre_name || "Cinema"
+                        id: movie.id,
+                        title: movie.title,
+                        poster_path: movie.poster_path,
+                        vote_average: movie.vote_average,
+                        release_date: movie.release_date,
+                        genre: movie.genre_name || "Cinema"
                     }
                 ];
             }
@@ -212,367 +155,611 @@ function Home() {
             setWatchlist(updated.map((m) => m.id));
             window.dispatchEvent(new Event("watchlist_updated"));
         } catch (err) {
-            console.error("Watchlist error", err);
+            console.error("Failed to update watchlist:", err);
         }
     };
 
-    const openTrailer = (movieObj) => {
-        const key = movieObj.trailer_key || "L61p2uyiMSo";
-        setActiveTrailerKey(key);
-        setTrailerMovieTitle(movieObj.title);
+    useEffect(() => {
+        
+        getTrendingMovies();
+        getUpcomingMovies();
+        
+    }, []);
+
+    const openTrailer = async (movie, e) => {
+        if (e) e.stopPropagation();
+        if (movie.trailer_key) {
+            setActiveTrailerKey(movie.trailer_key);
+            setActiveTrailerTitle(movie.title);
+            return;
+        }
+
+        try {
+            const backendUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:4400";
+            const res = await fetch(`${backendUrl}/movie/${movie.id}`, { credentials: "include" });
+            if (res.ok) {
+                const data = await res.json();
+                const videos = data.data?.videos?.results || [];
+                const official = videos.find((v) => v.site === "YouTube" && (v.type === "Trailer" || v.type === "Teaser"));
+                if (official?.key) {
+                    setActiveTrailerKey(official.key);
+                    setActiveTrailerTitle(movie.title);
+                    return;
+                }
+            }
+        } catch (err) {
+            console.error("Trailer fetch error:", err);
+        }
+
+
+        setActiveTrailerTitle(movie.title);
     };
 
-    if (status === "loading") {
-        return <LoadingScreen message="Initializing MovieForecasts Engine..." />;
+    // Filter featured titles dynamically by selected genre category
+    const filteredMovies = movies.filter((movie) => {
+        if (selectedGenre === "all") return true;
+        if (movie.genre_ids && Array.isArray(movie.genre_ids)) {
+            if (movie.genre_ids.includes(Number(selectedGenre))) return true;
+        }
+        const targetGenreObj = GENRE_CATEGORIES.find((g) => g.id === selectedGenre);
+        if (targetGenreObj && movie.genre_name) {
+            return movie.genre_name.toLowerCase().includes(targetGenreObj.name.toLowerCase());
+        }
+        return false;
+    });
+
+    const displayedMovies = filteredMovies.length > 0 ? filteredMovies : movies;
+    const currentGenreObj = GENRE_CATEGORIES.find((g) => g.id === selectedGenre) || GENRE_CATEGORIES[0];
+
+
+
+    if (state === "loading") {
+        return (
+            <div className="min-h-screen bg-[#0a0b0e] text-white flex flex-col items-center justify-center p-6">
+                <div className="w-full max-w-6xl space-y-6 animate-pulse">
+                    <div className="w-full h-[65vh] rounded-3xl bg-white/5 border border-white/8 relative overflow-hidden">
+                        <div className="absolute inset-0 bg-linear-to-r from-transparent via-white/5 to-transparent animate-shimmer" />
+                    </div>
+                    <div className="flex gap-4">
+                        {[1, 2, 3, 4, 5].map((item) => (
+                            <div key={item} className="flex-1 aspect-2/3 rounded-2xl bg-white/5" />
+                        ))}
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
+    if (state === "error") {
+        return (
+            <div className="min-h-screen bg-[#0a0b0e] text-white flex flex-col items-center justify-center p-6 text-center">
+                <div className="p-8 rounded-3xl bg-red-950/20 border border-red-500/20 backdrop-blur-xl max-w-md">
+                    <span className="material-symbols-outlined text-4xl text-red-400 mb-3">error</span>
+                    <h2 className="text-xl font-bold mb-2">Unable to load movies</h2>
+                    <p className="text-sm text-gray-400 mb-6">Could not retrieve cinema data. Please check your connection.</p>
+                    <button
+                        onClick={() => {
+                            window.location.reload();
+                        }}
+                        className="px-6 py-2.5 rounded-full bg-white text-black font-semibold text-xs hover:bg-white/90 transition-all cursor-pointer"
+                    >
+                        Try Again
+                    </button>
+                </div>
+            </div>
+        );
     }
 
     return (
-        <div className="min-h-screen bg-[#0a0b0e] text-[#e5e2e1] pt-20 pb-32">
-            
-            {/* 1. Cinematic Hero Spotlight */}
-            <section className="max-w-360 mx-auto px-4 sm:px-8 md:px-12 pt-4 pb-10">
-                <div className="relative w-full h-[72vh] min-h-150 rounded-2xl overflow-hidden group border border-white/8 shadow-2xl bg-[#111218]">
-                    
-                    {/* Background Backdrop with Parallax Scale */}
-                    <div
-                        className="absolute inset-0 w-full h-full bg-cover bg-center transition-transform duration-1000 ease-out group-hover:scale-103"
-                        style={{ backgroundImage: `url('${heroBackdrop}')` }}
-                    />
+        <div className="min-h-screen bg-[#0a0b0e] text-[#e5e2e1] pb-28 selection:bg-violet-500/40 selection:text-white">
 
-                    {/* Gradient & Vignette Overlays */}
-                    <div className="absolute inset-0 bg-linear-to-t from-[#0a0b0e] via-[#0a0b0e]/70 to-transparent" />
-                    <div className="absolute inset-0 bg-linear-to-r from-[#0a0b0e] via-[#0a0b0e]/60 to-transparent w-full md:w-3/4" />
-                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_80%,rgba(99,102,241,0.15),transparent_60%)] pointer-events-none" />
-
-                    {/* Hero Content */}
-                    <div className="absolute bottom-0 left-0 p-6 sm:p-10 md:p-14 w-full md:w-3/4 flex flex-col gap-4 z-10">
-                        
-                        {/* Meta Badges */}
-                        <div className="flex flex-wrap items-center gap-2.5">
-                            {/* AI Hype Score Badge */}
-                            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-violet-500/20 border border-violet-500/30 text-violet-300 text-xs font-bold tracking-wide backdrop-blur-md shadow-xs shadow-violet-500/20">
-                                <span className="w-2 h-2 rounded-full bg-violet-400 animate-pulse" />
-                                {heroHype} Hype Index
-                            </span>
-
-                            {/* Genre Pill */}
-                            <span className="px-3 py-1 rounded-full bg-white/8 border border-white/12 text-xs font-semibold text-gray-200 backdrop-blur-md">
-                                {heroGenre}
-                            </span>
-
-                            {/* Quality Tag */}
-                            <span className="px-2.5 py-0.5 rounded bg-white/5 border border-white/8 text-[11px] font-bold text-gray-400 uppercase tracking-widest">
-                                4K UHD • HDR
-                            </span>
-
-                            {/* Rating */}
-                            <span className="text-xs font-semibold text-amber-300 flex items-center gap-1 bg-amber-500/10 px-2.5 py-1 rounded-full border border-amber-500/20">
-                                <span className="material-symbols-outlined text-sm filled text-amber-400">star</span>
-                                {heroRating}
-                            </span>
-
-                            <span className="text-xs font-medium text-gray-400">
-                                {heroYear} • {heroRuntime}
-                            </span>
-                        </div>
-
-                        {/* Title */}
-                        <h1 className="font-display font-extrabold text-3xl sm:text-5xl md:text-6xl text-white tracking-tight leading-[1.1] drop-shadow-xl">
-                            {heroMovie.title}
-                        </h1>
-
-                        {/* Overview */}
-                        <p className="text-sm sm:text-base text-gray-300 line-clamp-3 max-w-2xl leading-relaxed opacity-90 drop-shadow-md">
-                            {heroMovie.overview}
-                        </p>
-
-                        {/* Actions */}
-                        <div className="flex flex-wrap items-center gap-3 pt-2">
-                            <button
-                                onClick={() => openTrailer(heroMovie)}
-                                className="bg-white text-black hover:bg-white/90 font-semibold text-xs sm:text-sm px-6 py-3 rounded-full transition-all shadow-lg shadow-white/10 hover:shadow-white/20 active:scale-95 flex items-center gap-2 cursor-pointer font-sans"
-                            >
-                                <span className="material-symbols-outlined filled text-lg text-black">play_arrow</span>
-                                Watch Trailer
-                            </button>
-
-                            <button
-                                onClick={() => navigate(`/movie/${heroMovie.id}`)}
-                                className="bg-white/8 hover:bg-white/14 border border-white/15 text-white font-semibold text-xs sm:text-sm px-5 py-3 rounded-full transition-all active:scale-95 flex items-center gap-2 cursor-pointer backdrop-blur-md"
-                            >
-                                <span className="material-symbols-outlined text-base text-violet-400">info</span>
-                                View Details
-                            </button>
-
-                            <button
-                                onClick={(e) => toggleWatchlist(heroMovie, e)}
-                                className={`font-semibold text-xs sm:text-sm px-5 py-3 rounded-full transition-all active:scale-95 flex items-center gap-2 cursor-pointer backdrop-blur-md ${
-                                    watchlist.includes(heroMovie.id)
-                                        ? "bg-violet-600/30 border border-violet-400/50 text-violet-200"
-                                        : "bg-white/4 border border-white/15 text-gray-200 hover:bg-white/8"
-                                }`}
-                            >
-                                <span className="material-symbols-outlined text-base">
-                                    {watchlist.includes(heroMovie.id) ? "check" : "bookmark_add"}
-                                </span>
-                                {watchlist.includes(heroMovie.id) ? "Saved in Watchlist" : "Watchlist"}
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            {/* 2. Genre Categories Bar */}
-            <section className="max-w-360 mx-auto px-4 sm:px-8 md:px-12 mb-10">
-                <div className="flex items-center gap-2 overflow-x-auto hide-scrollbar pb-2">
-                    {GENRE_CATEGORIES.map((genre) => {
-                        const isActive = selectedGenre === genre.id;
-                        return (
-                            <button
-                                key={genre.id}
-                                onClick={() => {
-                                    setSelectedGenre(genre.id);
-                                    if (genre.id !== "all") {
-                                        navigate(`/genre/${genre.id}?name=${encodeURIComponent(genre.name)}`);
-                                    }
-                                }}
-                                className={`px-4 py-2 rounded-full text-xs font-semibold whitespace-nowrap transition-all flex items-center gap-1.5 cursor-pointer shrink-0 ${
-                                    isActive
-                                        ? "bg-white text-black shadow-md shadow-white/10 scale-100"
-                                        : "bg-white/3 text-gray-400 hover:text-white hover:bg-white/7 border border-white/6"
-                                }`}
-                            >
-                                <span className="material-symbols-outlined text-sm">{genre.icon}</span>
-                                <span>{genre.name}</span>
-                            </button>
-                        );
-                    })}
-                </div>
-            </section>
-
-            {/* 3. Trending Now Carousel */}
-            <section className="max-w-360 mx-auto px-4 sm:px-8 md:px-12 space-y-6 mb-16">
-                <div className="flex items-end justify-between">
-                    <div>
-                        <h2 className="font-display text-2xl sm:text-3xl font-bold text-white tracking-tight">
-                            Trending Cinema
-                        </h2>
-                        <p className="text-xs text-gray-400 mt-1">
-                            Real-time box office velocity, ratings & audience excitement
-                        </p>
-                    </div>
-
-                    {/* Carousel Nav Controls */}
-                    <div className="flex items-center gap-2">
-                        <button
-                            onClick={() => scrollCarousel("left")}
-                            aria-label="Scroll left"
-                            className="w-8 h-8 rounded-full bg-white/4 border border-white/8 hover:border-white/20 text-gray-300 hover:text-white flex items-center justify-center transition-all cursor-pointer active:scale-95"
-                        >
-                            <span className="material-symbols-outlined text-base">chevron_left</span>
-                        </button>
-                        <button
-                            onClick={() => scrollCarousel("right")}
-                            aria-label="Scroll right"
-                            className="w-8 h-8 rounded-full bg-white/4 border border-white/8 hover:border-white/20 text-gray-300 hover:text-white flex items-center justify-center transition-all cursor-pointer active:scale-95"
-                        >
-                            <span className="material-symbols-outlined text-base">chevron_right</span>
-                        </button>
-                        <Link
-                            to="/trending"
-                            className="text-xs font-semibold text-violet-400 hover:text-violet-300 ml-2 hidden sm:flex items-center gap-1 transition-colors"
-                        >
-                            Explore All <span className="material-symbols-outlined text-sm">arrow_forward</span>
-                        </Link>
-                    </div>
-                </div>
-
-                {/* Poster Card Carousel */}
-                <div
-                    ref={carouselRef}
-                    className="flex overflow-x-auto gap-5 pb-6 hide-scrollbar -mx-4 px-4 sm:mx-0 sm:px-0"
+            {/* 1. CINEMATIC HERO CAROUSEL SECTION */}
+            <section className="relative w-full overflow-hidden group/hero">
+                <Swiper
+                    modules={[Navigation, Pagination, Autoplay, EffectFade]}
+                    effect="fade"
+                    speed={800}
+                    autoplay={{
+                        delay: 6000,
+                        disableOnInteraction: false,
+                        pauseOnMouseEnter: true
+                    }}
+                    pagination={{
+                        clickable: true,
+                        el: ".hero-swiper-pagination",
+                        bulletClass: "hero-bullet inline-block w-2.5 h-2.5 rounded-full bg-white/30 cursor-pointer transition-all duration-300",
+                        bulletActiveClass: "!w-8 !bg-white !rounded-full shadow-lg shadow-white/30"
+                    }}
+                    loop={movies.length > 1}
+                    onSwiper={(swiper) => {
+                        heroSwiperRef.current = swiper;
+                    }}
+                    className="w-full h-[78vh] min-h-150"
                 >
                     {movies.map((movie) => {
-                        const posterUrl = movie.poster_path
-                            ? (movie.poster_path.startsWith("http") ? movie.poster_path : `https://image.tmdb.org/t/p/w500${movie.poster_path}`)
-                            : MOCK_FEATURED_MOVIES[1].poster_path;
-                        const rating = movie.vote_average ? movie.vote_average.toFixed(1) : "8.8";
+                        const backdrop = getImageUrl(movie.backdrop_path, "original");
+                        const rating = movie.vote_average ? Number(movie.vote_average).toFixed(1) : "8.5";
+                        const year = movie.release_date ? movie.release_date.split("-")[0] : "2024";
+                        const genre = movie.genre_name || (GENRE_CATEGORIES.find((g) => g.id === String(movie.genre_ids?.[0]))?.name) || "Cinema";
+                        const hype = movie.hype_score || `${Math.min(99, Math.round((movie.vote_average || 8) * 10 + 5))}%`;
+                        const runtime = movie.runtime || "2h 15m";
                         const isSaved = watchlist.includes(movie.id);
 
                         return (
-                            <div
-                                key={movie.id}
-                                className="flex-none w-44 sm:w-56 group cursor-pointer"
-                                onClick={() => navigate(`/movie/${movie.id}`)}
-                            >
-                                <div className="relative aspect-2/3 rounded-xl overflow-hidden mb-3 card-hover-lift bg-[#13141a] border border-white/8">
-                                    <img
-                                        src={posterUrl}
-                                        alt={movie.title}
-                                        className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-104"
-                                        loading="lazy"
-                                    />
+                            <SwiperSlide key={movie.id} className="relative w-full h-full bg-[#0e0f14]">
+                                {/* Background Image */}
+                                <div
+                                    className="absolute inset-0 w-full h-full bg-cover bg-center transition-transform duration-1000 ease-out"
+                                    style={{ backgroundImage: `url('${backdrop}')` }}
+                                />
 
-                                    {/* Star Rating Pill */}
-                                    <div className="absolute top-2.5 right-2.5 px-2 py-0.5 rounded-full bg-black/60 backdrop-blur-md border border-white/10 flex items-center gap-1">
-                                        <span className="material-symbols-outlined text-[12px] text-amber-400 filled">star</span>
-                                        <span className="text-[11px] font-bold text-white">{rating}</span>
-                                    </div>
+                                {/* Multi-layer gradient overlays for depth and legibility */}
+                                <div className="absolute inset-0 bg-linear-to-t from-[#0a0b0e] via-[#0a0b0e]/60 to-black/30" />
+                                <div className="absolute inset-0 bg-linear-to-r from-[#0a0b0e] via-[#0a0b0e]/75 to-transparent w-full lg:w-3/4" />
+                                <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_80%,rgba(99,102,241,0.18),transparent_60%)] pointer-events-none" />
 
-                                    {/* Watchlist Quick Toggle */}
-                                    <button
-                                        onClick={(e) => toggleWatchlist(movie, e)}
-                                        className={`absolute top-2.5 left-2.5 w-7 h-7 rounded-full flex items-center justify-center backdrop-blur-md transition-all active:scale-90 ${
-                                            isSaved
-                                                ? "bg-violet-600 text-white shadow-md shadow-violet-600/40"
-                                                : "bg-black/50 text-gray-300 hover:text-white border border-white/10 hover:bg-black/70"
-                                        }`}
-                                        title={isSaved ? "Remove from watchlist" : "Add to watchlist"}
-                                    >
-                                        <span className="material-symbols-outlined text-xs">
-                                            {isSaved ? "check" : "bookmark"}
-                                        </span>
-                                    </button>
+                                {/* Slide Content Overlay */}
+                                <div className="relative z-10 max-w-7xl mx-auto h-full px-6 sm:px-10 md:px-14 flex flex-col justify-end pb-16 md:pb-20">
+                                    <div className="max-w-2xl space-y-4 animate-fadeIn">
 
-                                    {/* Hover Trailer Play Trigger */}
-                                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                                        <div
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                openTrailer(movie);
-                                            }}
-                                            className="w-11 h-11 rounded-full bg-white/90 text-black flex items-center justify-center shadow-lg hover:scale-110 transition-transform cursor-pointer"
-                                        >
-                                            <span className="material-symbols-outlined text-2xl filled text-black">play_arrow</span>
+                                        {/* Metadata Pills */}
+                                        <div className="flex flex-wrap items-center gap-2">
+                                            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-violet-500/20 border border-violet-500/40 text-violet-300 text-xs font-bold backdrop-blur-md">
+                                                <span className="w-2 h-2 rounded-full bg-violet-400 animate-pulse" />
+                                                {hype} Hype Index
+                                            </span>
+
+                                            <span className="px-3 py-1 rounded-full bg-white/10 border border-white/15 text-xs font-semibold text-gray-200 backdrop-blur-md">
+                                                {genre}
+                                            </span>
+
+                                            <span className="px-2.5 py-0.5 rounded bg-white/5 border border-white/10 text-[11px] font-bold text-gray-400 uppercase tracking-wider">
+                                                4K • HDR
+                                            </span>
+
+                                            <span className="text-xs font-semibold text-amber-300 flex items-center gap-1 bg-amber-500/10 px-2.5 py-1 rounded-full border border-amber-500/20">
+                                                <span className="material-symbols-outlined text-sm filled text-amber-400">star</span>
+                                                {rating}
+                                            </span>
+
+                                            <span className="text-xs font-medium text-gray-400">
+                                                {year} • {runtime}
+                                            </span>
+                                        </div>
+
+                                        {/* Movie Title */}
+                                        <h1 className="font-display font-extrabold text-3xl sm:text-5xl md:text-6xl text-white tracking-tight leading-tight drop-shadow-xl">
+                                            {movie.title}
+                                        </h1>
+
+                                        {/* Overview */}
+                                        <p className="text-sm sm:text-base text-gray-300 line-clamp-3 leading-relaxed max-w-xl drop-shadow-md">
+                                            {movie.overview}
+                                        </p>
+
+                                        {/* Action Buttons */}
+                                        <div className="flex flex-wrap items-center gap-3 pt-3">
+                                            <button
+                                                onClick={(e) => openTrailer(movie, e)}
+                                                className="bg-white text-black hover:bg-white/90 font-semibold text-xs sm:text-sm px-6 py-3 rounded-full transition-all shadow-lg shadow-white/10 hover:shadow-white/20 active:scale-95 flex items-center gap-2 cursor-pointer font-sans"
+                                            >
+                                                <span className="material-symbols-outlined filled text-lg text-black">play_arrow</span>
+                                                Watch Trailer
+                                            </button>
+
+                                            <button
+                                                onClick={() => navigate(`/movie/${movie.id}`)}
+                                                className="bg-white/10 hover:bg-white/20 border border-white/20 text-white font-semibold text-xs sm:text-sm px-5 py-3 rounded-full transition-all active:scale-95 flex items-center gap-2 cursor-pointer backdrop-blur-md"
+                                            >
+                                                <span className="material-symbols-outlined text-base text-violet-400">info</span>
+                                                View Details
+                                            </button>
+
+                                            <button
+                                                onClick={(e) => toggleWatchlist(movie, e)}
+                                                className={`font-semibold text-xs sm:text-sm px-5 py-3 rounded-full transition-all active:scale-95 flex items-center gap-2 cursor-pointer backdrop-blur-md ${isSaved
+                                                    ? "bg-violet-600/40 border border-violet-400/60 text-violet-200"
+                                                    : "bg-white/5 border border-white/15 text-gray-200 hover:bg-white/10"
+                                                    }`}
+                                            >
+                                                <span className="material-symbols-outlined text-base">
+                                                    {isSaved ? "check" : "bookmark_add"}
+                                                </span>
+                                                {isSaved ? "Saved" : "Watchlist"}
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
-
-                                <h3 className="font-semibold text-sm text-white truncate group-hover:text-violet-300 transition-colors">
-                                    {movie.title}
-                                </h3>
-                                <p className="text-xs text-gray-400 mt-0.5">
-                                    {movie.genre_name || (movie.release_date ? movie.release_date.split("-")[0] : "2024")}
-                                </p>
-                            </div>
+                            </SwiperSlide>
                         );
                     })}
-                </div>
+                </Swiper>
+
+                {/* Left / Right Hero Carousel Controls */}
+                <button
+                    onClick={() => heroSwiperRef.current?.slidePrev()}
+                    aria-label="Previous Slide"
+                    className="absolute left-4 sm:left-8 top-1/2 -translate-y-1/2 z-20 w-12 h-12 rounded-full bg-black/40 hover:bg-black/80 border border-white/15 hover:border-white/30 text-white flex items-center justify-center transition-all duration-300 backdrop-blur-xl opacity-0 group-hover/hero:opacity-100 hover:scale-105 active:scale-95 cursor-pointer"
+                >
+                    <span className="material-symbols-outlined text-2xl">chevron_left</span>
+                </button>
+
+                <button
+                    onClick={() => heroSwiperRef.current?.slideNext()}
+                    aria-label="Next Slide"
+                    className="absolute right-4 sm:right-8 top-1/2 -translate-y-1/2 z-20 w-12 h-12 rounded-full bg-black/40 hover:bg-black/80 border border-white/15 hover:border-white/30 text-white flex items-center justify-center transition-all duration-300 backdrop-blur-xl opacity-0 group-hover/hero:opacity-100 hover:scale-105 active:scale-95 cursor-pointer"
+                >
+                    <span className="material-symbols-outlined text-2xl">chevron_right</span>
+                </button>
+
+
+                <div className="hero-swiper-pagination absolute bottom-6 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2 px-4 py-2 rounded-full bg-black/30 backdrop-blur-md border border-white/10" />
             </section>
 
-            {/* 4. AI Movie Intelligence & Forecasting Cards */}
-            <section className="max-w-360 mx-auto px-4 sm:px-8 md:px-12 space-y-6 mb-16">
-                <div className="flex items-center gap-2">
-                    <span className="w-2.5 h-2.5 rounded-full bg-violet-400 animate-pulse" />
-                    <h2 className="font-display text-2xl sm:text-3xl font-bold text-white tracking-tight">
-                        AI Box Office Forecasts & Analytics
-                    </h2>
-                </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-                    {MOCK_FEATURED_MOVIES.slice(0, 3).map((item) => (
-                        <div
-                            key={item.id}
-                            onClick={() => navigate(`/movie/${item.id}`)}
-                            className="p-5 rounded-2xl bg-[#111218] border border-white/7 hover:border-violet-500/30 transition-all card-hover-lift cursor-pointer space-y-4 relative overflow-hidden group"
-                        >
-                            {/* Subtle Ambient Backlight */}
-                            <div className="absolute top-0 right-0 w-32 h-32 bg-violet-600/10 rounded-full blur-2xl pointer-events-none group-hover:bg-violet-600/20 transition-all" />
+          
+            <section className="max-w-7xl mx-auto px-6 sm:px-10 md:px-14 pt-14 space-y-7">
 
-                            <div className="flex items-center justify-between">
-                                <span className="px-2.5 py-1 rounded-full bg-violet-500/10 border border-violet-500/20 text-violet-300 text-[11px] font-bold">
-                                    {item.genre_name}
-                                </span>
-                                <span className="text-xs font-semibold text-emerald-400 flex items-center gap-1">
-                                    <span className="material-symbols-outlined text-sm">trending_up</span>
-                                    {item.sentiment}
-                                </span>
-                            </div>
 
-                            <div>
-                                <h3 className="font-display font-bold text-lg text-white group-hover:text-violet-300 transition-colors">
-                                    {item.title}
-                                </h3>
-                                <p className="text-xs text-gray-400 line-clamp-2 mt-1">
-                                    {item.overview}
-                                </p>
-                            </div>
-
-                            <div className="pt-3 border-t border-white/6 flex items-center justify-between">
-                                <div>
-                                    <span className="text-[10px] uppercase tracking-wider text-gray-400 font-semibold block">Opening Forecast</span>
-                                    <span className="text-base font-bold text-white tracking-tight">{item.forecast_box_office}</span>
-                                </div>
-                                <div className="text-right">
-                                    <span className="text-[10px] uppercase tracking-wider text-gray-400 font-semibold block">Hype Confidence</span>
-                                    <span className="text-base font-bold text-violet-400">{item.hype_score}</span>
-                                </div>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            </section>
-
-            {/* 5. Upcoming Premieres Spotlight */}
-            <section className="max-w-360 mx-auto px-4 sm:px-8 md:px-12 space-y-6">
-                <div className="flex items-end justify-between">
+                <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
                     <div>
-                        <h2 className="font-display text-2xl sm:text-3xl font-bold text-white tracking-tight">
-                            Premiere Calendar
+                        
+                        <h2 className="font-display text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+                            Trending Movies
                         </h2>
                         <p className="text-xs text-gray-400 mt-1">
-                            Anticipated film releases and festival debut dates
+                            Showing {displayedMovies.length} curated {currentGenreObj.name} cinematic selections
                         </p>
                     </div>
-                    <Link
-                        to="/upcoming"
-                        className="text-xs font-semibold text-violet-400 hover:text-violet-300 flex items-center gap-1 transition-colors"
-                    >
-                        View Full Calendar <span className="material-symbols-outlined text-sm">arrow_forward</span>
-                    </Link>
+
+                    <div className="flex items-center gap-3 self-end sm:self-auto">
+                        {selectedGenre !== "all" && (
+                            <button
+                                onClick={() => navigate(`/genre/${selectedGenre}?name=${encodeURIComponent(currentGenreObj.name)}`)}
+                                className="text-xs font-semibold text-violet-400 hover:text-violet-300 flex items-center gap-1 transition-colors cursor-pointer"
+                            >
+                                Full {currentGenreObj.name} Page
+                                <span className="material-symbols-outlined text-sm">arrow_forward</span>
+                            </button>
+                        )}
+
+                        {/* Featured Carousel Navigation Controls */}
+                        <div className="flex items-center gap-2">
+                            <button
+                                onClick={() => featuredCardsSwiperRef.current?.slidePrev()}
+                                aria-label="Scroll left"
+                                className="w-9 h-9 rounded-full bg-white/5 border border-white/10 hover:border-white/25 hover:bg-white/10 text-gray-300 hover:text-white flex items-center justify-center transition-all cursor-pointer active:scale-95 shadow-xs"
+                            >
+                                <span className="material-symbols-outlined text-lg">chevron_left</span>
+                            </button>
+                            <button
+                                onClick={() => featuredCardsSwiperRef.current?.slideNext()}
+                                aria-label="Scroll right"
+                                className="w-9 h-9 rounded-full bg-white/5 border border-white/10 hover:border-white/25 hover:bg-white/10 text-gray-300 hover:text-white flex items-center justify-center transition-all cursor-pointer active:scale-95 shadow-xs"
+                            >
+                                <span className="material-symbols-outlined text-lg">chevron_right</span>
+                            </button>
+                        </div>
+                    </div>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
-                    {MOCK_UPCOMING_PREMIERES.map((item) => (
-                        <div
-                            key={item.id}
-                            onClick={() => navigate(`/movie/${item.id}`)}
-                            className="flex items-center gap-4 p-4 rounded-2xl bg-[#111218] border border-white/6 hover:border-white/20 transition-all cursor-pointer card-hover-lift"
-                        >
-                            <img
-                                src={item.poster_path}
-                                alt={item.title}
-                                className="w-18 h-24 object-cover rounded-xl shrink-0 border border-white/10"
-                            />
-                            <div className="space-y-1">
-                                <span className="px-2.5 py-0.5 rounded-full bg-white/8 text-[10px] font-bold text-gray-300 uppercase tracking-wider inline-block">
-                                    {item.release_date}
-                                </span>
-                                <h4 className="font-display font-semibold text-sm text-white truncate">
-                                    {item.title}
-                                </h4>
-                                <p className="text-xs text-gray-400 line-clamp-2">
-                                    {item.overview}
-                                </p>
-                            </div>
+                <Swiper
+                    onSwiper={(swiper) => {
+                        featuredCardsSwiperRef.current = swiper;
+                    }}
+                    spaceBetween={20}
+                    slidesPerView={2}
+                    breakpoints={{
+                        640: { slidesPerView: 3, spaceBetween: 20 },
+                        768: { slidesPerView: 4, spaceBetween: 20 },
+                        1024: { slidesPerView: 5, spaceBetween: 24 },
+                        1280: { slidesPerView: 5, spaceBetween: 24 }
+                    }}
+                    className="pb-4"
+                >
+                    {trendingMovies.map((movies) => {
+                        const posterUrl = getImageUrl(movies.poster_path, "w500");
+                        const rating = movies.vote_average ? Number(movies.vote_average).toFixed(1) : "8.5";
+                        const isSaved = watchlist.includes(movies.id);
+                        const year = movies.release_date ? movies.release_date.split("-")[0] : "2024";
+
+                        return (
+                            <SwiperSlide key={movies.id}>
+                                <div
+                                    onClick={() => navigate(`/movie/${movies.id}`)}
+                                    className="group relative cursor-pointer flex flex-col rounded-2xl overflow-hidden bg-white/2 border border-white/8 hover:border-white/20 p-2.5 transition-all duration-300 hover:shadow-[0_12px_40px_rgba(0,0,0,0.7)] hover:-translate-y-1"
+                                >
+                                    {/* Poster Aspect Box */}
+                                    <div className="relative aspect-2/3 rounded-xl overflow-hidden bg-zinc-900">
+                                        <img
+                                            src={posterUrl}
+                                            alt={movies.title}
+                                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                            loading="lazy"
+                                        />
+
+                                        {/* Rating Pill */}
+                                        <div className="absolute top-2.5 right-2.5 px-2 py-0.5 rounded-full bg-black/70 backdrop-blur-md border border-white/10 flex items-center gap-1">
+                                            <span className="material-symbols-outlined text-xs text-amber-400 filled">star</span>
+                                            <span className="text-[11px] font-bold text-white">{rating}</span>
+                                        </div>
+
+                                        {/* Watchlist Toggle Button */}
+                                        <button
+                                            onClick={(e) => toggleWatchlist(movies, e)}
+                                            className={`absolute top-2.5 left-2.5 w-7 h-7 rounded-full flex items-center justify-center backdrop-blur-md transition-all active:scale-90 ${isSaved
+                                                ? "bg-violet-600 text-white shadow-md shadow-violet-600/40"
+                                                : "bg-black/60 text-gray-300 hover:text-white border border-white/10 hover:bg-black/80"
+                                                }`}
+                                            title={isSaved ? "Remove from watchlist" : "Add to watchlist"}
+                                        >
+                                            <span className="material-symbols-outlined text-xs">
+                                                {isSaved ? "check" : "bookmark"}
+                                            </span>
+                                        </button>
+
+                                        {/* Hover Overlay with Play Button */}
+                                        <div className="absolute inset-0 bg-black/45 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                                            <div
+                                                onClick={(e) => openTrailer(movies, e)}
+                                                className="w-11 h-11 rounded-full bg-white text-black flex items-center justify-center shadow-xl hover:scale-110 transition-transform cursor-pointer"
+                                            >
+                                                <span className="material-symbols-outlined text-2xl filled text-black">play_arrow</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Text Info */}
+                                    <div className="pt-3 px-1">
+                                        <h3 className="font-semibold text-sm text-white truncate group-hover:text-violet-300 transition-colors">
+                                            {movies.title}
+                                        </h3>
+                                        <div className="flex items-center justify-between text-xs text-gray-400 mt-1">
+                                            <span>{year}</span>
+                                            <span className="text-[11px] text-gray-500 font-medium">
+                                                {movies.genre_name || "Cinema"}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </SwiperSlide>
+                        );
+                    })}
+                </Swiper>
+            </section>
+
+            
+
+            <section className="max-w-7xl mx-auto px-6 sm:px-10 md:px-14 pt-14 space-y-7">
+
+
+                <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+                    <div>
+                        
+                        <h2 className="font-display text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+                            Upcoming Movies
+                        </h2>
+                        <p className="text-xs text-gray-400 mt-1">
+                            Showing {displayedMovies.length} curated {currentGenreObj.name} cinematic selections
+                        </p>
+                    </div>
+
+                    <div className="flex items-center gap-3 self-end sm:self-auto">
+                        {selectedGenre !== "all" && (
+                            <button
+                                onClick={() => navigate(`/genre/${selectedGenre}?name=${encodeURIComponent(currentGenreObj.name)}`)}
+                                className="text-xs font-semibold text-violet-400 hover:text-violet-300 flex items-center gap-1 transition-colors cursor-pointer"
+                            >
+                                Full {currentGenreObj.name} Page
+                                <span className="material-symbols-outlined text-sm">arrow_forward</span>
+                            </button>
+                        )}
+
+                        {/* Upcoming Carousel Navigation Controls */}
+                        <div className="flex items-center gap-2">
+                            <button
+                                onClick={() => upcomingCardsSwiperRef.current?.slidePrev()}
+                                aria-label="Scroll left"
+                                className="w-9 h-9 rounded-full bg-white/5 border border-white/10 hover:border-white/25 hover:bg-white/10 text-gray-300 hover:text-white flex items-center justify-center transition-all cursor-pointer active:scale-95 shadow-xs"
+                            >
+                                <span className="material-symbols-outlined text-lg">chevron_left</span>
+                            </button>
+                            <button
+                                onClick={() => upcomingCardsSwiperRef.current?.slideNext()}
+                                aria-label="Scroll right"
+                                className="w-9 h-9 rounded-full bg-white/5 border border-white/10 hover:border-white/25 hover:bg-white/10 text-gray-300 hover:text-white flex items-center justify-center transition-all cursor-pointer active:scale-95 shadow-xs"
+                            >
+                                <span className="material-symbols-outlined text-lg">chevron_right</span>
+                            </button>
                         </div>
-                    ))}
+                    </div>
                 </div>
+
+                <Swiper
+                    onSwiper={(swiper) => {
+                        upcomingCardsSwiperRef.current = swiper;
+                    }}
+                    spaceBetween={20}
+                    slidesPerView={2}
+                    breakpoints={{
+                        640: { slidesPerView: 3, spaceBetween: 20 },
+                        768: { slidesPerView: 4, spaceBetween: 20 },
+                        1024: { slidesPerView: 5, spaceBetween: 24 },
+                        1280: { slidesPerView: 5, spaceBetween: 24 }
+                    }}
+                    className="pb-4"
+                >
+                    {upcomingMovies.map((movies) => {
+                        const posterUrl = getImageUrl(movies.poster_path, "w500");
+                        const rating = movies.vote_average ? Number(movies.vote_average).toFixed(1) : "8.5";
+                        const isSaved = watchlist.includes(movies.id);
+                        const year = movies.release_date ? movies.release_date.split("-")[0] : "Coming Soon";
+
+                        return (
+                            <SwiperSlide key={movies.id}>
+                                <div
+                                    onClick={() => navigate(`/movie/${movies.id}`)}
+                                    className="group relative cursor-pointer flex flex-col rounded-2xl overflow-hidden bg-white/2 border border-white/8 hover:border-white/20 p-2.5 transition-all duration-300 hover:shadow-[0_12px_40px_rgba(0,0,0,0.7)] hover:-translate-y-1"
+                                >
+                                    {/* Poster Aspect Box */}
+                                    <div className="relative aspect-2/3 rounded-xl overflow-hidden bg-zinc-900">
+                                        <img
+                                            src={posterUrl}
+                                            alt={movies.title}
+                                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                            loading="lazy"
+                                        />
+
+                                        {/* Rating Pill */}
+                                        <div className="absolute top-2.5 right-2.5 px-2 py-0.5 rounded-full bg-black/70 backdrop-blur-md border border-white/10 flex items-center gap-1">
+                                            <span className="material-symbols-outlined text-xs text-amber-400 filled">star</span>
+                                            <span className="text-[11px] font-bold text-white">{rating}</span>
+                                        </div>
+
+                                        {/* Watchlist Toggle Button */}
+                                        <button
+                                            onClick={(e) => toggleWatchlist(movies, e)}
+                                            className={`absolute top-2.5 left-2.5 w-7 h-7 rounded-full flex items-center justify-center backdrop-blur-md transition-all active:scale-90 ${isSaved
+                                                ? "bg-violet-600 text-white shadow-md shadow-violet-600/40"
+                                                : "bg-black/60 text-gray-300 hover:text-white border border-white/10 hover:bg-black/80"
+                                                }`}
+                                            title={isSaved ? "Remove from watchlist" : "Add to watchlist"}
+                                        >
+                                            <span className="material-symbols-outlined text-xs">
+                                                {isSaved ? "check" : "bookmark"}
+                                            </span>
+                                        </button>
+
+                                        {/* Hover Overlay with Play Button */}
+                                        <div className="absolute inset-0 bg-black/45 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                                            <div
+                                                onClick={(e) => openTrailer(movies, e)}
+                                                className="w-11 h-11 rounded-full bg-white text-black flex items-center justify-center shadow-xl hover:scale-110 transition-transform cursor-pointer"
+                                            >
+                                                <span className="material-symbols-outlined text-2xl filled text-black">play_arrow</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Text Info */}
+                                    <div className="pt-3 px-1">
+                                        <h3 className="font-semibold text-sm text-white truncate group-hover:text-violet-300 transition-colors">
+                                            {movies.title}
+                                        </h3>
+                                        <div className="flex items-center justify-between text-xs text-gray-400 mt-1">
+                                            <span>{year}</span>
+                                            <span className="text-[11px] text-gray-500 font-medium">
+                                                {movies.genre_name || "Cinema"}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </SwiperSlide>
+                        );
+                    })}
+                </Swiper>
             </section>
 
 
+            
 
-            {/* 6. Trailer Video Modal */}
+
+
+
+
+            {/* 3. DEDICATED EXPLORE GENRES SHOWCASE CAROUSEL */}
+            {/* <section className="max-w-7xl mx-auto px-6 sm:px-10 md:px-14 pt-16 space-y-6">
+                <div className="flex items-end justify-between">
+                    <div>
+                        <div className="flex items-center gap-2 mb-1.5">
+                            <span className="h-2 w-2 rounded-full bg-violet-400" />
+                            <span className="text-[11px] font-bold uppercase tracking-widest text-violet-400">
+                                Categories & Universes
+                            </span>
+                        </div>
+                        <h2 className="font-display text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+                            Explore by Genre
+                        </h2>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                        <button
+                            onClick={() => exploreCardsSwiperRef.current?.slidePrev()}
+                            aria-label="Previous genre"
+                            className="w-9 h-9 rounded-full bg-white/5 border border-white/10 hover:border-white/25 hover:bg-white/10 text-gray-300 hover:text-white flex items-center justify-center transition-all cursor-pointer active:scale-95"
+                        >
+                            <span className="material-symbols-outlined text-lg">chevron_left</span>
+                        </button>
+                        <button
+                            onClick={() => exploreCardsSwiperRef.current?.slideNext()}
+                            aria-label="Next genre"
+                            className="w-9 h-9 rounded-full bg-white/5 border border-white/10 hover:border-white/25 hover:bg-white/10 text-gray-300 hover:text-white flex items-center justify-center transition-all cursor-pointer active:scale-95"
+                        >
+                            <span className="material-symbols-outlined text-lg">chevron_right</span>
+                        </button>
+                    </div>
+                </div>
+
+                <Swiper
+                    onSwiper={(swiper) => {
+                        exploreCardsSwiperRef.current = swiper;
+                    }}
+                    spaceBetween={16}
+                    slidesPerView={2}
+                    breakpoints={{
+                        640: { slidesPerView: 3, spaceBetween: 16 },
+                        768: { slidesPerView: 4, spaceBetween: 18 },
+                        1024: { slidesPerView: 5, spaceBetween: 20 },
+                        1280: { slidesPerView: 6, spaceBetween: 20 }
+                    }}
+                    className="pb-4"
+                >
+                    {EXPLORE_GENRES.map((genre) => (
+                        <SwiperSlide key={genre.id}>
+                            <div
+                                onClick={() => navigate(`/genre/${genre.id}?name=${encodeURIComponent(genre.name)}`)}
+                                className="group relative overflow-hidden rounded-2xl p-5 cursor-pointer border border-white/10 bg-white/3 backdrop-blur-xl transition-all duration-300 hover:scale-104 hover:border-white/25 hover:bg-white/6 hover:shadow-[0_12px_30px_rgba(0,0,0,0.5)] flex flex-col justify-between aspect-square"
+                            >
+                                {/* Liquid Ambient Glow */}
+                                {/* <div className={`absolute -right-1/4 -bottom-1/4 h-2/3 w-2/3 rounded-full bg-linear-to-br ${genre.gradient} blur-[30px] opacity-25 group-hover:opacity-75 group-hover:scale-125 transition-all duration-500`} />
+
+                                <div className="self-start transform group-hover:scale-110 group-hover:-translate-y-1 transition duration-300 relative z-10 w-10 h-10 rounded-xl bg-white/10 border border-white/15 flex items-center justify-center text-white">
+                                    <span className="material-symbols-outlined text-xl">{genre.icon}</span>
+                                </div>
+
+                                <div className="z-10 mt-auto">
+                                    <h3 className="text-sm font-extrabold uppercase tracking-wide text-white drop-shadow-md">
+                                        {genre.name}
+                                    </h3>
+                                    <p className="text-[11px] font-semibold text-gray-400 group-hover:text-violet-300 transition duration-300 mt-1 flex items-center gap-1">
+                                        {genre.count}
+                                        <span className="transform group-hover:translate-x-1 transition-transform duration-300">→</span>
+                                    </p>
+                                </div>
+                            </div>
+                        </SwiperSlide>
+                    ))}
+                </Swiper>
+            </section> */}
+
+
+            {/* 4. TRAILER VIDEO MODAL */}
             {activeTrailerKey && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-xl p-4 animate-fadeIn">
-                    <div className="w-full max-w-4xl bg-[#14151c] rounded-2xl border border-white/15 overflow-hidden shadow-2xl relative">
+                <div
+                    className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-xl p-4 animate-fadeIn"
+                    onClick={() => setActiveTrailerKey(null)}
+                >
+                    <div
+                        className="w-full max-w-4xl bg-[#14151c] rounded-2xl border border-white/15 overflow-hidden shadow-2xl relative"
+                        onClick={(e) => e.stopPropagation()}
+                    >
                         <div className="flex items-center justify-between px-6 py-4 border-b border-white/10">
                             <h3 className="font-display font-bold text-base text-white">
-                                {trailerMovieTitle} — Official Trailer
+                                {activeTrailerTitle} — Official Trailer
                             </h3>
                             <button
                                 onClick={() => setActiveTrailerKey(null)}
-                                className="w-8 h-8 rounded-full flex items-center justify-center text-gray-400 hover:text-white hover:bg-white/10 transition-colors"
+                                className="w-8 h-8 rounded-full flex items-center justify-center text-gray-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
                             >
                                 <span className="material-symbols-outlined text-lg">close</span>
                             </button>
@@ -581,7 +768,7 @@ function Home() {
                             <iframe
                                 className="w-full h-full"
                                 src={`https://www.youtube.com/embed/${activeTrailerKey}?autoplay=1`}
-                                title={`${trailerMovieTitle} Trailer`}
+                                title={`${activeTrailerTitle} Trailer`}
                                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                 allowFullScreen
                             />

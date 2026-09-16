@@ -202,26 +202,7 @@ Follow these steps to run MovieForecasts locally on your machine.
    ```bash
    npm run dev
    ```
-5. Open your browser and navigate to `http://localhost:5173`.
-
----
-
-## 🎨 Design System Tokens
-
-The application utilizes Tailwind CSS v4 design tokens declared in `src/index.css`:
-
-```css
-@theme {
-  --color-primary: #e11d48;                  /* Crimson Red Accent */
-  --color-surface: #121212;                  /* Deep Dark Background */
-  --color-surface-container: #1e1e1e;        /* Dark Card Container */
-  --color-surface-container-high: #2a2a2a;   /* Interactive Highlight */
-  --color-on-surface: #dae2fd;               /* Primary Text Color */
-  --color-on-surface-variant: #a0a0a0;       /* Secondary Text Color */
-  --font-sans: "Inter", sans-serif;
-}
-```
-
+5. Open your browser and navigate to `http://localhost:5173`
 ---
 
 ## 📄 License

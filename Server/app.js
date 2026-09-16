@@ -24,7 +24,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-app.use("/auth",authRoutes);
+app.use("/auth", authRoutes);
 
 // Helper to build TMDB fetch options
 const tmdbOptions = () => ({
@@ -35,19 +35,19 @@ const tmdbOptions = () => ({
     }
 });
 
-app.get("/",(req,res)=>{
+app.get("/", (req, res) => {
 
     // 1. Check Login
     // 2. Fetch Movies Genre wise
 
     const token = req.cookies.token
-    if(token){
+    if (token) {
         //. User Having Login token
-        jwt.verify(token,process.env.JWT_SECRET,(err,decoded)=>{
-            if(err){
+        jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+            if (err) {
                 res.status(401).json({
-                    success:false,
-                    error:"Unauthorized"
+                    success: false,
+                    error: "Unauthorized"
                 })
                 return
             }
@@ -55,17 +55,17 @@ app.get("/",(req,res)=>{
         })
 
     }
-    else{
+    else {
         res.status(401).json({
-            success:false,
-            error:"Unauthorized"
+            success: false,
+            error: "Unauthorized"
         })
         return
     }
 
     res.json({
-        success:true,
-        message:"Backend is working"
+        success: true,
+        message: "Backend is working"
     })
 })
 
@@ -132,5 +132,37 @@ app.get("/movie/:movieId", async (req, res) => {
 });
 
 
+// app.get("/testing", async (req, res) => {
+//     try {
+//         const url = 'https://api.themoviedb.org/3/movie/1560520';
+//         const response = await fetch(url, tmdbOptions());
+//         const json = await response.json();
+//         res.json({
+//             success: true,
+//             data: json,
+//             message: "Data Found"
+//         });
+//     } catch (err) {
+//         console.error("fetch error:", err);
+//         res.status(500).json({ success: false, error: err.message });
+//     }
+// });
+
+
+app.get("/testing", async (req, res) => {
+    try {
+        const url = 'https://api.themoviedb.org/3/movie/1560520/videos';
+        const response = await fetch(url, tmdbOptions());
+        const json = await response.json();
+        res.json({
+            success: true,
+            data: json,
+            message: "Data Found"
+        });
+    } catch (err) {
+        console.error("fetch error:", err);
+        res.status(500).json({ success: false, error: err.message });
+    }
+});
 
 module.exports = app;

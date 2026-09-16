@@ -9,6 +9,7 @@ import Layout from "./components/layout";
 import NotFound from "./pages/notFound";
 import Signup from "./pages/signup";
 import Login from "./pages/login"
+
 function App() {
   return (
     <BrowserRouter>
@@ -22,6 +23,7 @@ function App() {
           <Route path="/movie/:movieId" element={<MovieDetail />} />
           <Route path="*" element={<NotFound />} />
         </Route>
+        {/* <Route path="/test" element={<NewHome />} /> */}
         <Route path="/auth/signup" element={<Signup />} />
         <Route path="/auth/login" element={<Login />} />
       </Routes>
@@ -29,4 +31,4 @@ function App() {
   );
 }
 
-export default App;
+export default App; 
