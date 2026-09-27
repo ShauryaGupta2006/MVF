@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, Autoplay, EffectFade } from "swiper/modules";
+import LoadingScreen from "../components/loadingScreen";
 
 
 
@@ -214,37 +215,36 @@ function Home() {
 
 
     if (state === "loading") {
-        return (
-            <div className="min-h-screen bg-[#0a0b0e] text-white flex flex-col items-center justify-center p-6">
-                <div className="w-full max-w-6xl space-y-6 animate-pulse">
-                    <div className="w-full h-[65vh] rounded-3xl bg-white/5 border border-white/8 relative overflow-hidden">
-                        <div className="absolute inset-0 bg-linear-to-r from-transparent via-white/5 to-transparent animate-shimmer" />
-                    </div>
-                    <div className="flex gap-4">
-                        {[1, 2, 3, 4, 5].map((item) => (
-                            <div key={item} className="flex-1 aspect-2/3 rounded-2xl bg-white/5" />
-                        ))}
-                    </div>
-                </div>
-            </div>
-        );
+        return <LoadingScreen message="Loading Box Office Forecasts..." subtext="Calibrating real-time theatrical feed" />;
     }
 
     if (state === "error") {
         return (
-            <div className="min-h-screen bg-[#0a0b0e] text-white flex flex-col items-center justify-center p-6 text-center">
-                <div className="p-8 rounded-3xl bg-red-950/20 border border-red-500/20 backdrop-blur-xl max-w-md">
-                    <span className="material-symbols-outlined text-4xl text-red-400 mb-3">error</span>
-                    <h2 className="text-xl font-bold mb-2">Unable to load movies</h2>
-                    <p className="text-sm text-gray-400 mb-6">Could not retrieve cinema data. Please check your connection.</p>
-                    <button
-                        onClick={() => {
-                            window.location.reload();
-                        }}
-                        className="px-6 py-2.5 rounded-full bg-white text-black font-semibold text-xs hover:bg-white/90 transition-all cursor-pointer"
-                    >
-                        Try Again
-                    </button>
+            <div className="min-h-screen bg-[#0a0b0e] text-[#e5e2e1] flex items-center justify-center p-6">
+                <div className="w-full max-w-lg p-8 rounded-3xl bg-[#121319]/90 border border-rose-500/20 backdrop-blur-xl shadow-2xl text-center space-y-5">
+                    <div className="w-16 h-16 rounded-full bg-rose-500/10 border border-rose-500/20 flex items-center justify-center mx-auto">
+                        <span className="material-symbols-outlined text-3xl text-rose-400">cloud_off</span>
+                    </div>
+                    <div className="space-y-2">
+                        <h2 className="font-display text-2xl font-bold text-white tracking-tight">
+                            Unable to Fetch Movies
+                        </h2>
+                        <p className="text-xs sm:text-sm text-gray-400 max-w-md mx-auto leading-relaxed">
+                            Could not retrieve live cinema forecasts from the server. Please check your connection or server status.
+                        </p>
+                    </div>
+                    <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+                        <button
+                            onClick={() => {
+                                setState("loading");
+                                getTrendingMovies();
+                                getUpcomingMovies();
+                            }}
+                            className="px-6 py-2.5 rounded-full bg-white text-black font-semibold text-xs sm:text-sm hover:bg-white/90 transition-all cursor-pointer active:scale-95 shadow-lg shadow-white/10"
+                        >
+                            Try Again
+                        </button>
+                    </div>
                 </div>
             </div>
         );

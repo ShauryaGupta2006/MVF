@@ -2,76 +2,11 @@ import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import LoadingScreen from "../components/loadingScreen";
 
-const MOCK_DETAILS = {
-    101: {
-        id: 101,
-        title: "Neon Horizon",
-        tagline: "Memories are currency. Silence is fatal.",
-        overview: "In a sprawling megalopolis where memories are currency, a rogue archivist uncovers a conspiracy that threatens to erase the city's past entirely. A visually stunning journey through the neon-drenched underbelly of tomorrow.",
-        backdrop_path: "https://lh3.googleusercontent.com/aida-public/AB6AXuDZvaRR5wzv1dCyHZ88iWaSlJTFbPmoe804z-j7J5_Kn4-taIVaId4Y0wgjsua1BzPg0ZmcUBLRM_4FUx4EtayhkAEDmgVzEQCEeSC1GETWKwBpiwQAzf042BDdjyVe4CpMeNFCvhuDdgEeJGdD-FwWfPG17_1bUlXGUMm4Lm3LT2a-PdPU5M3IVWyC7GhrOzGUCdaA7-DoaDXUTj8D92NHQfpoaDfABb1xK_07SiTYMexcatRmjaT_",
-        poster_path: "https://lh3.googleusercontent.com/aida-public/AB6AXuDZvaRR5wzv1dCyHZ88iWaSlJTFbPmoe804z-j7J5_Kn4-taIVaId4Y0wgjsua1BzPg0ZmcUBLRM_4FUx4EtayhkAEDmgVzEQCEeSC1GETWKwBpiwQAzf042BDdjyVe4CpMeNFCvhuDdgEeJGdD-FwWfPG17_1bUlXGUMm4Lm3LT2a-PdPU5M3IVWyC7GhrOzGUCdaA7-DoaDXUTj8D92NHQfpoaDfABb1xK_07SiTYMexcatRmjaT_",
-        vote_average: 9.2,
-        release_date: "2024-03-15",
-        runtime: 134,
-        budget: "$165,000,000",
-        revenue: "$485,000,000",
-        genres: [{ id: 1, name: "Sci-Fi" }, { id: 2, name: "Thriller" }],
-        director: "Denis Villeneuve",
-        cast: [
-            { name: "Timothée Chalamet", character: "Paul Atreides / Archivist", image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=300&q=80" },
-            { name: "Zendaya", character: "Chani / Rebel Navigator", image: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=300&q=80" },
-            { name: "Florence Pugh", character: "Princess Irulan", image: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=300&q=80" },
-            { name: "Austin Butler", character: "Feyd-Rautha", image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=300&q=80" },
-            { name: "Javier Bardem", character: "Stilgar", image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=300&q=80" }
-        ],
-        trailer_key: "L61p2uyiMSo"
-    },
-    102: {
-        id: 102,
-        title: "The Crimson Void",
-        tagline: "Into the shadow of the abyss.",
-        overview: "A minimalist, high-tension psychological thriller set aboard a deep space research outpost trapped in the shadow of an uncharted cosmic singularity.",
-        poster_path: "https://lh3.googleusercontent.com/aida-public/AB6AXuBj3Dc3EGKUjecizNECPpcNxKrH-ruEKe8ZsNe6vU2fJV-5cWh4LlD0aBrJnOF96q-IsGd7tYf0UFE2o0vRbCVtzXO3rrEUeOkQXRfYpdVGiD7uikQwbhSdxa3Yb2M0yNDgL90B0HE46AD8eculRM7hwlYwjFgV3lLKPOx54WuG_HJJmsPmiy9_I41UL_Try642O5aLd6w0zzqgsh5rBAUSESMffuGJJoPo2P4Q-k1Pmd-KsWUtH8eY",
-        backdrop_path: "https://images.unsplash.com/photo-1506703719100-a0f3a48c0f86?auto=format&fit=crop&w=1200&q=80",
-        vote_average: 8.9,
-        release_date: "2024-05-20",
-        runtime: 118,
-        budget: "$45,000,000",
-        revenue: "$135,000,000",
-        genres: [{ id: 2, name: "Thriller" }, { id: 3, name: "Horror" }],
-        director: "Alex Garland",
-        cast: [
-            { name: "Natalie Portman", character: "Dr. Lena Vance", image: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=300&q=80" },
-            { name: "Oscar Isaac", character: "Commander Kane", image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=300&q=80" }
-        ],
-        trailer_key: "8g18jFHCLXk"
-    },
-    103: {
-        id: 103,
-        title: "Midnight Broadcast",
-        tagline: "The static knows your secret.",
-        overview: "An elegant film noir drama capturing a lonely late-night radio host who begins receiving mysterious calls predicting events before they unfold.",
-        poster_path: "https://lh3.googleusercontent.com/aida-public/AB6AXuAunIZhNERCrd9QpK8BEPcaJNxwbmtXDHCJJUY_EFutqyJ7CSQis8BifosvaWff91lIGvdcTb2PcnlkHO-LBjofbA1UYTEQV60IwJAv3YWze8I-h61GAxWH3n6CHWK_G4e9_ZToc6DzGen_6rmRr12qXseENxsssM4BffJfkLMX37dqCL8EsjlQR_oMwB_APvL73DwEdS2uVIjoVMU54PdSaipa98HY60uwwreI12kJhNgPAA4_LoOJ",
-        backdrop_path: "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=1200&q=80",
-        vote_average: 9.4,
-        release_date: "2024-02-10",
-        runtime: 125,
-        budget: "$25,000,000",
-        revenue: "$95,000,000",
-        genres: [{ id: 4, name: "Drama" }, { id: 5, name: "Noir" }],
-        director: "David Fincher",
-        cast: [
-            { name: "Willem Dafoe", character: "Arthur Pendelton / Radio Host", image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=300&q=80" },
-            { name: "Rooney Mara", character: "Clara Vance", image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80" }
-        ],
-        trailer_key: "Way9Dexny3w"
-    }
-};
-
 function MovieDetail() {
     const { movieId } = useParams();
     const [movie, setMovie] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(false);
     const [isSaved, setIsSaved] = useState(false);
     const [showTrailer, setShowTrailer] = useState(false);
 
@@ -125,26 +60,25 @@ function MovieDetail() {
 
     const fetchMovie = async () => {
         setLoading(true);
+        setError(false);
         try {
             const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/movie/${movieId}`, {
                 credentials: "include"
             });
             if (res.ok) {
                 const data = await res.json();
-                if (data.success && data.data) {
+                if (data.success && data.data && data.data.id) {
                     setMovie(data.data);
                     checkWatchlist(data.data.id);
                     setLoading(false);
                     return;
                 }
             }
-            const mock = MOCK_DETAILS[movieId] || MOCK_DETAILS[101];
-            setMovie(mock);
-            checkWatchlist(mock.id);
+            setError(true);
+            setMovie(null);
         } catch {
-            const mock = MOCK_DETAILS[movieId] || MOCK_DETAILS[101];
-            setMovie(mock);
-            checkWatchlist(mock.id);
+            setError(true);
+            setMovie(null);
         } finally {
             setLoading(false);
         }
@@ -156,23 +90,56 @@ function MovieDetail() {
     }, [movieId]);
 
     if (loading) {
-        return <LoadingScreen message="Fetching MVF Cinema File..." />;
+        return <LoadingScreen message="Fetching MVF Cinema File..." subtext="Accessing TMDB verified archival record" />;
     }
 
-    if (!movie) return null;
+    if (error || !movie) {
+        return (
+            <div className="min-h-screen bg-[#0a0b0e] text-[#e5e2e1] flex items-center justify-center p-6">
+                <div className="w-full max-w-lg p-8 rounded-3xl bg-[#121319]/90 border border-rose-500/20 backdrop-blur-xl shadow-2xl text-center space-y-5">
+                    <div className="w-16 h-16 rounded-full bg-rose-500/10 border border-rose-500/20 flex items-center justify-center mx-auto">
+                        <span className="material-symbols-outlined text-3xl text-rose-400">cloud_off</span>
+                    </div>
+                    <div className="space-y-2">
+                        <h2 className="font-display text-2xl font-bold text-white tracking-tight">
+                            Unable to Fetch Movie
+                        </h2>
+                        <p className="text-xs sm:text-sm text-gray-400 max-w-md mx-auto leading-relaxed">
+                            Could not retrieve the movie profile from the server. The requested title ID may be unavailable or the connection failed.
+                        </p>
+                    </div>
+                    <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+                        <button
+                            onClick={fetchMovie}
+                            className="px-6 py-2.5 rounded-full bg-white text-black font-semibold text-xs sm:text-sm hover:bg-white/90 transition-all cursor-pointer active:scale-95 shadow-lg shadow-white/10"
+                        >
+                            Try Again
+                        </button>
+                        <button
+                            onClick={() => navigate("/")}
+                            className="px-6 py-2.5 rounded-full bg-white/6 border border-white/12 text-white font-semibold text-xs sm:text-sm hover:bg-white/12 transition-all cursor-pointer active:scale-95"
+                        >
+                            Back to Home
+                        </button>
+                    </div>
+                </div>
+            </div>
+        );
+    }
 
     const backdropUrl = movie.backdrop_path
         ? (movie.backdrop_path.startsWith("http") ? movie.backdrop_path : `https://image.tmdb.org/t/p/original${movie.backdrop_path}`)
-        : MOCK_DETAILS[101].backdrop_path;
+        : null;
 
     const posterUrl = movie.poster_path
         ? (movie.poster_path.startsWith("http") ? movie.poster_path : `https://image.tmdb.org/t/p/w500${movie.poster_path}`)
-        : MOCK_DETAILS[101].poster_path;
+        : "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=500&q=80";
 
-    const releaseYear = movie.release_date ? movie.release_date.split("-")[0] : "2024";
-    const rating = movie.vote_average ? movie.vote_average.toFixed(1) : "9.2";
-    const runtimeStr = movie.runtime ? `${Math.floor(movie.runtime / 60)}h ${movie.runtime % 60}m` : "2h 14m";
-    const genresList = movie.genres ? movie.genres.map(g => g.name).join(" • ") : "Sci-Fi Thriller";
+    const releaseYear = movie.release_date ? movie.release_date.split("-")[0] : "—";
+    const rating = typeof movie.vote_average === "number" && movie.vote_average > 0 ? movie.vote_average.toFixed(1) : "—";
+    const runtimeStr = movie.runtime ? `${Math.floor(movie.runtime / 60)}h ${movie.runtime % 60}m` : "—";
+    const genresList = movie.genres && movie.genres.length > 0 ? movie.genres.map(g => g.name).join(" • ") : "Cinema";
+
     const getTrailerKey = (movieData) => {
         if (!movieData) return null;
         if (movieData.trailer_key) return movieData.trailer_key;
@@ -188,13 +155,13 @@ function MovieDetail() {
     };
 
     const trailerKey = getTrailerKey(movie);
-    const director = movie.credits?.crew?.find((c) => c.job === "Director")?.name || movie.director || "Not Available";
+    const director = movie.credits?.crew?.find((c) => c.job === "Director")?.name || "Not Available";
     const budgetStr = typeof movie.budget === "number" && movie.budget > 0 
         ? `$${movie.budget.toLocaleString()}` 
-        : (typeof movie.budget === "string" ? movie.budget : "Not Disclosed");
+        : "Not Disclosed";
     const revenueStr = typeof movie.revenue === "number" && movie.revenue > 0 
         ? `$${movie.revenue.toLocaleString()}` 
-        : (typeof movie.revenue === "string" ? movie.revenue : "Not Disclosed");
+        : "Not Disclosed";
 
     // Cast List
     let castList = [];
@@ -206,8 +173,6 @@ function MovieDetail() {
         }));
     } else if (Array.isArray(movie.cast)) {
         castList = movie.cast.map(c => typeof c === 'string' ? { name: c, character: "Lead Cast" } : c);
-    } else if (MOCK_DETAILS[movie.id]?.cast) {
-        castList = MOCK_DETAILS[movie.id].cast;
     }
 
     return (
@@ -215,12 +180,16 @@ function MovieDetail() {
             
             {/* Backdrop Banner */}
             <div className="relative w-full h-[58vh] min-h-110 overflow-hidden bg-[#111218]">
-                {backdropUrl && (
+                {backdropUrl ? (
                     <img
                         src={backdropUrl}
                         alt={movie.title}
                         className="w-full h-full object-cover filter brightness-[0.65] scale-103"
                     />
+                ) : (
+                    <div className="w-full h-full bg-linear-to-b from-[#181922] to-[#0a0b0e] flex items-center justify-center opacity-40">
+                        <span className="material-symbols-outlined text-8xl text-white/10">movie</span>
+                    </div>
                 )}
                 <div className="absolute inset-0 bg-linear-to-t from-[#0a0b0e] via-[#0a0b0e]/60 to-transparent" />
                 <div className="absolute inset-0 bg-linear-to-r from-[#0a0b0e]/80 via-transparent to-transparent" />
@@ -249,10 +218,12 @@ function MovieDetail() {
                             <span className="px-3 py-1 rounded-full bg-white/8 border border-white/15 text-xs font-semibold uppercase tracking-wider text-white backdrop-blur-md">
                                 {genresList}
                             </span>
-                            <span className="flex items-center gap-1 text-xs font-bold text-amber-400 bg-amber-500/10 px-3 py-1 rounded-full border border-amber-500/20">
-                                <span className="material-symbols-outlined text-[14px] filled">star</span>
-                                {rating} Score
-                            </span>
+                            {rating !== "—" && (
+                                <span className="flex items-center gap-1 text-xs font-bold text-amber-400 bg-amber-500/10 px-3 py-1 rounded-full border border-amber-500/20">
+                                    <span className="material-symbols-outlined text-[14px] filled">star</span>
+                                    {rating} Score
+                                </span>
+                            )}
                             <span className="text-xs text-gray-400 font-medium">{releaseYear} • {runtimeStr}</span>
                         </div>
 
@@ -267,7 +238,7 @@ function MovieDetail() {
                         )}
 
                         <p className="text-sm sm:text-base text-gray-300 leading-relaxed max-w-3xl opacity-90">
-                            {movie.overview}
+                            {movie.overview || "No synopsis available for this title."}
                         </p>
 
                         <div className="flex flex-wrap gap-3 pt-2">
@@ -359,7 +330,7 @@ function MovieDetail() {
                             {castList.map((actor, idx) => {
                                 const profileImg = actor.profile_path
                                     ? (actor.profile_path.startsWith("http") ? actor.profile_path : `https://image.tmdb.org/t/p/w300${actor.profile_path}`)
-                                    : (actor.image || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80");
+                                    : "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80";
 
                                 return (
                                     <div
@@ -378,7 +349,7 @@ function MovieDetail() {
                                             {actor.name}
                                         </h4>
                                         <p className="text-[11px] text-gray-400 truncate mt-0.5">
-                                            {actor.character || actor.role || "Lead Cast"}
+                                            {actor.character || "Lead Cast"}
                                         </p>
                                     </div>
                                 );

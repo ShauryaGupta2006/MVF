@@ -2,52 +2,15 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import LoadingScreen from "../components/loadingScreen";
 
-const FALLBACK_UPCOMING = [
-    {
-        id: 201,
-        title: "Chronos Protocol",
-        overview: "A temporal archivist travels to 1920s Paris to prevent the unraveling of quantum history.",
-        poster_path: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=600&q=80",
-        release_date: "Oct 15, 2026",
-        status_tag: "Dropping Soon",
-        genre_name: "Sci-Fi Thriller"
-    },
-    {
-        id: 202,
-        title: "Whispers in the Mist",
-        overview: "An isolated lighthouse keeper discovers ancient maritime symbols etched into deep coastal ice.",
-        poster_path: "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?auto=format&fit=crop&w=600&q=80",
-        release_date: "Nov 04, 2026",
-        status_tag: "In Production",
-        genre_name: "Gothic Mystery"
-    },
-    {
-        id: 203,
-        title: "Symphony of Shadows",
-        overview: "In 18th century Vienna, an avant-garde composer accidentally invokes forgotten spectral forces.",
-        poster_path: "https://images.unsplash.com/photo-1465847899084-d164df4dedc6?auto=format&fit=crop&w=600&q=80",
-        release_date: "Dec 01, 2026",
-        status_tag: "Festival Debut",
-        genre_name: "Period Drama"
-    },
-    {
-        id: 204,
-        title: "Hyperion Station",
-        overview: "Humanity's first orbital colony faces catastrophic atmospheric collapse during solar maximum.",
-        poster_path: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=600&q=80",
-        release_date: "Jan 20, 2027",
-        status_tag: "Teaser Released",
-        genre_name: "Sci-Fi Epic"
-    }
-];
-
 function UpcomingMovies() {
     const [movies, setMovies] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(false);
     const navigate = useNavigate();
 
     const fetchUpcoming = async () => {
         setLoading(true);
+        setError(false);
         try {
             const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/upcoming`, {
                 credentials: "include"
@@ -60,9 +23,11 @@ function UpcomingMovies() {
                     return;
                 }
             }
-            setMovies(FALLBACK_UPCOMING);
+            setError(true);
+            setMovies([]);
         } catch {
-            setMovies(FALLBACK_UPCOMING);
+            setError(true);
+            setMovies([]);
         } finally {
             setLoading(false);
         }
@@ -73,7 +38,41 @@ function UpcomingMovies() {
     }, []);
 
     if (loading) {
-        return <LoadingScreen message="Loading Upcoming Box Office Premieres..." />;
+        return <LoadingScreen message="Loading Upcoming Box Office Premieres..." subtext="Syncing upcoming theatrical calendars" />;
+    }
+
+    if (error) {
+        return (
+            <div className="min-h-screen bg-[#0a0b0e] text-[#e5e2e1] flex items-center justify-center p-6">
+                <div className="w-full max-w-lg p-8 rounded-3xl bg-[#121319]/90 border border-rose-500/20 backdrop-blur-xl shadow-2xl text-center space-y-5">
+                    <div className="w-16 h-16 rounded-full bg-rose-500/10 border border-rose-500/20 flex items-center justify-center mx-auto">
+                        <span className="material-symbols-outlined text-3xl text-rose-400">cloud_off</span>
+                    </div>
+                    <div className="space-y-2">
+                        <h2 className="font-display text-2xl font-bold text-white tracking-tight">
+                            Unable to Fetch Upcoming Premieres
+                        </h2>
+                        <p className="text-xs sm:text-sm text-gray-400 max-w-md mx-auto leading-relaxed">
+                            Could not retrieve the theatrical release calendar from the server. Please verify your connection or try again.
+                        </p>
+                    </div>
+                    <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+                        <button
+                            onClick={fetchUpcoming}
+                            className="px-6 py-2.5 rounded-full bg-white text-black font-semibold text-xs sm:text-sm hover:bg-white/90 transition-all cursor-pointer active:scale-95 shadow-lg shadow-white/10"
+                        >
+                            Try Again
+                        </button>
+                        <button
+                            onClick={() => navigate("/")}
+                            className="px-6 py-2.5 rounded-full bg-white/6 border border-white/12 text-white font-semibold text-xs sm:text-sm hover:bg-white/12 transition-all cursor-pointer active:scale-95"
+                        >
+                            Back to Home
+                        </button>
+                    </div>
+                </div>
+            </div>
+        );
     }
 
     return (
@@ -96,7 +95,7 @@ function UpcomingMovies() {
                 {movies.map((movie) => {
                     const posterUrl = movie.poster_path
                         ? (movie.poster_path.startsWith("http") ? movie.poster_path : `https://image.tmdb.org/t/p/w500${movie.poster_path}`)
-                        : FALLBACK_UPCOMING[0].poster_path;
+                        : "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=500&q=80";
 
                     return (
                         <div
@@ -112,7 +111,7 @@ function UpcomingMovies() {
                                     loading="lazy"
                                 />
                                 <div className="absolute top-2.5 left-2.5 bg-black/70 backdrop-blur-md px-3 py-1 rounded-full text-xs font-semibold text-white border border-white/10 uppercase tracking-wider">
-                                    {movie.release_date || "2026"}
+                                    {movie.release_date ? movie.release_date.split("-")[0] : "Coming Soon"}
                                 </div>
                                 {movie.status_tag && (
                                     <div className="absolute bottom-2.5 right-2.5 bg-violet-600/80 backdrop-blur-md px-2.5 py-0.5 rounded-full text-[10px] font-bold text-white uppercase tracking-wider border border-white/20">
@@ -128,7 +127,7 @@ function UpcomingMovies() {
                                 {movie.title}
                             </h3>
                             <p className="text-xs text-gray-400 line-clamp-2 mt-1.5 leading-relaxed">
-                                {movie.overview}
+                                {movie.overview || "Upcoming theatrical premiere details coming soon."}
                             </p>
                         </div>
                     );

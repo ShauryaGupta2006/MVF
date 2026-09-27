@@ -10,41 +10,11 @@ const GENRE_NAME_MAP = {
     27: "Horror",
     80: "Crime",
     16: "Animation",
-    99: "Documentary"
+    99: "Documentary",
+    12: "Adventure",
+    35: "Comedy",
+    9648: "Mystery"
 };
-
-const GENRE_FALLBACKS = [
-    {
-        id: 101,
-        title: "Neon Horizon",
-        overview: "A rogue archivist uncovers a memory conspiracy in a dystopian neon metropolis.",
-        poster_path: "https://lh3.googleusercontent.com/aida-public/AB6AXuDZvaRR5wzv1dCyHZ88iWaSlJTFbPmoe804z-j7J5_Kn4-taIVaId4Y0wgjsua1BzPg0ZmcUBLRM_4FUx4EtayhkAEDmgVzEQCEeSC1GETWKwBpiwQAzf042BDdjyVe4CpMeNFCvhuDdgEeJGdD-FwWfPG17_1bUlXGUMm4Lm3LT2a-PdPU5M3IVWyC7GhrOzGUCdaA7-DoaDXUTj8D92NHQfpoaDfABb1xK_07SiTYMexcatRmjaT_",
-        vote_average: 9.1,
-        release_date: "2024-03-15",
-        genre_ids: [878, 53],
-        genre_name: "Sci-Fi"
-    },
-    {
-        id: 102,
-        title: "The Crimson Void",
-        overview: "High-tension psychological thriller set aboard a deep space research outpost.",
-        poster_path: "https://lh3.googleusercontent.com/aida-public/AB6AXuBj3Dc3EGKUjecizNECPpcNxKrH-ruEKe8ZsNe6vU2fJV-5cWh4LlD0aBrJnOF96q-IsGd7tYf0UFE2o0vRbCVtzXO3rrEUeOkQXRfYpdVGiD7uikQwbhSdxa3Yb2M0yNDgL90B0HE46AD8eculRM7hwlYwjFgV3lLKPOx54WuG_HJJmsPmiy9_I41UL_Try642O5aLd6w0zzqgsh5rBAUSESMffuGJJoPo2P4Q-k1Pmd-KsWUtH8eY",
-        vote_average: 8.9,
-        release_date: "2024-05-20",
-        genre_ids: [53, 27],
-        genre_name: "Thriller"
-    },
-    {
-        id: 103,
-        title: "Midnight Broadcast",
-        overview: "Film noir story of a radio host receiving mysterious caller predictions.",
-        poster_path: "https://lh3.googleusercontent.com/aida-public/AB6AXuAunIZhNERCrd9QpK8BEPcaJNxwbmtXDHCJJUY_EFutqyJ7CSQis8BifosvaWff91lIGvdcTb2PcnlkHO-LBjofbA1UYTEQV60IwJAv3YWze8I-h61GAxWH3n6CHWK_G4e9_ZToc6DzGen_6rmRr12qXseENxsssM4BffJfkLMX37dqCL8EsjlQR_oMwB_APvL73DwEdS2uVIjoVMU54PdSaipa98HY60uwwreI12kJhNgPAA4_LoOJ",
-        vote_average: 9.2,
-        release_date: "2024-02-10",
-        genre_ids: [18, 80],
-        genre_name: "Drama"
-    }
-];
 
 function Genre() {
     const { genreId } = useParams();
@@ -53,10 +23,12 @@ function Genre() {
     const genreName = rawGenreName || GENRE_NAME_MAP[genreId] || "Curated Genre";
     const [movies, setMovies] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(false);
     const navigate = useNavigate();
 
     const fetchGenreMovies = async () => {
         setLoading(true);
+        setError(false);
         try {
             const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/genre/${genreId}`, {
                 credentials: "include"
@@ -69,9 +41,11 @@ function Genre() {
                     return;
                 }
             }
-            setMovies(GENRE_FALLBACKS);
+            setError(true);
+            setMovies([]);
         } catch {
-            setMovies(GENRE_FALLBACKS);
+            setError(true);
+            setMovies([]);
         } finally {
             setLoading(false);
         }
@@ -82,7 +56,41 @@ function Genre() {
     }, [genreId]);
 
     if (loading) {
-        return <LoadingScreen message={`Exploring ${genreName} Archive...`} />;
+        return <LoadingScreen message={`Exploring ${genreName} Archive...`} subtext={`Retrieving curated ${genreName} films`} />;
+    }
+
+    if (error) {
+        return (
+            <div className="min-h-screen bg-[#0a0b0e] text-[#e5e2e1] flex items-center justify-center p-6">
+                <div className="w-full max-w-lg p-8 rounded-3xl bg-[#121319]/90 border border-rose-500/20 backdrop-blur-xl shadow-2xl text-center space-y-5">
+                    <div className="w-16 h-16 rounded-full bg-rose-500/10 border border-rose-500/20 flex items-center justify-center mx-auto">
+                        <span className="material-symbols-outlined text-3xl text-rose-400">cloud_off</span>
+                    </div>
+                    <div className="space-y-2">
+                        <h2 className="font-display text-2xl font-bold text-white tracking-tight">
+                            Unable to Fetch {genreName} Cinema
+                        </h2>
+                        <p className="text-xs sm:text-sm text-gray-400 max-w-md mx-auto leading-relaxed">
+                            Could not retrieve the genre archive from the server. Please verify your connection or try again.
+                        </p>
+                    </div>
+                    <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+                        <button
+                            onClick={fetchGenreMovies}
+                            className="px-6 py-2.5 rounded-full bg-white text-black font-semibold text-xs sm:text-sm hover:bg-white/90 transition-all cursor-pointer active:scale-95 shadow-lg shadow-white/10"
+                        >
+                            Try Again
+                        </button>
+                        <button
+                            onClick={() => navigate("/")}
+                            className="px-6 py-2.5 rounded-full bg-white/6 border border-white/12 text-white font-semibold text-xs sm:text-sm hover:bg-white/12 transition-all cursor-pointer active:scale-95"
+                        >
+                            Back to Home
+                        </button>
+                    </div>
+                </div>
+            </div>
+        );
     }
 
     return (
@@ -107,8 +115,8 @@ function Genre() {
                 {movies.map((movie) => {
                     const posterUrl = movie.poster_path
                         ? (movie.poster_path.startsWith("http") ? movie.poster_path : `https://image.tmdb.org/t/p/w500${movie.poster_path}`)
-                        : GENRE_FALLBACKS[0].poster_path;
-                    const rating = movie.vote_average ? movie.vote_average.toFixed(1) : "8.5";
+                        : "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=500&q=80";
+                    const rating = typeof movie.vote_average === "number" && movie.vote_average > 0 ? movie.vote_average.toFixed(1) : "—";
 
                     return (
                         <div
@@ -125,10 +133,12 @@ function Genre() {
                                 />
 
                                 {/* Rating Badge */}
-                                <div className="absolute top-2.5 right-2.5 px-2 py-0.5 rounded-full bg-black/60 backdrop-blur-md border border-white/10 flex items-center gap-1">
-                                    <span className="material-symbols-outlined text-[12px] text-amber-400 filled">star</span>
-                                    <span className="text-[11px] font-bold text-white">{rating}</span>
-                                </div>
+                                {rating !== "—" && (
+                                    <div className="absolute top-2.5 right-2.5 px-2 py-0.5 rounded-full bg-black/60 backdrop-blur-md border border-white/10 flex items-center gap-1">
+                                        <span className="material-symbols-outlined text-[12px] text-amber-400 filled">star</span>
+                                        <span className="text-[11px] font-bold text-white">{rating}</span>
+                                    </div>
+                                )}
 
                                 <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
                                     <span className="material-symbols-outlined text-4xl text-white">play_circle</span>
@@ -139,7 +149,7 @@ function Genre() {
                                 {movie.title}
                             </h3>
                             <p className="text-xs text-gray-400 mt-0.5">
-                                {movie.release_date ? movie.release_date.split("-")[0] : "2024"}
+                                {movie.release_date ? movie.release_date.split("-")[0] : "—"}
                             </p>
                         </div>
                     );
