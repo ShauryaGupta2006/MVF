@@ -173,20 +173,41 @@ function MovieDetail() {
     const rating = movie.vote_average ? movie.vote_average.toFixed(1) : "9.2";
     const runtimeStr = movie.runtime ? `${Math.floor(movie.runtime / 60)}h ${movie.runtime % 60}m` : "2h 14m";
     const genresList = movie.genres ? movie.genres.map(g => g.name).join(" • ") : "Sci-Fi Thriller";
-    const trailerKey = movie.trailer_key || "L61p2uyiMSo";
+    const getTrailerKey = (movieData) => {
+        if (!movieData) return null;
+        if (movieData.trailer_key) return movieData.trailer_key;
+        const videos = movieData.videos?.results || [];
+        const officialTrailer = videos.find((v) => v.site === "YouTube" && v.type === "Trailer" && v.official);
+        if (officialTrailer?.key) return officialTrailer.key;
+        const anyTrailer = videos.find((v) => v.site === "YouTube" && v.type === "Trailer");
+        if (anyTrailer?.key) return anyTrailer.key;
+        const teaser = videos.find((v) => v.site === "YouTube" && (v.type === "Teaser" || v.type === "Clip"));
+        if (teaser?.key) return teaser.key;
+        const anyYoutube = videos.find((v) => v.site === "YouTube" && v.key);
+        return anyYoutube?.key || null;
+    };
+
+    const trailerKey = getTrailerKey(movie);
+    const director = movie.credits?.crew?.find((c) => c.job === "Director")?.name || movie.director || "Not Available";
+    const budgetStr = typeof movie.budget === "number" && movie.budget > 0 
+        ? `$${movie.budget.toLocaleString()}` 
+        : (typeof movie.budget === "string" ? movie.budget : "Not Disclosed");
+    const revenueStr = typeof movie.revenue === "number" && movie.revenue > 0 
+        ? `$${movie.revenue.toLocaleString()}` 
+        : (typeof movie.revenue === "string" ? movie.revenue : "Not Disclosed");
 
     // Cast List
     let castList = [];
     if (movie.credits?.cast?.length > 0) {
         castList = movie.credits.cast.slice(0, 10).map((c) => ({
             name: c.name,
-            character: c.character,
+            character: c.character || "Lead Cast",
             profile_path: c.profile_path
         }));
     } else if (Array.isArray(movie.cast)) {
         castList = movie.cast.map(c => typeof c === 'string' ? { name: c, character: "Lead Cast" } : c);
-    } else {
-        castList = MOCK_DETAILS[101].cast;
+    } else if (MOCK_DETAILS[movie.id]?.cast) {
+        castList = MOCK_DETAILS[movie.id].cast;
     }
 
     return (
@@ -194,11 +215,13 @@ function MovieDetail() {
             
             {/* Backdrop Banner */}
             <div className="relative w-full h-[58vh] min-h-110 overflow-hidden bg-[#111218]">
-                <img
-                    src={backdropUrl}
-                    alt={movie.title}
-                    className="w-full h-full object-cover filter brightness-[0.65] scale-103"
-                />
+                {backdropUrl && (
+                    <img
+                        src={backdropUrl}
+                        alt={movie.title}
+                        className="w-full h-full object-cover filter brightness-[0.65] scale-103"
+                    />
+                )}
                 <div className="absolute inset-0 bg-linear-to-t from-[#0a0b0e] via-[#0a0b0e]/60 to-transparent" />
                 <div className="absolute inset-0 bg-linear-to-r from-[#0a0b0e]/80 via-transparent to-transparent" />
 
@@ -250,10 +273,16 @@ function MovieDetail() {
                         <div className="flex flex-wrap gap-3 pt-2">
                             <button
                                 onClick={() => setShowTrailer(true)}
-                                className="bg-white text-black hover:bg-white/90 font-semibold text-xs sm:text-sm px-7 py-3 rounded-full transition-all shadow-lg shadow-white/10 active:scale-95 flex items-center gap-2 cursor-pointer"
+                                className={`font-semibold text-xs sm:text-sm px-7 py-3 rounded-full transition-all shadow-lg active:scale-95 flex items-center gap-2 cursor-pointer ${
+                                    trailerKey 
+                                        ? "bg-white text-black hover:bg-white/90 shadow-white/10" 
+                                        : "bg-white/10 text-gray-400 hover:bg-white/15 border border-white/10"
+                                }`}
                             >
-                                <span className="material-symbols-outlined filled text-lg text-black">play_arrow</span>
-                                Play Trailer
+                                <span className="material-symbols-outlined filled text-lg">
+                                    {trailerKey ? "play_arrow" : "videocam_off"}
+                                </span>
+                                {trailerKey ? "Play Trailer" : "Trailer Unavailable"}
                             </button>
 
                             <button
@@ -277,7 +306,7 @@ function MovieDetail() {
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 p-5 rounded-2xl bg-[#111218] border border-white/7">
                     <div className="space-y-1">
                         <h4 className="text-[10px] font-bold uppercase tracking-wider text-gray-400">Director</h4>
-                        <p className="font-semibold text-sm sm:text-base text-white">{movie.director || "Denis Villeneuve"}</p>
+                        <p className="font-semibold text-sm sm:text-base text-white truncate">{director}</p>
                     </div>
                     <div className="space-y-1">
                         <h4 className="text-[10px] font-bold uppercase tracking-wider text-gray-400">Runtime</h4>
@@ -285,101 +314,116 @@ function MovieDetail() {
                     </div>
                     <div className="space-y-1">
                         <h4 className="text-[10px] font-bold uppercase tracking-wider text-gray-400">Production Budget</h4>
-                        <p className="font-semibold text-sm sm:text-base text-white">{movie.budget || "$165M"}</p>
+                        <p className="font-semibold text-sm sm:text-base text-white">{budgetStr}</p>
                     </div>
                     <div className="space-y-1">
                         <h4 className="text-[10px] font-bold uppercase tracking-wider text-gray-400">Box Office Revenue</h4>
-                        <p className="font-bold text-sm sm:text-base text-emerald-400">{movie.revenue || "$485M"}</p>
+                        <p className="font-bold text-sm sm:text-base text-emerald-400">{revenueStr}</p>
                     </div>
                 </div>
 
                 {/* Dedicated Featured Cast Section */}
-                <div className="pt-4 space-y-6">
-                    <div className="flex items-center justify-between">
-                        <div>
-                            <span className="text-[10px] font-bold uppercase tracking-widest text-violet-400">
-                                Performance Ensemble
-                            </span>
-                            <h2 className="font-display text-2xl sm:text-3xl font-bold text-white tracking-tight mt-0.5">
-                                Featured Cast & Characters
-                            </h2>
-                        </div>
+                {castList.length > 0 && (
+                    <div className="pt-4 space-y-6">
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <span className="text-[10px] font-bold uppercase tracking-widest text-violet-400">
+                                    Performance Ensemble
+                                </span>
+                                <h2 className="font-display text-2xl sm:text-3xl font-bold text-white tracking-tight mt-0.5">
+                                    Featured Cast & Characters
+                                </h2>
+                            </div>
 
-                        {/* Cast Carousel Controls */}
-                        <div className="flex items-center gap-1.5">
-                            <button
-                                onClick={() => scrollCast("left")}
-                                aria-label="Scroll Cast Left"
-                                className="w-8 h-8 rounded-full bg-white/4 border border-white/8 hover:border-white/20 text-gray-300 hover:text-white flex items-center justify-center transition-all cursor-pointer active:scale-95"
-                            >
-                                <span className="material-symbols-outlined text-base">chevron_left</span>
-                            </button>
-                            <button
-                                onClick={() => scrollCast("right")}
-                                aria-label="Scroll Cast Right"
-                                className="w-8 h-8 rounded-full bg-white/4 border border-white/8 hover:border-white/20 text-gray-300 hover:text-white flex items-center justify-center transition-all cursor-pointer active:scale-95"
-                            >
-                                <span className="material-symbols-outlined text-base">chevron_right</span>
-                            </button>
-                        </div>
-                    </div>
-
-                    {/* Cast Cards Horizontal Carousel */}
-                    <div ref={castRef} className="flex overflow-x-auto gap-4 pb-4 hide-scrollbar -mx-4 px-4 sm:mx-0 sm:px-0">
-                        {castList.map((actor, idx) => {
-                            const profileImg = actor.profile_path
-                                ? (actor.profile_path.startsWith("http") ? actor.profile_path : `https://image.tmdb.org/t/p/w300${actor.profile_path}`)
-                                : (actor.image || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80");
-
-                            return (
-                                <div
-                                    key={idx}
-                                    className="flex-none w-36 sm:w-44 p-3 rounded-xl bg-[#111218] border border-white/6 hover:border-violet-500/30 card-hover-lift transition-all group cursor-pointer"
+                            {/* Cast Carousel Controls */}
+                            <div className="flex items-center gap-1.5">
+                                <button
+                                    onClick={() => scrollCast("left")}
+                                    aria-label="Scroll Cast Left"
+                                    className="w-8 h-8 rounded-full bg-white/4 border border-white/8 hover:border-white/20 text-gray-300 hover:text-white flex items-center justify-center transition-all cursor-pointer active:scale-95"
                                 >
-                                    <div className="aspect-4/5 w-full rounded-lg overflow-hidden mb-2.5 bg-[#14151c] border border-white/10">
-                                        <img
-                                            src={profileImg}
-                                            alt={actor.name}
-                                            className="w-full h-full object-cover group-hover:scale-104 transition-transform duration-500"
-                                            loading="lazy"
-                                        />
+                                    <span className="material-symbols-outlined text-base">chevron_left</span>
+                                </button>
+                                <button
+                                    onClick={() => scrollCast("right")}
+                                    aria-label="Scroll Cast Right"
+                                    className="w-8 h-8 rounded-full bg-white/4 border border-white/8 hover:border-white/20 text-gray-300 hover:text-white flex items-center justify-center transition-all cursor-pointer active:scale-95"
+                                >
+                                    <span className="material-symbols-outlined text-base">chevron_right</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        {/* Cast Cards Horizontal Carousel */}
+                        <div ref={castRef} className="flex overflow-x-auto gap-4 pb-4 hide-scrollbar -mx-4 px-4 sm:mx-0 sm:px-0">
+                            {castList.map((actor, idx) => {
+                                const profileImg = actor.profile_path
+                                    ? (actor.profile_path.startsWith("http") ? actor.profile_path : `https://image.tmdb.org/t/p/w300${actor.profile_path}`)
+                                    : (actor.image || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80");
+
+                                return (
+                                    <div
+                                        key={idx}
+                                        className="flex-none w-36 sm:w-44 p-3 rounded-xl bg-[#111218] border border-white/6 hover:border-violet-500/30 card-hover-lift transition-all group cursor-pointer"
+                                    >
+                                        <div className="aspect-4/5 w-full rounded-lg overflow-hidden mb-2.5 bg-[#14151c] border border-white/10">
+                                            <img
+                                                src={profileImg}
+                                                alt={actor.name}
+                                                className="w-full h-full object-cover group-hover:scale-104 transition-transform duration-500"
+                                                loading="lazy"
+                                            />
+                                        </div>
+                                        <h4 className="font-semibold text-xs sm:text-sm text-white truncate group-hover:text-violet-300 transition-colors">
+                                            {actor.name}
+                                        </h4>
+                                        <p className="text-[11px] text-gray-400 truncate mt-0.5">
+                                            {actor.character || actor.role || "Lead Cast"}
+                                        </p>
                                     </div>
-                                    <h4 className="font-semibold text-xs sm:text-sm text-white truncate group-hover:text-violet-300 transition-colors">
-                                        {actor.name}
-                                    </h4>
-                                    <p className="text-[11px] text-gray-400 truncate mt-0.5">
-                                        {actor.character || actor.role || "Lead Cast"}
-                                    </p>
-                                </div>
-                            );
-                        })}
+                                );
+                            })}
+                        </div>
                     </div>
-                </div>
+                )}
             </div>
 
             {/* Trailer Modal */}
             {showTrailer && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-xl p-4 animate-fadeIn">
-                    <div className="w-full max-w-4xl bg-[#14151c] rounded-2xl border border-white/15 overflow-hidden shadow-2xl relative">
+                <div 
+                    className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-xl p-4 animate-fadeIn"
+                    onClick={() => setShowTrailer(false)}
+                >
+                    <div 
+                        className="w-full max-w-4xl bg-[#14151c] rounded-2xl border border-white/15 overflow-hidden shadow-2xl relative"
+                        onClick={(e) => e.stopPropagation()}
+                    >
                         <div className="flex items-center justify-between px-6 py-4 border-b border-white/10">
                             <h3 className="font-display font-bold text-base text-white">
                                 {movie.title} — Official Trailer
                             </h3>
                             <button
                                 onClick={() => setShowTrailer(false)}
-                                className="w-8 h-8 rounded-full flex items-center justify-center text-gray-400 hover:text-white hover:bg-white/10 transition-colors"
+                                className="w-8 h-8 rounded-full flex items-center justify-center text-gray-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
                             >
                                 <span className="material-symbols-outlined text-lg">close</span>
                             </button>
                         </div>
-                        <div className="aspect-video w-full">
-                            <iframe
-                                className="w-full h-full"
-                                src={`https://www.youtube.com/embed/${trailerKey}?autoplay=1`}
-                                title={`${movie.title} Trailer`}
-                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                allowFullScreen
-                            />
+                        <div className="aspect-video w-full bg-black flex items-center justify-center">
+                            {trailerKey ? (
+                                <iframe
+                                    className="w-full h-full"
+                                    src={`https://www.youtube.com/embed/${trailerKey}?autoplay=1`}
+                                    title={`${movie.title} Trailer`}
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                    allowFullScreen
+                                />
+                            ) : (
+                                <div className="flex flex-col items-center justify-center p-8 text-center text-gray-400">
+                                    <span className="material-symbols-outlined text-4xl mb-2 text-gray-500">videocam_off</span>
+                                    <p className="text-sm font-medium text-gray-300">No official trailer available for this movie.</p>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>
